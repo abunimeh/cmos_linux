@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+wiki_system_form_page
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'wsys:new' %}" method="post">
+  {% csrf_token %}
+  {{ form.media }}
+  {% bootstrap_form form %}
+  {% if pk %}
+  <input type="hidden" name="pk" value="{{ pk }}">
+  {% endif %}
+  {% buttons %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Submit"%}
+  </button>
+  {% endbuttons %}
+</form>
+{% if pk %}
+<a href="{% url 'wsys:dele' pk %}">{% bootstrap_button "Delete" %}</a>
+<a href="{% url 'wsys:history' pk %}">{% bootstrap_button "History" %}</a>
+{% endif %}
+{% endblock %}

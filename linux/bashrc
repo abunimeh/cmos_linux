@@ -1,0 +1,21 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# PS1='[\u@\h: \W]\$ '
+PS1='[\u@\h: $(pwd)]\$ '
+export TERM=linux
+export EDITOR='emacsclient -c -a emacs'
+
+complete -cf sudo
+
+alias atu='echo "\033AnSiTu" $USER'
+alias ath='echo "\033AnSiTh" $HOST'
+alias atc='echo "\033AnSiTc" $PWD'
+alias ec='emacsclient -c -a emacs'
+alias ls='ls --color'
+alias ll='ls -al'
+alias grep='grep --color'

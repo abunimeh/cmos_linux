@@ -87,3 +87,19 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# LaTeX
+latex/**/*.aux
+latex/**/*.log
+latex/**/*.out
+latex/**/*.pdf
+latex/**/*.nav
+latex/**/*.snm
+latex/**/*.toc
+latex/**/*.vrb
+latex/**/*.bbl
+latex/**/*.blg
+latex/**/auto
+
+# Dia
+dia/*.dia~

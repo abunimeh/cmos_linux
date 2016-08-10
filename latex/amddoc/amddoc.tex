@@ -1,0 +1,76 @@
+% AMD document sample
+% Gary Yi
+% 
+
+\documentclass[11pt,twoside,letterpaper]{amddoc}
+\usepackage{epsfig,graphicx,wrapfig,amsmath,amssymb,xtab,longtable}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+\usepackage{hyperref} 
+\usepackage{enumitem}
+\usepackage[strings,nohyphen]{underscore}
+
+\hypersetup{colorlinks=true,%
+  breaklinks=true,%
+  linkcolor=black,%
+  pdfstartview=FitH}
+
+\title{Sample Document}
+\author{Gary Yi}
+\revision{0.1}
+% \date{\number\year-\number\month-\number\day}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\chapter{Open Issues}
+% Opens should be closed.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\mainmatter
+\chapter[Introduction]{Intro}
+This document class is derived from the standard book document class.  All features/options of the book document class should work normally.  To use the document class copy all associated files it into your \LaTeX  source directory or install it into your \emph{texmf} tree and run the command {\texttt texhash}.  The document class consists of the following files:
+
+\begin{description}
+\item[amddoc.cls]: The main document class file.
+\item[AMDh_P_bwp.eps]: The small black and white AMD logo in eps format.
+\item[AMDh_P_4cp.eps]: The large color AMD logo in eps format.
+\end{description}
+
+\section{How To Use the}
+Once all of the files are installed correctly simply specify \emph{amddoc} as the document class, for example:
+
+\begin{verbatim}
+\documentclass[11pt,twoside,letterpaper]{amddoc}
+\end{verbatim}
+
+One additional variable must be set, the document revision, for example:
+
+\begin{verbatim}
+\revision{ATI-REV-01}
+\end{verbatim}
+
+The date will default to the current date, it may be overridden with the {\texttt \\date} command.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\appendix
+% REFERENCES 
+% \bibliographystyle{ieee}
+% \bibliography{amddoc}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,18 @@
+JOB Introduction
+================
+
+Job definition in Wikipedia
+---------------------------
+A job is an activity, often regular, and often performed in exchange for payment. A person usually begins a job by becoming an employee, volunteering, or starting a business. The duration of a job may range from an hour (in the case of odd jobs) to a lifetime (in the case of some judges). The activity that requires a person's mental or physical effort is work (as in "a day's work"). If a person is trained for a certain type of job, they may have a profession. The series of jobs a person holds in their life is their career. [1]_
+
+Components of the job
+---------------------
+We can analyze the nature of the job like how a programming language parser does.
+
+From the common concept, a job is an activity basically. The process is to seek a position while the target is to gain the payment. The payment can be in various of forms, such as salaries, stocks in physical form and senses of accomplishment and honor in mental form, which is not the main content of this site since the target is automatically gained as the process going ahead. We are mainly focusing on the most important part of a job -- the process, and we wish to bring something new in our research.
+
+The new idea of employment relationship
+---------------------------------------
+Image you have graduated from a famous university like Stanford. Normally your next stage is to find a job in a famous company which can match your shining master diploma. Or to touch the fresh starting up business like a genius. Either process have the common part which is to exchange for payment justly. During those process, a point is ignored commonly, which is the freedom of employment relationship. Signing on the labor contract means you have been sold to the company for several years, the concept also works for the company. At the moment of signature, both you and company have lost the freedom as least for several years. Why cannot we take the employment relationship as easy as other relationship? Why cannot we choose the jobs as free as choosing goods in stores? Why cannot we have the right to pick up careers as we wish? Thinking of the software freedom movement, it is time for you and me to do actions now!
+
+.. [#] https://en.wikipedia.org/wiki/Job.

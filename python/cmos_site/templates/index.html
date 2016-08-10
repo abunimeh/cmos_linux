@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}
+INDEX
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+  <h2>For the Human Being Revolution</h2>
+  <p class="lead">This site targets at making human being revolution from the spirit mainly.</p>
+</div>
+<div class="row-fluid marketing">
+  <div class="span6">
+    <h4><a href="/wsys">{% bootstrap_button "Wiki System" size="lg" %}</a></h4>
+    <p>This app focuses on the common knowledge sharing, which is a simple wiki system of cmos_site basically.</p>
+  </div>
+  <div class="span6">
+    <h4><a href="/static/docs/_build/html/index.html">{% bootstrap_button "cmos site Document" size="lg" %}</a></h4>
+    <p>This app describes the spirits of this site in detail.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<hr>
+<div style="float:right;">
+  <img src="{% static 'images/django_80x15.png' %}">
+  <img src="{% static 'images/postgresql_80x15.png' %}">
+</div>
+<br>
+<img style="float:right;" src="{% static 'images/panda_smile.jpg' %}">
+{% endblock %}

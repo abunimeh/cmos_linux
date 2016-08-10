@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+wiki_system_read_page
+{% endblock %}
+
+{% block content %}
+{{ fd.content|safe }}
+<a href="{% url 'wsys:modi' pk %}">{% bootstrap_button "Modify" %}</a>
+<a href="{% url 'wsys:history' pk %}">{% bootstrap_button "History" %}</a>
+{% endblock %}

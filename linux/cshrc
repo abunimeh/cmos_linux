@@ -1,0 +1,17 @@
+set prompt = "[%n@%m: %~]$ "
+set history = 2000
+set savehist = (2000 merge)
+
+setenv EDITOR 'emacsclient -c -a emacs'
+
+umask 022
+
+xset -b
+
+alias atu 'echo "\033AnSiTu" $USER'
+alias ath 'echo "\033AnSiTh" $HOST'
+alias atc 'echo "\033AnSiTc" $PWD'
+alias ec 'emacsclient -c -a emacs'
+alias ls 'ls --color'
+alias ll 'ls -al'
+alias grep 'grep --color'

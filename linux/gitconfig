@@ -1,0 +1,10 @@
+[user]
+        name = cmos3511
+        email = gary3511@gmail.com
+[core]
+        editor = ec
+[color]
+        status = auto
+        branch = auto
+        interactive = auto
+        diff = auto

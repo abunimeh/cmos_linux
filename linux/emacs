@@ -1,0 +1,159 @@
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(TeX-view-program-selection
+   (quote
+    (((output-dvi style-pstricks)
+      "dvips and gv")
+     (output-dvi "xdvi")
+     (output-pdf "gv")
+     (output-html "xdg-open"))))
+ '(auto-image-file-mode t)
+ '(column-number-mode t)
+ '(desktop-save-mode t)
+ '(display-time-mode t)
+ '(doc-view-continuous t)
+ '(ido-mode t nil (ido))
+ '(inhibit-startup-screen t)
+ '(show-paren-mode t)
+ '(tool-bar-mode nil)
+ '(tramp-default-proxies-alist
+   (quote
+    (("cmos" nil "/ssh:cmos@138.128.210.28#27569:")
+     ("ff" nil "/ssh:firefly@115.28.56.168#22:")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; cmos_conf
+(setq-default indent-tabs-mode nil)
+(setq default-frame-alist '((height . 60) (width . 90) (font . "DejaVu Sans Mono-10")))
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(setq mouse-yank-at-point t)
+(setq scroll-margin 2 scroll-conservatively 10000)
+(setq mouse-wheel-scroll-amount '(3))
+(setq mouse-wheel-progressive-speed nil)
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq make-backup-files nil)
+(setq confirm-kill-emacs 'yes-or-no-p)
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "--simple-prompt")
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "DOING(i!)" "PENDING(p!)" "|" "DONE(d!)" "CANCELLED(c!)")))
+(setq org-use-sub-superscripts '{})
+(setq org-export-with-sub-superscripts '{})
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")))
+(setq gnus-select-method '(nntp "news.cn99.com"))
+(setq user-full-name "cmos")
+(setq user-mail-address "gary3511@gmail.com")
+
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (define-key dired-mode-map (kbd "^")
+              (lambda () (interactive) (find-alternate-file "..")))
+            ))
+(setq dired-recursive-copies (quote always))
+(setq dired-recursive-deletes (quote always))
+(setq dired-dwim-target t)
+(require 'dired-x)
+
+(defadvice
+    isearch-repeat-forward
+    (after isearch-repeat-forward-recenter activate)
+  (recenter))
+(ad-activate 'isearch-repeat-forward)
+(defadvice
+    isearch-repeat-backward
+    (after isearch-repeat-backward-recenter activate)
+  (recenter))
+(ad-activate 'isearch-repeat-backward)
+
+(add-hook 'shell-mode-hook
+          (lambda ()
+            (setq dirtrack-list '(": \\(.*?\\)[]${]" 1))
+            (shell-dirtrack-mode nil)
+            (dirtrack-mode t)))
+
+(defun my-comint-init ()
+  (setq comint-process-echoes t))
+(add-hook 'comint-mode-hook 'my-comint-init)
+
+(setq ibuffer-saved-filter-groups
+      (quote (("emacs"
+               ;; ("emacs_conf" (or (filename . ".emacs.d")
+               ;;                   (filename . "emacs-config")))
+               ;; ("Org" (or (mode . org-mode)
+               ;;            (filename . "OrgMode")))
+               ;; ("Subversion" (name . "\*svn"))
+               ("shell" (mode . shell-mode))
+               ("term" (mode . term-mode))
+               ("dired" (mode . dired-mode))
+               ("org" (mode . org-mode))
+               ;; ("cmos_site" (filename . "/cmos_site/"))
+               ;; ("dce9" (filename . "dce9"))
+               ))))
+(add-hook 'ibuffer-mode-hook
+	  (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "emacs")))
+(setq ibuffer-show-empty-filter-groups nil)
+(setq ibuffer-default-sorting-mode 'filename/process)
+
+;; cmos_function
+(defun print-to-pdf ()
+  (interactive)
+  (ps-spool-buffer-with-faces)
+  (switch-to-buffer "*PostScript*")
+  (write-file "/tmp/tmp.ps")
+  (kill-buffer "tmp.ps")
+  (setq cmd (concat "ps2pdf /tmp/tmp.ps " (buffer-name) ".pdf"))
+  (shell-command cmd)
+  (shell-command "rm /tmp/tmp.ps")
+  (message (concat "Saved to: " (buffer-name) ".pdf")))
+
+;; cmos_keyboard_shortcut
+(global-set-key (kbd "C-c c") 'set-mark-command)
+(global-set-key (kbd "C-c d") 'delete-region)
+(global-set-key (kbd "C-c r") 'shell-resync-dirs)
+(global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(global-set-key (kbd "<f6>") 'rename-uniquely)
+(global-set-key (kbd "<f7>") 'shell)
+(global-set-key (kbd "S-<f7>") 'ansi-term)
+(global-set-key (kbd "<f8>") 'flyspell-mode)
+
+;; emacs_server
+(server-start)
+
+;; cmos_auto
+;;--------------------------------------------------------------------
+;; Lines enabling gnuplot-mode
+
+;; move the files gnuplot.el to someplace in your lisp load-path or
+;; use a line like
+;;  (setq load-path (append (list "/path/to/gnuplot") load-path))
+
+;; these lines enable the use of gnuplot mode
+(autoload 'gnuplot-mode "gnuplot" "gnuplot major mode" t)
+(autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot mode" t)
+
+;; this line automatically causes all files with the .gp extension to
+;; be loaded into gnuplot mode
+(setq auto-mode-alist (append '(("\\.gp$" . gnuplot-mode)) auto-mode-alist))
+
+;; This line binds the function-9 key so that it opens a buffer into
+;; gnuplot mode
+(global-set-key [(f9)] 'gnuplot-make-buffer)
+
+;; end of line for gnuplot-mode
+;;--------------------------------------------------------------------
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)

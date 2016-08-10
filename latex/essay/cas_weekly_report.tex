@@ -1,0 +1,115 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Simple Sectioned Essay Template
+% LaTeX Template
+% 
+% This template has been downloaded from:
+% http://www.latextemplates.com
+% 
+% Note:
+% The \lipsum[#] commands throughout this template generate dummy text
+% to fill the template out. These commands should all be removed when 
+% writing essay content.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% ----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+% ----------------------------------------------------------------------------------------
+\documentclass[10pt]{article} % Default font size is 12pt, it can be changed here
+\usepackage[margin=1cm]{geometry} % Required to change the page size to A4
+\geometry{a4paper} % Set the page size to be A4 as opposed to the default US Letter
+\usepackage{graphicx} % Required for including pictures
+\usepackage{float} % Allows putting an [H] in \begin{figure} to specify the exact location of the figure
+\usepackage{wrapfig} % Allows in-line images such as the example fish picture
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{xeCJK}
+\setCJKmainfont{SourceHanSansCN-Regular}
+\linespread{1.2} % Line spacing
+% \setlength\parindent{0pt} % Uncomment to remove all indentation from paragraphs
+\graphicspath{{images/}} % Specifies the directory where pictures are stored
+\begin{document}
+
+% ----------------------------------------------------------------------------------------
+%	SECTIONS
+% ----------------------------------------------------------------------------------------
+
+\section{一句话总结} % Major section
+% Example citation \cite{Figueredo:2009dg}.
+% \begin{figure}[H] % Example image
+%   \center{\includegraphics[width=0.5\linewidth]{placeholder}}
+%   \caption{Example image.}
+%   \label{fig:speciation}
+% \end{figure}
+验证平台组： 验证平台组
+
+\section{研究部建设／能力提升重点进展} % Major section
+\subsection{本月计划／重点任务完成情况} % Sub-section
+\begin{table}[H]
+  % \caption{monthly table}
+  \centering
+  \begin{tabular}{p{0.5cm}|p{3cm}|p{2cm}|p{2cm}|p{2cm}|p{6cm}}
+    \toprule
+    序号 & 主要计划任务 & 本月任务截至本周完成百分比 & 本月任务计划工作量（人时） & 本月任务截至本周实际工作量（人时） & 完成情况 \\
+    \midrule
+    1 & 验证平台组 & 验证平台组 & 验证平台组 & 验证平台组 & 验证平台组 \\
+    \hline
+    2 & 验证平台组 & 验证平台组 & 验证平台组 & 验证平台组 & 验证平台组 \\
+    \hline
+    3 & 验证平台组 & 验证平台组 & 验证平台组 & 验证平台组 & 验证平台组 \\
+    \bottomrule
+  \end{tabular}
+  % \label{table: monthly table}
+\end{table}
+\subsection{其他问题和建议}
+\begin{itemize}[noitemsep]
+\item 验证平台组
+\item 验证平台组
+\end{itemize}
+\section{本周计划/重点任务完成情况} % Major section
+\begin{table}[H]
+  % \caption{weekly table}
+  \centering
+  \begin{tabular}{m{2cm}|m{3cm}|m{5cm}|m{3cm}|m{3cm}}
+    \toprule
+    研究组/任务组 & 本周计划 & 本周进展 & 下周计划 & 产出成果 \\
+    \midrule
+    验证平台组 & \begin{enumerate}[leftmargin=0.4cm, noitemsep]
+    \item 验证平台组
+    \item 验证平台组
+    \end{enumerate} & \begin{enumerate}[leftmargin=0.4cm, noitemsep]
+    \item 验证平台组
+    \item 验证平台组
+    \item 验证平台组
+    \end{enumerate} & \begin{enumerate}[leftmargin=0.4cm, noitemsep]
+    \item 验证平台组
+    \item 验证平台组
+    \item 验证平台组
+    \end{enumerate} & \begin{enumerate}[leftmargin=0.4cm, noitemsep]
+    \item 验证平台组
+    \item 验证平台组
+    \end{enumerate} \\
+    \bottomrule
+  \end{tabular}
+  % \label{table: weekly table}
+\end{table}
+
+% ----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+% ----------------------------------------------------------------------------------------
+
+% \begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
+% \bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
+%   Figueredo, A.~J. and Wolf, P. S.~A. (2009).
+%   \newblock Assortative pairing and life history strategy - a cross-cultural
+%   study.
+%   \newblock {\em Human Nature}, 20:317--330.
+% \end{thebibliography}
+
+% ----------------------------------------------------------------------------------------
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-engine: xetex
+%%% End:

@@ -1,0 +1,148 @@
+%% start of file `template-zh.tex'.
+%% Copyright 2006-2012 Xavier Danaux (xdanaux@gmail.com).
+% 
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License version 1.3c,
+% available at http://www.latex-project.org/lppl/.
+
+
+\documentclass[11pt,a4paper,sans]{moderncv}   % possible options include font size ('10pt', '11pt' and '12pt'), paper size ('a4paper', 'letterpaper', 'a5paper', 'legalpaper', 'executivepaper' and 'landscape') and font family ('sans' and 'roman')
+
+% moderncv 主题
+\moderncvstyle{classic}                        % 选项参数是 ‘casual’, ‘classic’, ‘oldstyle’ 和 ’banking’
+\moderncvcolor{blue}                          % 选项参数是 ‘blue’ (默认)、‘orange’、‘green’、‘red’、‘purple’ 和 ‘grey’
+% \nopagenumbers{}                             % 消除注释以取消自动页码生成功能
+
+% 字符编码
+\usepackage[utf8]{inputenc}                   % 替换你正在使用的编码
+\usepackage{CJKutf8}
+
+% 调整页面出血
+\usepackage[scale=0.89]{geometry}
+% \setlength{\hintscolumnwidth}{3cm}           % 如果你希望改变日期栏的宽度
+
+% 个人信息
+\firstname{衣冠宇}
+\familyname{}
+\title{简历}                      % 可选项、如不需要可删除本行
+\address{浦东新区青桐路408弄2号801室}{中国 上海 201203}             % 可选项、如不需要可删除本行
+\mobile{+86 189 1877 8608}                         % 可选项、如不需要可删除本行
+% \phone{+2~(345)~678~901}                          % 可选项、如不需要可删除本行
+% \fax{+3~(456)~789~012}                            % 可选项、如不需要可删除本行
+\email{gary3511@gmail.com}                    % 可选项、如不需要可删除本行
+% \homepage{www.xialongli.com}                  % 可选项、如不需要可删除本行
+% \extrainfo{附加信息 (可选项)}                  % 可选项、如不需要可删除本行
+% \photo[64pt][0.4pt]{picture}                  % ‘64pt’是图片必须压缩至的高度、‘0.4pt‘是图片边框的宽度 (如不需要可调节至0pt)、’picture‘ 是图片文件的名字;可选项、如不需要可删除本行
+% \quote{引言(可选项)}                           % 可选项、如不需要可删除本行
+
+% 显示索引号;仅用于在简历中使用了引言
+% \makeatletter
+% \renewcommand*{\bibliographyitemlabel}{\@biblabel{\arabic{enumiv}}}
+% \makeatother
+
+% 分类索引
+% \usepackage{multibib}
+% \newcites{book,misc}{{Books},{Others}}
+% ----------------------------------------------------------------------------------
+% 内容
+% ----------------------------------------------------------------------------------
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}                       % 详情参阅CJK文件包
+  \maketitle
+
+  \section{教育背景}
+  \cventry{2009 -- 2011}{微电子学 硕士}{代尔夫特理工大学(TUDelft)}{荷兰}{}{}  % 第3到第6编码可留白
+  \cventry{2005 -- 2009}{电子信息科学与工程 学士}{南京大学(NJU)}{中国}{}{}
+
+  \section{发表论文}
+  \cvitem{题目}{\emph{\textbf{Compilation and Elaboration Speeding Up and Space Saving by Pre-Compilation, MSIE and Parallel Processing Technology}}}
+  \cvitem{作者}{Guanyu Yi; Rosemary Hu; Gary Gao; etc.}
+  \cvitem{会议}{2015年8月13日在中国上海由Cadence主办的用户大会(CDNLive)}
+  \vspace{2mm}
+  \cvitem{题目}{\emph{\textbf{Towards a real-time high-definition depth sensor with hardware-efficient stereo matching}}}
+  \cvitem{作者}{Ke Zhang; Guanyu Yi; C.-K. Liao; etc.}
+  \cvitem{会议}{2012年2月6日在美国加州圣地亚哥的国际光学工程学会会议(SPIE)}
+  \vspace{2 mm}
+  \cvitem{题目}{\emph{\textbf{Demo: Real-time depth extraction and viewpoint interpolation on FPGA}}}
+  \cvitem{作者}{Guanyu Yi; Hsiu-Chi Yeh; Vanmeerbeeck, G.; etc.}
+  \cvitem{会议}{2011年8月22日在比利时根特的由ACM和IEEE联合主办的国际分布式智能相机会议(ICDSC)}
+
+  \section{工作背景}
+  \cventry{2014/07 -- \hspace{1em}现在}{ASIC验证工程师}{展讯通信}{中国 上海}{}{负责验证流程与工具设计开发及SoC层级模块验证
+    \begin{itemize}
+    \item 利用python、Django、PostgreSQL、Nginx等在公司内网设计并开发一套并发回归系统(第一届即时奖)
+    \item 利用同样的架构开发一套在线文档管理系统
+    \item 利用python开发仿真流程和工具
+    \item SoC层级模块验证，reset、watch dog等
+    \end{itemize}}
+  \vspace{2mm}
+  \cventry{2011/08 -- 2014/07}{ASIC验证工程师}{超威半导体(AMD)}{中国 上海}{}{在多媒体部门显示控制组负责ASIC设计验证工作 % \newline{}%
+    \begin{itemize}
+    \item 日常工作包括改善验证方法、开发测试计划、开发和调试验证案例、增强验证平台和总线功能模型、覆盖率报告分析、形式化验证、改进验证流程、大规模文件综合以及回归系统构建
+    \item SoC层级模块验证，PHY、display PLL等
+    \item IP层级模块验证，debug bus、performance counter、light sleep等
+    \item 利用tcsh和Ruby将悬挂信号检测流程从IP环境移植到SoC环境
+    \item 利用python和Ruby实现DUT的IP和SoC之间逻辑等价检验的形式化验证流程
+    \end{itemize}}
+  \vspace{2mm}
+  \cventry{2010/08 -- 2011/08}{FPGA设计工程师}{微电子研究中心(imec)}{比利时 鲁汶}{}{独立应用动态规划算法使用ModelSim、Quartus II、Synplify以及逻辑分析仪在Altera Stratix III FPGA上设计并实现一个完整的立体图像匹配系统,可实现实时高清立体匹配(1920x1080@60fps)
+    \begin{itemize}
+    \item 应用动态规划算法在FPGA上实现一个立体图像匹配系统
+    \item 硬件实现设计技巧包括并行设计、流水线设计、循环拆分、行像素缓存控制以及异步FIFO
+    \end{itemize}}
+
+  % \section{语言技能}
+  % \cvitemwithcomment{汉语}{母语}{}
+  % \cvitemwithcomment{英语}{精通}{}
+
+  \section{主要技能}
+  \cvitem{}{\textbf{硬件描述语言:} VHDL, Verilog, SystemVerilog}
+  \cvitem{}{\textbf{编程语言:} Python, Linux Shell, C/C++, Perl}
+  \cvitem{}{\textbf{网络开发:} Django, PostgreSQL, Nginx}
+
+  % \cvdoubleitem{类别 1}{XXX, YYY, ZZZ}{类别 4}{XXX, YYY, ZZZ}
+  % \cvdoubleitem{类别 2}{XXX, YYY, ZZZ}{类别 5}{XXX, YYY, ZZZ}
+  % \cvdoubleitem{类别 3}{XXX, YYY, ZZZ}{类别 6}{XXX, YYY, ZZZ}
+
+  % \section{个人兴趣}
+  % \cvitem{爱好 1}{\small 说明}
+  % \cvitem{爱好 2}{\small 说明}
+  % \cvitem{爱好 3}{\small 说明}
+
+  % \section{其他 1}
+  % \cvlistitem{项目 1}
+  % \cvlistitem{项目 2}
+  % \cvlistitem{项目 3}
+
+  % \renewcommand{\listitemsymbol}{-}             % 改变列表符号
+
+  % \section{其他 2}
+  % \cvlistdoubleitem{项目 1}{项目 4}
+  % \cvlistdoubleitem{项目 2}{项目 5\cite{book1}}
+  % \cvlistdoubleitem{项目 3}{}
+  % \section{个人兴趣}
+
+  % 来自BibTeX文件但不使用multibib包的出版物
+  % \renewcommand*{\bibliographyitemlabel}{\@biblabel{\arabic{enumiv}}}% BibTeX的数字标签
+  % \nocite{*}
+  % \bibliographystyle{plain}
+  % \bibliography{publications}                    % 'publications' 是BibTeX文件的文件名
+
+  % 来自BibTeX文件并使用multibib包的出版物
+  % \section{出版物}
+  % \nocitebook{book1,book2}
+  % \bibliographystylebook{plain}
+  % \bibliographybook{publications}               % 'publications' 是BibTeX文件的文件名
+  % \nocitemisc{misc1,misc2,misc3}
+  % \bibliographystylemisc{plain}
+  % \bibliographymisc{publications}               % 'publications' 是BibTeX文件的文件名
+
+  \clearpage\end{CJK}
+\end{document}
+
+
+%% 文件结尾 `template-zh.tex'.
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "guanyu_cn"
+%%% End:

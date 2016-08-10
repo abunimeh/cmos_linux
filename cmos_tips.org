@@ -1,0 +1,447 @@
+* moto
+simple
+
+* syntax
+5 kyes: print, +, =, if, for
+
+* rules
+high cohesion, loose coupling
+pcom as python fastest common functions and classes set file
+using cfg files as much as possible
+using proj.cfg to bootenv
+class is Noun, function is verb_noun, variable is name_type
+
+* pkg list
+** linux
+linux, linux-headers, base-devel, grub, memtest86+, xterm, pacman, ntp, gparted, gcc, gdb, ddd, strace, nvidia, opencl, gtk, qt, clisp, python, perl, tcl, tk, git, subversion, openjdk, icedtea-web, ttf-dejavu, chromium, chromium-pepper-flash, rsync, transmission, wget, gftp, p7zip, unrar, mksh, tcsh, gvim, emacs, texlive-most, texlive-langcjk, imagemagick, gimp, dia, inkscape, blender, recordmydesktop, gv, xchm, calc, gnuplot, graphviz, cups-pdf, mplayer, smplayer, gstreamer, portmidi, x264, cinelerra-cv, ffmpeg, bchunk, flac, subtitleeditor, audacity, aspell-en, hunspell-en, tigervnc, freerdp, vpnc, openconnect, openvpn, pptpclient, celestia, nethack, gnugo, qgo, sudo, acpi, fuse, puddletag, pm-utils, libreoffice, nginx, uwsgi, postgresql, mariadb, libdvdread, libdvdcss, libdvdnav, networkmanager, gnome, dosfstools, curl, blas, lapack, shotwell, openssh, xorg-server, pyqt, xf86-input-libinput
+** chinese and ibus
+ttf-arphic, unifont, adobe-source-han-sans-cn-fonts
+ibus, ibus-sunpinyin
+** python
+beautifulsoup4, diff-match-patch, Django, djangorestframework, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, sympy, wheel, xlrd, xlutils, xlwt
+** emacs
+ascii-art-to-unicode, auctex, gnugo, paredit
+** web static
+bootstrap3, DataTables
+** local linux
+gcc, autoconf, automake, blas, emacs, firefox, flex, freetype, gperf, help2man, jpegsrc, lapack, libtirpc, libtool, libxml2, libxslt, lsof, m4, nginx, perl, postgresql, python, tar, tcl, tk, texinfo, xz
+
+* tools
+** wiki
+django wiki, trac
+** bugtracker
+trac
+** document generator
+sphinx
+
+* emacs
+** setenv
+~/.emacs: (setenv "LD_LIBRARY_PATH" (concat "/usr/local/lib:/usr/lib:" (getenv "LD_LIBRARY_PATH")))
+** find
+find-dired: general command
+find-name-dired: guide command of find-dired
+find-grep: general command with grep
+find-grep-dired: guide command of find-grep
+** grep
+grep: general command
+lgrep: guide command of grep in current directory
+rgrep: guide command of grep in current tree
+zrgrep/rzgrep: guide command of grep in current tree including zipped files
+grep-find: general command with find
+** remote files (tramp)
+C-x C-f <cmd> RET
+/sudo::<file>
+/su::<file>
+/sudo:<emacs_proxy>:<file>
+/su:<emacs_proxy>:<file>
+/<host>:<file>
+/<user>@<host>:<file>
+/<user>@<host>#<port>:<file>
+/<method>:<user>@<host>:<file>
+/<method>:<user>@<host>#<port>:<file>
+M-x shell in tramp
+methods include ftp, ssh, rlogin, telnet
+
+* python
+python -m compileall <file/dir>
+
+python setup.py install --prefix=<local_dir>
+pip install --install-option="--prefix=<local_dir>" --no-index --find-links <tar_dir> <pkg_or_tar>
+
+os.makedirs(<dir>, exist_ok=True)
+shutil.rmtree(<dir>, ignore_errors=True)
+pool.starmap_async(<func>, zip(<iter>), itertools.repeat(<flg>))
+any(<iter>)
+<dic>.get(<key>, <default_value>)
+subprocess.run(<sys_cmd>, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE, check=True).stdout.decode('utf-8').strip()
+
+with psycopg2.connect(None, '<database>', '<user>', '<passwd>', '<host>', '<port>') as conn:
+    with conn.cursor() as c:
+        c.execute(<SQL>)
+
+conn = psycopg2.connect(None, '<database>', '<user>', '<passwd>', '<host>', '<port>')
+c = conn.cursor()
+c.execute(<SQL>)
+conn.commit()
+c.close()
+conn.close()
+
+with open(<file>, 'r+') as f:
+     f_cont = f.read()
+     f.seek(0)
+     f.truncate()
+     f.write(<new_cont>)
+
+start_time = timeit.default_timer()
+<statements>
+end_time = timeit.default_timer()
+print(end_time-start_time)
+
+* perl
+perl Makefile.PL PREFIX=<local_dir>
+make
+make install
+
+* git
+git pull origin
+git push origin master
+git status
+git remote show origin
+
+* cleartool
+cleartool ci \!:1 \!:2 `cleartool lsco -cview -me -short -r`
+cleartool find . -type f -branch "brtype(<branch>)" -print
+cleartool find \!:1 -version 'version(<version>) &&! lbtype(\!:2)' -print
+
+* firefox
+~/.mozilla/firefox/defaults/profile/user.js:
+    user_pref("capability.policy.policynames", "localfilelinks");
+    user_pref("capability.policy.localfilelinks.sites", "<site1_url> <site2_url>");
+    user_pref("capability.policy.localfilelinks.checkloaduri.enabled", "allAccess");
+    user_pref("browser.backspace_action", 0);
+    user_pref("browser.startup.homepage", "<home_url>")
+
+* rsync
+rsync -avh --delete </src_dir/> </tar_dir/>
+
+* pacman
+pacman -Syu
+pacman -Scc
+pacman -Qm
+pacman -Qdt
+
+* aptitude
+deborphan
+aptitude purge <pkg>
+aptitude autoclean
+aptitude search '~i'
+
+* yum
+package-cleanup --quiet --leaves
+/etc/yum.conf: clean_requirements_on_remove=1
+yum remove <pkg>
+yum list installed
+
+* systemctl
+systemctl list-units
+systemctl enable/disable <service>
+systemctl start/stop/restart <service>
+
+* grub
+/etc/default/grub: GRUB_GFXMODE=1920x1080
+grub-mkconfig -o /boot/grub/grub.cfg
+
+* standard help
+/usr/lib /lib link problems
+man <prog>
+<prog> -h/--help
+
+* local installation
+.a: ./configure --prefix=<local_dir>
+.so: ./configure --enable-shared --prefix=<local_dir> --with-gcc=/usr/bin/gcc44
+make
+make test
+make install
+
+* smb
+smb://<ip_addr>
+
+* locale
+en_US.UTF-8
+(rpm) /etc/sysconfig/i18n
+(rpm) /etc/environment
+
+* login shell
+chsh -s <shell> <user>
+
+* integrity check
+pwck
+grpck
+
+* nvidia X11
+nvidia-xconfig
+/etc/X11/xorg.conf
+
+* latex cjk
+** encapsulated
+\usepackage[encapsulated]{CJK}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+% use one of bsmi(trad Chinese), gbsn(simp Chinese), min(Japanese), mj(Korean); see:
+% /usr/share/texmf-dist/tex/latex/cjk/texinput/UTF8/*.fd
+\newcommand{\cntext}[1]{\begin{CJK}{UTF8}{gbsn}#1\end{CJK}}
+\cntext{你好，\LaTeX}
+** directed
+\documentclass[12pt, cjk]{beamer}
+\usepackage[encapsulated]{CJK}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+你好，\LaTeX
+\end{CJK}
+\end{document}
+
+* xetex
+** xecjk
+\usepackage{xeCJK}
+\setCJKmainfont{SourceHanSansCN-Regular}
+\begin{document}
+你好，\XeTeX
+\end{document}
+
+* texlive package files update
+mktexlsr
+
+* editor coding system
+** for emacs
+revert-buffer-with-coding-system
+** for vim
+set fileencodings=utf-8,gb18030
+
+* xfreerdp
+xfreerdp -g 1920x960 --ignore-certificate -u <user> -p <passwd> --plugin rdpsnd <host>
+
+* cinelerra
+/etc/sysctl.conf: kernel.shmmax = 0x7fffffff
+sysctl -p
+
+* media format conversion
+** lame
+lame is used to convert mp3 vbr to cbr (Audacity for advanced conversion)
+** wma2mp3
+for i in *.wma;
+do mplayer -vo null -vc dummy -af resample=44100 -ao pcm:waveheader "$i" && lame -m j -h --vbr-new -b 192 audiodump.wav -o "`basename "$i" .wma`.mp3";
+done;
+rm -f audiodump.wav
+** mp32wma
+pacpl -t mp3 --bitrate 320 -o wma -r <src_dir>
+** 2mp4
+ffmpeg -i <wmv_file> -r 60 -b:a 192k -b:v 2000k <mp4_file>
+ffmpeg -i <mov_file> -r 60 -ar 44100 -b:a 192k -b:v 2000k <mp4_file>
+** ape&cue2flac
+ffmpeg -i <ape_file> <wav_file>
+bchunk -w <wav_file> <cue_file> <new_file_prefix>
+flac --best <new_file_prefix>*
+** standard sample rates
+192 224 256 320
+
+* X11 resources
+xrdb ~/.Xresources
+
+* files leaving
+shopt -s extglob
+rm !(<file1>|<dir1>|<file2>)
+
+* gmail
+imap.googlemail.com:993
+smtp.googlemail.com:465/587
+
+* iptables
+-A INPUT -m state --state NEW -m tcp -p tcp -dport 5900:5999 -j ACCEPT
+
+* postgreSQL
+** cmds
+pg_ctl init -D pg_data -o '-E UTF8 --lc-collate en_US.UTF-8 --lc-ctype en_US.UTF-8 -U admin -W'
+pg_ctl start/stop/restart -D pg_data/
+psql postgres -h <host> -p <port> -U <user>
+create user <user> with password '<passwd>';
+create database <db> owner <user>;
+grant all privileges on database <db> to <user>;
+\l
+\d
+\q
+pg_dumpall -U admin -p <port> > <db_dump>
+** cfg
+pg_data/pg_hba.conf:
+    local all all md5
+    host all all 0.0.0.0/0 md5
+    host all all ::/0 md5
+pg_data/postgresql.conf:
+    listen_addresses = '*'
+    post = 5432
+    max_connections = 200
+
+* MySQL
+** index
+db dir: /var/lib/mysql
+cfg dir: /usr/share/mysql (mysql.server)
+glb cfg dir: /etc/mysql
+script: /etc/init.d/mysql
+** cmds
+mysql <db> -h <host> -P <port> -u <user> -p
+insert into mysql.user(Host,User,Password) values("localhost","<user>",password("<passwd>"));
+create database <db>;
+grant all privileges on <db>.* to <user>@localhost identified by "<passwd>";
+flush privileges;
+insert into mysql.user(Host,User,Password) values("%","<user>",password("<passwd>"));
+grant all privileges on <db>.* to <user>@"%" identified by "<passwd>";
+flush privileges;
+revoke all privileges on <db>.* from <user>@"%" identified by "<passwd>";
+flush privileges;
+show grants for <user>@localhost;
+mysqladmin -u root -p password <new_passwd>
+
+* svn
+svnadmin create /svn/<proj_dir>
+/svn/<proj_dir>/conf/svnserve.conf
+/svn/<proj_dir>/conf/passwd
+/svn/<proj_dir>/conf/authz
+svnserve -d -r /svn/<proj_dir>
+port:3690
+svn co svn://<ip>
+svn pe svn:ignore <path>
+svn resolve --accept working -R <path>
+svn pg -R svn:ignore <path>
+svn pg -R svn:global-ignores <path>
+
+* uwsgi
+uwsgi --ini sprd_site_uwsgi.ini --pidfile=uwsgi.pid &
+uwsgi --stop uwsgi.pid
+uwsgi --reload uwsgi.pid
+
+* nginx
+nginx -t
+/etc/nginx/nginx.conf
+nginx
+nginx -s stop
+nginx -s reload
+
+* tomcat
+tomcat8 home dir: /usr/share/tomcat8
+/usr/share/tomcat8/conf/tomcat-users.xml:
+    <role rolename="tomcat"/>
+    <role rolename="manager-script"/>
+    <role rolename="manager-gui"/>
+    <user password="tomcat" roles="tomcat, manager-script, manager-gui,admin" username="tomcat"/>
+
+* sshd
+/etc/ssh/sshd_config
+(rpm) service sshd start/stop/restart
+
+* vncserver
+(rpm) /etc/sysconfig/vncservers
+vncpasswd
+(rpm) service vncserver start/stop/restart
+chkconfig vncserver on
+(rpm) /etc/sysconfig/iptables
+(rpm) service iptables restart
+
+* django
+** settings
+uwsgi_params
+<proj>_nginx.conf
+ln -s <proj_nginx_conf_path>/<proj>_nginx.conf /etc/nginx/conf.d/
+<proj>_uwsgi.ini
+<proj>/settings.py
+manage.py createsuperuser
+manage.py makemigrations
+manage.py migrate
+manage.py collectstatic
+** django-bootstrap3
+'javascript_in_head': True,
+
+* irun
+** pcom
+-work <lib_name>
+cds.lib:
+    INCLUDE <cds_lib>
+    DEFINE <lib_name> <lib_dir>
+** compilation and elaboration options
+irun -c -64bit -licqueue -status -status3 -ALLOWREDEFINITION -nowarn WARIPR -nowarn CUVWSP -nowarn CSINFI -nowarn NOCMIC -nowarn ILLORD -nowarn CUFEPC -nowarn CUDEFB -nowarn ZROMCW -nowarn MEMODR -timescale '1ns/1ps' -vlogext vh -vlogext hv -vlogext fv -nospecify -ntcnotchks -nclibdirpath <nc_lib_dir> -access +r -top <top_hier> -f <verilog_lst> -makelib <vhdl_lib> -lexpragma -ignore_extrachar -nowarn IGXCHAR -nowarn INVPRG -nowarn -V93 -f <vhdl_lst> -endlib -l <com_log>
+** simulation options
+irun -R -64bit -input <sim_tcl> -uselic IES:IESXL -licqueue -nclibdirpath <nc_lib_dir> -l <sim_log>
+** coverage elaboration options
+-covfile <cov_filter> -covoverwrite
+** coverage simulation options
+-covfile <cov_filter> -covtest <cov_name> -covoverwrite -covworkdir <cov_work_dir>
+** imc options
+imc -64bit -exec <imc_tcl>
+imc -64bit -gui -init <imc_tcl>
+** tcl options
+logfile -overwrite <tcl_log>; run;
+load -run <cov_dir>;
+load -refinement <vRefine1>; load -refinement <vRefine2>;
+merge_config -source <dut_hier> -target <dut_hier>
+merge -overwrite -runfile <merge_lst> -out <cov_dir>;
+merge -overwrite <cov_dir1> <cov_dir2> -out <merge_dir>;
+report -overwrite -detail -html -out <rpt_dir> -inst <rpt_hier>... -grading covered
+report -metrics toggle -uncovered -detail -text -out <rpt_txt> -inst <rpt_hier>... -grading covered
+merge_lst:
+    <case1_dir>/case1/cov_work/scope/*
+    <case2_dir>/case2/cov_work/scope/*
+
+* vcs
+** pcom
+-work <lib_name>
+synopsys_sim.setup:
+    WORK > DEFAULT
+    DEFAULT: <lib_dir>
+    <lib_name>: <lib_dir>
+** compilation options
+vlogan -full64 -sverilog -assert svaext -timescale=1ns/1ps -error=noMPD +warn=noUIWN +warn=noSV-LCM-PPWI +warn=noPHNE +v2k +verilog1995ext+v95 +verilog2001ext+v +verilog2001ext+vh +verilog2001ext+hv +verilog2001ext+fv +verilog2001ext+vams +nospecify +notimingcheck -f <verilog_lst> -l <vlogan_log>
+vhdlan -full64 -skip_translate_body -f <vhdl_lst> -l <vhdlan_log>
+vlogan -full64 -sverilog -ntb_opts uvm-1.1 +define+UVM_REG_DATA_WIDTH=32 +define+UVM_REG_ADDR_WIDTH +define+UVM_PACKER_MAX_BYTES=1500000 -l <uvm_log>
+** elaboration options
+vcs -full64 -sverilog -lca +vcs+lic+wait +error+999 +warn=noTFIPC +warn=noSV-SELS +warn=noSVA-LDRF +warn=noVCM-NOCOV-ENC +warn=noVCM-HFUFR +warn=noVCS-NODRCO +nospecify +lint=PCWM -top <top_hier> -debug_region=cell -debug_access+r -o <sim_obj> -l <elab_log>
+** simulation options
+empty_sim -assert nopostproc -l <sim_log>
+** coverage elaboration options
+-cm_constfile <const_lst>
+-cm_hier <cov_filter>
+-cm line+cond+fsm+tgl+branch
+-cm_line contassign -cm_noconst -cm_seqnoconst
+-cm_tgl portsonly
+-cm_libs celldefine
+-power=coverage+cov_pst_transition+dump_hvp
+** coverage simulation options
+-cm_name <cov_name>
+-cm line+cond+fsm+tgl+branch
+** urg options
+urg -full64 -f <merge_lst> -dbname <cov_dir> -noreport
+urg -full64 -dir <cov1_dir> -dir <dvo2_dir> -dbname <merge_dir> -noreport
+urg -full64 -elfile <el1_file> -elfile <el2_file>
+merge_lst:
+    <case1_dir>/case1.vdb
+    <case2_dir>/case2.vdb
+** tcl options
+run
+** coverage gui options
+verdi -cov -elfile <el1_file> -elfile <el2_file> -covdir <vdb_dir>
+** caution
+vhdl entity not supported in <cov_filter>
+
+* verdi
+** pcom
+-lib <lib_name>
+novas_rc:
+    [Library]
+    <lib_name> = <lib_dir>
+-L <lib_name>
+** compilation options
+vhdlcom -93 -sup_sem_error -smartorder -f <vhdl_lst>
+vericom -sv +systemverilogext+sv +v95ext+v95 +verilog2001ext+v -ignorekwd_config -f <verilog_lst>
+** run options
+verdi -undockWin -nologo
+** nWave options
+nWave -ssf <fsdb> -sswr <novas_rc>

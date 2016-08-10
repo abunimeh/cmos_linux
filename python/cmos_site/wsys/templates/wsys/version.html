@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+wiki_system_version_page
+{% endblock %}
+
+{% block content %}
+<p>Access Time: {{ ver.pub_date|date:"Y-m-d H:i:s" }}</p>
+<p>Category: {{ ver.category }}</p>
+<p>Headline: {{ ver.headline }}</p>
+<p>Author: {{ ver.reporter }}</p>
+<p>Reviser: {{ ver.reviser }}</p>
+<hr>
+<p>Content: {{ ver.content|safe }}</p>
+{% endblock %}

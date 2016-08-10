@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+wiki_system_diff_page
+{% endblock %}
+
+{% block content %}
+<h2>DIFF:</h2>
+{{ diff|safe }}
+{% endblock %}
