@@ -367,7 +367,7 @@ manage.py collectstatic
 cds.lib:
     INCLUDE <cds_lib>
     DEFINE <lib_name> <lib_dir>
-** compilation and elaboration options
+** analysis and elaboration options
 irun -c -64bit -licqueue -status -status3 -ALLOWREDEFINITION -nowarn WARIPR -nowarn CUVWSP -nowarn CSINFI -nowarn NOCMIC -nowarn ILLORD -nowarn CUFEPC -nowarn CUDEFB -nowarn ZROMCW -nowarn MEMODR -timescale '1ns/1ps' -vlogext vh -vlogext hv -vlogext fv -nospecify -ntcnotchks -nclibdirpath <nc_lib_dir> -access +r -top <top_hier> -f <verilog_lst> -makelib <vhdl_lib> -lexpragma -ignore_extrachar -nowarn IGXCHAR -nowarn INVPRG -nowarn -V93 -f <vhdl_lst> -endlib -l <com_log>
 ** simulation options
 irun -R -64bit -input <sim_tcl> -uselic IES:IESXL -licqueue -nclibdirpath <nc_lib_dir> -l <sim_log>
@@ -398,7 +398,7 @@ synopsys_sim.setup:
     WORK > DEFAULT
     DEFAULT: <lib_dir>
     <lib_name>: <lib_dir>
-** compilation options
+** analysis options
 vlogan -full64 -sverilog -assert svaext -timescale=1ns/1ps -error=noMPD +warn=noUIWN +warn=noSV-LCM-PPWI +warn=noPHNE +v2k +verilog1995ext+v95 +verilog2001ext+v +verilog2001ext+vh +verilog2001ext+hv +verilog2001ext+fv +verilog2001ext+vams +nospecify +notimingcheck -f <verilog_lst> -l <vlogan_log>
 vhdlan -full64 -skip_translate_body -f <vhdl_lst> -l <vhdlan_log>
 vlogan -full64 -sverilog -ntb_opts uvm-1.1 +define+UVM_REG_DATA_WIDTH=32 +define+UVM_REG_ADDR_WIDTH +define+UVM_PACKER_MAX_BYTES=1500000 -l <uvm_log>
@@ -438,7 +438,7 @@ novas_rc:
     [Library]
     <lib_name> = <lib_dir>
 -L <lib_name>
-** compilation options
+** analysis options
 vhdlcom -93 -sup_sem_error -smartorder -f <vhdl_lst>
 vericom -sv +systemverilogext+sv +v95ext+v95 +verilog2001ext+v -ignorekwd_config -f <verilog_lst>
 ** run options
