@@ -1,5 +1,0 @@
-Models
-======
-
-.. automodule:: cmos_site.wsys.models
-   :members:
