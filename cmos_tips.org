@@ -21,7 +21,7 @@ blender, cinelerra-cv, subtitleeditor, audacity, puddletag
 ttf-arphic, unifont, adobe-source-han-sans-cn-fonts
 ibus, ibus-sunpinyin
 ** python
-   beautifulsoup4, diff-match-patch, Django, djangorestframework, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, sympy, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, XlsxWriter, astropy, tabulate
+   beautifulsoup4, diff-match-patch, Django, djangorestframework, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, sympy, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, XlsxWriter, astropy, texttable
 ** emacs
 ascii-art-to-unicode, auctex, gnugo, paredit
 ** web static
