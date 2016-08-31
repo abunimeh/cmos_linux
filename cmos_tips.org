@@ -13,12 +13,15 @@ class is Noun, function is verb_noun, variable is name_type
 
 * pkg list
 ** linux
-linux, linux-headers, base-devel, grub, memtest86+, xterm, pacman, ntp, gparted, gcc, gdb, ddd, strace, nvidia, opencl, gtk, qt, clisp, python, perl, tcl, tk, git, subversion, openjdk, icedtea-web, ttf-dejavu, chromium, chromium-pepper-flash, rsync, transmission, wget, gftp, p7zip, unrar, mksh, tcsh, gvim, emacs, texlive-most, texlive-langcjk, imagemagick, gimp, dia, inkscape, blender, recordmydesktop, gv, xchm, calc, gnuplot, graphviz, cups-pdf, mplayer, smplayer, gstreamer, portmidi, x264, cinelerra-cv, ffmpeg, bchunk, flac, subtitleeditor, audacity, aspell-en, hunspell-en, tigervnc, freerdp, vpnc, openconnect, openvpn, pptpclient, celestia, nethack, gnugo, qgo, sudo, acpi, fuse, puddletag, pm-utils, libreoffice, nginx, uwsgi, postgresql, mariadb, libdvdread, libdvdcss, libdvdnav, networkmanager, gnome, dosfstools, curl, blas, lapack, shotwell, openssh, xorg-server, pyqt, xf86-input-libinput
+*** program
+linux, linux-headers, base-devel, grub, memtest86+, xterm, pacman, ntp, gparted, gcc, gdb, strace, nvidia, opencl, gtk, qt, clisp, python, perl, tcl, tk, git, subversion, openjdk, icedtea-web, ttf-dejavu, chromium, chromium-pepper-flash, rsync, transmission, wget, gftp, p7zip, unrar, mksh, tcsh, gvim, emacs, texlive-most, texlive-langcjk, imagemagick, gimp, dia, inkscape, recordmydesktop, gv, xchm, calc, gnuplot, graphviz, cups-pdf, mplayer, smplayer, gstreamer, portmidi, x264, ffmpeg, bchunk, flac, aspell-en, hunspell-en, tigervnc, freerdp, vpnc, openconnect, openvpn, pptpclient, celestia, nethack, gnugo, qgo, sudo, acpi, fuse, pm-utils, libreoffice, nginx, uwsgi, postgresql, mariadb, libdvdread, libdvdcss, libdvdnav, networkmanager, gnome, dosfstools, curl, blas, lapack, shotwell, openssh, xorg-server, pyqt, xf86-input-libinput
+*** multimedia
+blender, cinelerra-cv, subtitleeditor, audacity, puddletag
 ** chinese and ibus
 ttf-arphic, unifont, adobe-source-han-sans-cn-fonts
 ibus, ibus-sunpinyin
 ** python
-beautifulsoup4, diff-match-patch, Django, djangorestframework, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, sympy, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, XlsxWriter
+   beautifulsoup4, diff-match-patch, Django, djangorestframework, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, sympy, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, XlsxWriter, astropy, tabulate
 ** emacs
 ascii-art-to-unicode, auctex, gnugo, paredit
 ** web static
