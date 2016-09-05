@@ -64,6 +64,8 @@ C-x C-f <cmd> RET
 /<method>:<user>@<host>#<port>:<file>
 M-x shell in tramp
 methods include ftp, ssh, rlogin, telnet
+** batch mode
+emacs --batch <file> --eval "(setq make-backup-files nil)" -f verilog-pretty-expr -f save-buffer
 
 * python
 python -m compileall <file/dir>
