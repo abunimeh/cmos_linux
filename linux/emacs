@@ -95,6 +95,7 @@
                ("term" (mode . term-mode))
                ("dired" (mode . dired-mode))
                ("org" (mode . org-mode))
+               ("tramp" (name . "\*tramp/"))
                ;; ("cmos_site" (filename . "/cmos_site/"))
                ;; ("dce9" (filename . "dce9"))
                ))))
