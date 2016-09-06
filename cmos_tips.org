@@ -107,6 +107,9 @@ perl Makefile.PL PREFIX=<local_dir>
 make
 make install
 
+* sed
+sed -i -E "s/<regex>/<string>/g" <files>
+
 * git
 git pull origin
 git push origin master
