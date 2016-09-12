@@ -452,5 +452,6 @@ vhdlcom -93 -sup_sem_error -smartorder -f <vhdl_lst>
 vericom -sv +systemverilogext+sv +v95ext+v95 +verilog2001ext+v -ignorekwd_config -f <verilog_lst>
 ** run options
 verdi -undockWin -nologo
+verdi -autoalias -sv +v2k -ssv -ssy -undockWin -nologo
 ** nWave options
 nWave -ssf <fsdb> -sswr <novas_rc>
