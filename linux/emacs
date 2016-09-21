@@ -23,6 +23,7 @@
  '(doc-view-continuous t)
  '(ido-mode t nil (ido))
  '(inhibit-startup-screen t)
+ '(package-selected-packages (quote (ascii-art-to-unicode paredit gnugo auctex)))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(tramp-default-proxies-alist
