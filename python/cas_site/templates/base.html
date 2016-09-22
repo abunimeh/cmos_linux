@@ -1,0 +1,35 @@
+{% extends 'bootstrap3/bootstrap3.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_title%}
+{% block title %}{% endblock %}
+{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'DataTables/media/css/dataTables.bootstrap.css' %}" type="text/css">
+<script type="text/javascript" src="{% static 'DataTables/media/js/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'DataTables/media/js/jquery.dataTables.js' %}"></script>
+<script type="text/javascript" src="{% static 'DataTables/media/js/dataTables.bootstrap.js' %}"></script>
+{% block js %}{% endblock %}
+{% endblock %}
+
+{% block bootstrap3_content %}
+<div class="container-narrow">
+  <div class="masthead">
+    {% block header %}
+    <ul class="nav nav-pills pull-right">
+      <li class="active"><a href="/">{% trans "HOME" %}</a></li>
+    </ul>
+    <h2 class="muted">CAS site</h2>
+    {% endblock %}
+  </div>
+  <hr>
+  {% block content %}{% endblock %}
+  <div class="footer">
+    {% block footer %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

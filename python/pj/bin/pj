@@ -1,0 +1,566 @@
+#! /usr/bin/env python3
+
+# Author: Guanyu Yi @ CPU Verification Platform Group
+# Email: yigy@cpu.com.cn
+# Description: verification platform main entrence
+
+##### modules
+import pcom
+import env_booter
+import makefile_gen
+import filelst_gen
+import log_parser
+import fpga_signals_gen
+import os
+import argparse
+import subprocess
+import shutil
+import sys
+import datetime as dt
+import texttable
+
+##### functions
+def gen_args_top():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+    h_str = ("input log name <MUST come first>")
+    parser.add_argument('-l', dest='log', help=h_str)
+
+    h_str = ("sub cmd about running simulation")
+    run_parser = subparsers.add_parser('run', help=h_str)
+    h_str = ("input simulation module")
+    run_parser.add_argument('-m', dest='run_module', default='', help=h_str)
+    h_str = ("toggle to elaborate all case groups")
+    run_parser.add_argument('-comp', dest='run_comp', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("toggle to list all cases in module")
+    run_parser.add_argument('-list', dest='run_list', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("toggle to run all cases of module")
+    run_parser.add_argument('-all', dest='run_all', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("input simulation case")
+    run_parser.add_argument('-c', dest='run_case_lst', default=[], nargs='+',
+                            help=h_str)
+    h_str = ("input simulation case seed")
+    run_parser.add_argument('-seed', dest='run_seed', default='', help=h_str)
+    h_str = ("toggle to dump simulation waveform")
+    run_parser.add_argument('-wave', dest='run_wave', default=None, nargs='*',
+                            choices=['mem', 'glitch'], help=h_str)
+    h_str = ("toggle to kick off verdi to open simulation waveform")
+    run_parser.add_argument('-verdi', dest='run_verdi', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("toggle to kick off GUI during simulation")
+    run_parser.add_argument('-gui', dest='run_gui', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("input simulation random times")
+    run_parser.add_argument('-rt', dest='run_rt', default='', help=h_str)
+    h_str = ("toggle to collect coverage during simulation")
+    run_parser.add_argument('-cov', dest='run_cov', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("input type to do simulation profiling")
+    run_parser.add_argument('-prof', dest='run_prof', default=[], nargs='+',
+                            choices=['time', 'mem'], help=h_str)
+    h_str = ("toggle to dump data for FPGA")
+    run_parser.add_argument('-fpga', dest='run_fpga', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("input analysis options")
+    run_parser.add_argument('-A', dest='run_ana_opts', default='', help=h_str)
+    h_str = ("input elaboration options")
+    run_parser.add_argument('-E', dest='run_elab_opts', default='', help=h_str)
+    h_str = ("input simulation options")
+    run_parser.add_argument('-S', dest='run_simu_opts', default='', help=h_str)
+    run_parser.set_defaults(func=main_run)
+
+    h_str = ("sub cmd about kicking off regression")
+    regr_parser = subparsers.add_parser('regr', help=h_str)
+    h_str = ("input regression modules")
+    regr_parser.add_argument('-m', dest='regr_module_lst', default=[],
+                             nargs='+', help=h_str)
+    h_str = ("input regression types")
+    regr_parser.add_argument('-t', dest='regr_type_lst', default=[],
+                             nargs='+', help=h_str)
+    h_str = ("input regression random times")
+    regr_parser.add_argument('-rt', dest='regr_rt', default='', help=h_str)
+    h_str = ("toggle to collect coverage during regression")
+    regr_parser.add_argument('-cov', dest='regr_cov', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("toggle to show web report after regression")
+    regr_parser.add_argument('-rpt', dest='regr_rpt', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("toggle to dump data for FPGA")
+    regr_parser.add_argument('-fpga', dest='regr_fpga', default=False,
+                            action='store_true', help=h_str)
+    regr_parser.set_defaults(func=main_regr)
+
+    h_str = ("sub cmd about merging and analyzing coverage")
+    cov_parser = subparsers.add_parser('cov', help=h_str)
+    h_str = ("input coverage merge modules")
+    cov_parser.add_argument('-m', dest='cov_module', default='', help=h_str)
+    h_str = ("toggle to kick off verdi to analyze coverage")
+    cov_parser.add_argument('-verdi', dest='cov_verdi', default=False,
+                             action='store_true', help=h_str)
+    h_str = ("toggle to generate coverage report")
+    cov_parser.add_argument('-rpt', dest='cov_rpt', default=False,
+                             action='store_true', help=h_str)
+    cov_parser.set_defaults(func=main_cov)
+
+    h_str = ("sub cmd about generating filelist")
+    flist_parser = subparsers.add_parser('flist', help=h_str)
+    h_str = ("input base files")
+    flist_parser.add_argument('-f', dest='flist_files', default=[], nargs='+',
+                             help=h_str)
+    flist_parser.set_defaults(func=main_flist)
+
+    h_str = ("sub cmd about processing vplan")
+    vplan_parser = subparsers.add_parser('vplan', help=h_str)
+    h_str = ("input vplan module")
+    vplan_parser.add_argument('-m', dest='vplan_module', default='',
+                              help=h_str)
+    vplan_parser.set_defaults(func=main_vplan)
+
+    h_str = ("sub cmd about generating auto reg")
+    reg_parser = subparsers.add_parser('reg', help=h_str)
+    h_str = ("input reg module")
+    reg_parser.add_argument('-m', dest='reg_module', default='',
+                              help=h_str)
+    reg_parser.set_defaults(func=main_reg)
+
+    h_str = ("sub cmd about generating natural docs")
+    doc_parser = subparsers.add_parser('doc', help=h_str)
+    h_str = ("input doc module")
+    doc_parser.add_argument('-m', dest='doc_module', default='',
+                            help=h_str)
+    doc_parser.set_defaults(func=main_doc)
+
+    h_str = ("sub cmd about cleaning output")
+    clean_parser = subparsers.add_parser('clean', help=h_str)
+    h_str = ("input clean module")
+    clean_parser.add_argument('-m', dest='clean_module', default='',
+                              help=h_str)
+    h_str = ("input clean case")
+    clean_parser.add_argument('-c', dest='clean_case_lst', default=[],
+                              nargs='+', help=h_str)
+    h_str = ("toggle to clean output coverage dir")
+    clean_parser.add_argument('-cov', dest='clean_cov', default=False,
+                              action='store_true', help=h_str)
+    clean_parser.set_defaults(func=main_clean)
+
+    return parser.parse_args()
+
+def rmtree(path_lst):
+    for path in path_lst:
+        if os.sep+os.path.basename(path) in os.getcwd():
+            raise Exception("it is in dir {0}, please cd out from {0} since "
+                            "it will be cleaned".format(path))
+    rm_rsp = input("{0} will be cleaned {1}--> yes or no? "
+                   "".format(path_lst, os.linesep))
+    if rm_rsp in ('yes', 'y'):
+        for path in path_lst:
+            shutil.rmtree(path, ignore_errors=True)
+            LOG.info("cleaning {0} dir done".format(path))
+    else:
+        LOG.info("canceled")
+
+def update_status(case_dic):
+    if case_dic['simu_status'] == 'passed':
+        case_dic['status'] = case_dic['simu_status']
+        case_dic['estage'] = 'NA'
+        case_dic['einfo'] = case_dic['simu_error']
+    elif case_dic['elab_status'] == 'passed':
+        case_dic['status'] = case_dic['simu_status']
+        case_dic['estage'] = 'simulation'
+        case_dic['einfo'] = case_dic['simu_error']
+    elif case_dic['tb_ana_status'] == 'passed':
+        case_dic['status'] = case_dic['elab_status']
+        case_dic['estage'] = 'elaboration'
+        case_dic['einfo'] = case_dic['elab_error']
+    elif case_dic['dut_ana_status'] == 'passed':
+        case_dic['status'] = case_dic['tb_ana_status']
+        case_dic['estage'] = 'tb analysis'
+        case_dic['einfo'] = case_dic['tb_ana_error']
+    else:
+        case_dic['status'] = case_dic['rlt_ana_status']
+        case_dic['estage'] = 'dut analysis'
+        case_dic['einfo'] = case_dic['dut_ana_error']
+    return case_dic
+
+def gen_ef_str(ced):
+    ef_str = ''
+    for ef in pcom.find_iter(ced['MODULE_CONFIG'], '*.el'):
+        ef_str += '-elfile {0} '.format(ef)
+    return ef_str
+
+def main_run(args):
+    if args.run_module or args.run_case_lst:
+        run = Run(args.run_module,
+                  args.run_case_lst,
+                  args.run_all,
+                  args.run_comp,
+                  args.run_list,
+                  args.run_wave,
+                  args.run_verdi,
+                  args.run_gui,
+                  args.run_rt,
+                  args.run_cov,
+                  args.run_prof,
+                  args.run_fpga,
+                  args.run_seed,
+                  args.run_ana_opts,
+                  args.run_elab_opts,
+                  args.run_simu_opts)
+        run.simulation()
+        LOG.info("running simulation of {0} from {1} module done".format(
+            args.run_case_lst, args.run_module))
+    else:
+        raise Exception("missing main arguments")
+
+def main_regr(args):
+    if args.regr_module_lst:
+        regr = Regr(args.regr_module_lst,
+                    args.regr_type_lst,
+                    args.regr_rt,
+                    args.regr_cov,
+                    args.regr_rpt,
+                    args.regr_fpga)
+        regr.regression()
+        LOG.info("running regression of {0} from {1} module done".format(
+            args.regr_type_lst, args.regr_module_lst))
+    else:
+        raise Exception("missing main arguments")
+
+def main_cov(args):
+    if args.cov_module:
+        cov = Cov(args.cov_module,
+                  args.cov_verdi,
+                  args.cov_rpt)
+        cov.coverage()
+        LOG.info("running coverage of {0} module done".format(args.cov_module))
+    else:
+        raise Exception("missing main arguments")
+
+def main_flist(args):
+    if args.flist_files:
+        dir_lst, vlog_lst, vhdl_lst = filelst_gen.FilelstGen(LOG).gen_file_lst(
+            args.flist_files)
+        with open('vlog_gen.flist', 'w') as vf:
+            for vlog_file in vlog_lst:
+                vf.write(vlog_file+os.linesep)
+            for dir_line in dir_lst:
+                vf.write(dir_line+os.linesep)
+        with open('vhdl_gen.flist', 'w') as vf:
+            for vhdl_file in vhdl_lst:
+                vf.write(vhdl_file+os.linesep)
+        LOG.info("generating filelist 'vlog_gen.flist' and 'vhdl_gen.flist' "
+                 "from files {0} done".format(args.flist_files))
+    else:
+        raise Exception("missing main arguments")
+
+def main_vplan(args):
+    if args.vplan_module:
+        ced, cfg_dic = env_booter.EnvBooter(args.vplan_module, LOG).boot_env()
+        ef_str = gen_ef_str(ced)
+        vdb_dir = ced['COV_MERGE_DIR']+os.sep+ced['MODULE']+'_merge.vdb'
+        vdb_str = '-dir {0} '.format(vdb_dir) if os.path.isdir(vdb_dir) else ''
+        vplan_str_lst = []
+        for vplan in pcom.find_iter(
+                ced['MODULE_VPLAN'], '*.xml', i_str='.ann.'):
+            vplan_str_lst.append('hvp annotate -lca -plan {0} {1} {2} '.format(
+                vplan, ef_str, vdb_str))
+        subprocess.run(' && '.join(vplan_str_lst), shell=True)
+    else:
+        raise Exception("missing main arguments")
+
+def main_reg(args):
+    if args.reg_module:
+        ced, cfg_dic = env_booter.EnvBooter(args.reg_module, LOG).boot_env()
+        tb_top_lst = pcom.rd_cfg(cfg_dic['group'], 'DEFAULT', 'tb_top')
+        tb_top = tb_top_lst[0] if tb_top_lst else 'test_top'
+        reg_str_lst = []
+        for reg_file in pcom.find_iter(ced['MODULE_REG'], '*.ralf'):
+            reg_str_lst.append('ralgen -full64 -t {0} -uvm -c F -a {1} '
+                               ''.format(tb_top, reg_file))
+        subprocess.run(' && '.join(reg_str_lst), shell=True)
+    else:
+        raise Exception("missing main arguments")
+
+def main_doc(args):
+    if args.doc_module:
+        ced, cfg_dic = env_booter.EnvBooter(args.doc_module, LOG).boot_env()
+        os.makedirs(ced['MODULE_DOC'], exist_ok=True)
+        doc_str = ('NaturalDocs -i ${PROJ_MODULE} -o HTML ${MODULE_DOC} '
+                   '-p ${MODULE_DOC}')
+        subprocess.run(doc_str, shell=True)
+    else:
+        raise Exception("missing main arguments")
+
+def main_clean(args):
+    if args.clean_module or args.clean_case_lst:
+        module_name = (args.clean_case_lst[0].split('__')[0] if not
+                       args.clean_module else args.clean_module)
+        if not module_name:
+            raise Exception(
+                "case {0} is not in standard format <module__case>, "
+                "so module name must be specified".format(
+                    args.clean_case_lst[0]))
+        ced, cfg_dic = env_booter.EnvBooter(module_name, LOG).boot_env()
+        if args.clean_cov:
+            rmtree([ced['COV_DIR']])
+        elif not args.clean_case_lst:
+            rmtree([ced['MODULE_OUTPUT']])
+        else:
+            rmtree([ced['MODULE_OUTPUT']+os.sep+cc for cc in
+                    args.clean_case_lst if cc])
+    else:
+        raise Exception("missing main arguments")
+
+##### classes
+class Run(object):
+    def __init__(self, run_module,
+                 run_case_lst,
+                 run_all,
+                 run_comp,
+                 run_list,
+                 run_wave,
+                 run_verdi,
+                 run_gui,
+                 run_rt,
+                 run_cov,
+                 run_prof,
+                 run_fpga,
+                 run_seed,
+                 run_ana_opts,
+                 run_elab_opts,
+                 run_simu_opts):
+        self.run_module = run_module
+        self.run_case_lst = [cc.split('.')[0] for cc in run_case_lst if cc]
+        if not run_module:
+            self.run_module = run_case_lst[0].split('__')[0]
+        if not self.run_module:
+            raise Exception(
+                "case {0} is not in standard format <module__case>, so "
+                "module name must be specified".format(self.run_case_lst[0]))
+        self.run_all = run_all
+        self.run_comp = run_comp
+        self.run_list = run_list
+        self.run_wave = run_wave
+        self.run_verdi = run_verdi
+        self.run_fpga = run_fpga
+        self.ow_dic = {'ae': {}, 'su': {}}
+        if run_seed:
+            self.ow_dic['su']['seed'] = run_seed.strip()
+        if run_ana_opts:
+            self.ow_dic['ae']['custom_ana_opts'] = run_ana_opts.strip()
+        if run_elab_opts:
+            self.ow_dic['ae']['custom_elab_opts'] = run_elab_opts.strip()
+        if run_simu_opts:
+            self.ow_dic['su']['custom_simu_opts'] = run_simu_opts.strip()
+        if run_wave != None:
+            self.ow_dic['ae']['wave'] = 'on'
+            self.ow_dic['su']['wave'] = 'on'
+            if 'mem' in run_wave:
+                self.ow_dic['su']['wave_mem'] = 'on'
+            if 'glitch' in run_wave:
+                self.ow_dic['su']['wave_glitch'] = 'on'
+        if run_verdi:
+            self.ow_dic['ae']['wave'] = 'on'
+            self.ow_dic['su']['wave'] = 'on'
+        if run_gui:
+            self.ow_dic['ae']['gui'] = 'on'
+            self.ow_dic['su']['gui'] = 'on'
+        if run_rt:
+            self.ow_dic['su']['random_times'] = run_rt.strip()
+        if run_cov:
+            self.ow_dic['ae']['cov'] = 'on'
+            self.ow_dic['su']['cov'] = 'on'
+        if run_prof:
+            self.ow_dic['ae']['prof'] = 'on'
+            if 'time' in run_prof:
+                self.ow_dic['su']['prof_time'] = 'on'
+            if 'mem' in run_prof:
+                self.ow_dic['su']['prof_mem'] = 'on'
+        if run_fpga:
+            self.ow_dic['ae']['fpga'] = 'on'
+    def simulation(self):
+        ced, cfg_dic = env_booter.EnvBooter(self.run_module, LOG).boot_env()
+        mk_dir, mk_file, cgs_dic, _ = makefile_gen.MakefileGen(
+            ced, cfg_dic, self.ow_dic, regr_flg=False, LOG=LOG).gen_makefile()
+        tar_str = ''
+        if self.run_list:
+            tar_str += 'list_all '
+        if self.run_comp:
+            tar_str += 'compile_all '
+        if self.run_all:
+            self.run_case_lst = list(cgs_dic)
+        if self.run_case_lst:
+            for run_case in self.run_case_lst:
+                tar_str += 'run_simv_{0} '.format(run_case)
+        if self.run_verdi:
+            verdi_str = ('verdi_{0} '.format(self.run_case_lst[0]) if
+                         self.run_case_lst else 'verdi_DEFAULT ')
+            tar_str = tar_str+verdi_str if self.run_wave != None else verdi_str
+        if not tar_str:
+            tar_str = 'analysis_dut_all '
+        mk_str = 'cd {0} && make -f {1} {2}'.format(mk_dir, mk_file, tar_str)
+        subprocess.run(mk_str, check=True, shell=True)
+        if self.run_case_lst:
+            rpt_rows = [['Case Name', 'Case Group', 'SVN CL', 'Seed', 'Status',
+                         'Error Stage', 'CPU Time']]
+            if self.run_fpga:
+                fsg = fpga_signals_gen.FPGASignalsGen(ced)
+                fsg.gen_h_lst()
+            for run_case in self.run_case_lst:
+                for seed in cgs_dic[run_case][1:]:
+                    cgs_tup = (run_case, cgs_dic[run_case][0], seed)
+                    case_dic = update_status(log_parser.LogParser(
+                        ced, cfg_dic, cgs_tup, LOG=LOG).parse_log())
+                    if self.run_fpga:
+                        fsg.gen_fpga_signals(cgs_tup)
+                    rpt_rows.append([case_dic['c_name'],
+                                     case_dic['g_name'],
+                                     case_dic['proj_cl'],
+                                     case_dic['seed'],
+                                     case_dic['status'],
+                                     case_dic['estage'],
+                                     case_dic['simu_cpu_time']+'s'])
+            table = texttable.Texttable()
+            table.set_cols_width([30,7,7,7,7,7,7])
+            table.add_rows(rpt_rows)
+            sim_table = table.draw()
+            LOG.info('simulation report table:'+os.linesep+sim_table)
+
+class Regr(object):
+    def __init__(self, regr_module_lst,
+                 regr_type_lst,
+                 regr_rt,
+                 regr_cov,
+                 regr_rpt,
+                 regr_fpga):
+        self.regr_module_lst = regr_module_lst
+        self.regr_type_lst = regr_type_lst if regr_type_lst else ['sanity']
+        self.regr_rpt = regr_rpt
+        self.regr_fpga = regr_fpga
+        self.ow_dic = {'ae': {}, 'su': {}}
+        if regr_rt:
+            self.ow_dic['su']['random_times'] = regr_rt.strip()
+        if regr_cov:
+            self.ow_dic['ae']['cov'] = 'on'
+            self.ow_dic['su']['cov'] = 'on'
+        if regr_fpga:
+            self.ow_dic['ae']['fpga'] = 'on'
+    def regression(self):
+        for regr_module in self.regr_module_lst:
+            ced, cfg_dic = env_booter.EnvBooter(regr_module, LOG).boot_env()
+            subprocess.run('cd ${PROJ_ROOT} && svn up', shell=True, check=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            LOG.info("updating svn to latest version done")
+            mk_dir, mk_file, _, regr_dic = makefile_gen.MakefileGen(
+                ced, cfg_dic, self.ow_dic, regr_flg=True,
+                LOG=LOG).gen_makefile()
+            mk_str = 'cd {0} && make -f {1} '.format(mk_dir, mk_file)
+            rpt_rows = [['Case Name', 'Case Group', 'SVN CL', 'Seed', 'Status',
+                         'Error Stage', 'CPU Time']]
+            if self.regr_fpga:
+                fsg = fpga_signals_gen.FPGASignalsGen(ced)
+                fsg.gen_h_lst()
+            for regr_type in self.regr_type_lst:
+                LOG.info("{0} regression is running @{1}".format(
+                    regr_type, ced['TIME']))
+                regr_type = regr_type.lower()
+                for name, group, seed in regr_dic.get(regr_type, []):
+                    subprocess.run(
+                        mk_str+'run_simv_{0}__{1}'.format(name, seed),
+                        shell=True, check=True, stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE)
+                    ngs_tup = (name, group, seed)
+                    case_dic = update_status(log_parser.LogParser(
+                        ced, cfg_dic, ngs_tup, LOG=LOG).parse_log())
+                    if self.regr_fpga:
+                        fsg.gen_fpga_signals(ngs_tup)
+                    log_str = ("Case Name: {1}{0}Seed: {2}{0}Status: {3}"
+                               "{0}Error Stage: {4}".format(
+                                   os.linesep+'                ',
+                                   case_dic['c_name'],
+                                   case_dic['seed'],
+                                   case_dic['status'],
+                                   case_dic['estage']))
+                    if case_dic['status'] == 'passed':
+                        LOG.info(log_str)
+                    else:
+                        LOG.error(log_str)
+                    rpt_rows.append([case_dic['c_name'],
+                                     case_dic['g_name'],
+                                     case_dic['proj_cl'],
+                                     case_dic['seed'],
+                                     case_dic['status'],
+                                     case_dic['estage'],
+                                     case_dic['simu_cpu_time']+'s'])
+            if self.regr_rpt:
+                rpt_str = ('firefox platform:8000/regr/{0}/{1}/{2}/{3} &'
+                           ''.format(ced['USER_NAME'], dt.datetime.strftime(
+                               ced['TIME'], '%Y_%m_%d'),
+                                     ced['PROJ_NAME'], ced['MODULE']))
+                subprocess.run(rpt_str, shell=True)
+            else:
+                table = texttable.Texttable()
+                table.set_cols_width([30,7,7,7,7,7,7])
+                table.add_rows(rpt_rows)
+                regr_table = table.draw()
+                LOG.info('regression report table:'+os.linesep+regr_table)
+                regr_rpt_file = ced['MODULE_OUTPUT']+os.sep+'regr_rpt'
+                with open(regr_rpt_file, 'w') as rf:
+                    rf.write(regr_table)
+                LOG.info('regression report file {0}'.format(regr_rpt_file))
+
+class Cov(object):
+    def __init__(self, cov_module,
+                 cov_verdi,
+                 cov_rpt):
+        self.cov_module = cov_module
+        self.cov_verdi = cov_verdi
+        self.cov_rpt = cov_rpt
+    def coverage(self):
+        ced, cfg_dic = env_booter.EnvBooter(self.cov_module, LOG).boot_env()
+        ef_str = gen_ef_str(ced)
+        cov_merge_vdb = ced['COV_MERGE_DIR']+os.sep+ced['MODULE']+'_merge.vdb'
+        cd_str = 'cd {0} && '.format(os.path.dirname(cov_merge_vdb))
+        if self.cov_verdi:
+            if not os.path.isdir(cov_merge_vdb):
+                raise Exception("coverage merge dir {0} is NA".format(
+                    cov_merge_vdb))
+            cov_str = '{0} verdi -cov -covdir {1} {2} &'.format(
+                cd_str, cov_merge_vdb, ef_str)
+        elif self.cov_rpt:
+            if not os.path.isdir(cov_merge_vdb):
+                raise Exception("coverage merge dir {0} is NA".format(
+                    cov_merge_vdb))
+            cov_str = '{0} urg -full64 -dir {1} {2}'.format(
+                cd_str, cov_merge_vdb, ef_str)
+        else:
+            vdb_lst = list(pcom.find_iter(ced['COV_CM_DIR'], '*.vdb', True))
+            if not vdb_lst:
+                raise Exception("no coverage data found")
+            merge_lst_file = ced['COV_MERGE_DIR']+os.sep+'merge_lst'
+            os.makedirs(os.path.dirname(merge_lst_file), exist_ok=True)
+            with open(merge_lst_file, 'w') as mf:
+                for vdb_dir in vdb_lst:
+                    mf.write(vdb_dir+os.linesep)
+            cov_str = ('{0} urg -full64 -f {1} -dbname {2} -noreport {3}'
+                       ''.format(cd_str, merge_lst_file,
+                                 os.path.basename(cov_merge_vdb), ef_str))
+        subprocess.run(cov_str, shell=True)
+
+##### main
+def main():
+    args = gen_args_top()
+    global LOG
+    LOG = pcom.gen_logger(file_log=args.log)
+    LOG.info("commence...")
+    args.func(args)
+    LOG.info("complete")
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as ex:
+        LOG.exception(ex)

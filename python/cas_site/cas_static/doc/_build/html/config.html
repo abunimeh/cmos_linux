@@ -1,0 +1,528 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>配置文件使用手册 &#8212; Verification Platform 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Verification Platform 1.0 documentation" href="index.html" />
+    <link rel="next" title="runner(pj)使用手册" href="runner.html" />
+    <link rel="prev" title="初识验证平台" href="vp_intro.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="runner.html" title="runner(pj)使用手册"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vp_intro.html" title="初识验证平台"
+             accesskey="P">previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">配置文件使用手册</a><ul>
+<li><a class="reference internal" href="#id2">三种配置文件</a></li>
+<li><a class="reference internal" href="#id3">配置文件格式</a></li>
+<li><a class="reference internal" href="#proj-cfg">proj.cfg配置文件</a><ul>
+<li><a class="reference internal" href="#boot-env-proj-env">[boot_env], [proj_env]</a></li>
+<li><a class="reference internal" href="#proj-module">[proj_module]</a></li>
+<li><a class="reference internal" href="#regression-regression-opts">[regression], [regression_opts]</a></li>
+<li><a class="reference internal" href="#env-group">[env_group]</a></li>
+<li><a class="reference internal" href="#env-case">[env_case]</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#group-cfg">group.cfg配置文件</a><ul>
+<li><a class="reference internal" href="#default">[DEFAULT]</a></li>
+<li><a class="reference internal" href="#group-name">[GROUP_NAME]</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#case-cfg">case.cfg配置文件</a><ul>
+<li><a class="reference internal" href="#id4">[DEFAULT]</a></li>
+<li><a class="reference internal" href="#case-name">[CASE_NAME]</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#runner-pj">利用平台runner(pj)工作</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vp_intro.html"
+                        title="previous chapter">初识验证平台</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="runner.html"
+                        title="next chapter">runner(pj)使用手册</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/config.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="config">
+<span id="id1"></span><h1>配置文件使用手册<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>三种配置文件<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>配置文件是平台对用户的唯一接口，并且根据项目的不同、module的不同而不同，如果将平台看成一个类的话，配置文件就相当于平台根据项目例化时的构造函数，配置文件里提供了所有的参数一同影响平台的行为</p>
+<p>平台在项目中有三种配置文件：</p>
+<ul class="simple">
+<li>PROJ_ROOT/share/cmn/config/proj.cfg<ul>
+<li>项目唯一</li>
+<li>配置文件覆盖优先级低</li>
+<li>设置了runtime环境变量、回归配置参数以及group配置文件与case配置文件的默认参数</li>
+</ul>
+</li>
+<li>PROJ_MODULE/config/group.cfg<ul>
+<li>模块唯一</li>
+<li>配置文件覆盖优先级高</li>
+<li>设置了模块所有的group以及每个group的特性</li>
+<li>group是基于analysis与elaboration阶段的概念，以vcs为例，每个group生成自己的simv，提供给simulation使用</li>
+</ul>
+</li>
+<li>PROJ_MODULE/config/case.cfg<ul>
+<li>模块唯一</li>
+<li>配置文件覆盖优先级高</li>
+<li>里面设置了模块所有的case以及每个case的特性</li>
+<li>case是基于simulation阶段的概念，每个case只能使用一个simv进行simulation，所以每个case对应一个group进行simulation</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>配置文件格式<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>配置文件采用unix cfg格式，也是大多数linux tool与eda tool采用的cfg格式，如yum, apt-get, pip, git, svn, vcs, verdi等，这种配置文件的优点是对用户友好，缺点是无法设置复杂的数据结构，不过对用户的接口简单这条原则本身就不需要复杂的数据结构。</p>
+<p>以verdi的novas.conf中的部分内容为例，来说明cfg文件的组成：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">qBaseWindowStateGroup</span><span class="p">]</span>
+<span class="n">Verdi_1</span>\<span class="n">qBaseWindowRestoreStateGroup</span>\<span class="n">qDockerWindow_defaultLayout</span>\<span class="n">qDockerWindow_restoreNewChildState</span><span class="o">=</span><span class="n">true</span>
+
+<span class="p">[</span><span class="n">qBaseWindow_saveRestoreSession_group</span><span class="p">]</span>
+<span class="mi">10</span><span class="o">=/</span><span class="n">workspace</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">yigy</span><span class="o">/</span><span class="n">cpu1</span><span class="o">/</span><span class="n">verification</span><span class="o">/</span><span class="n">zszx</span><span class="o">/</span><span class="n">output</span><span class="o">/</span><span class="n">zszx_sanity_test</span><span class="o">/</span><span class="mi">1</span><span class="o">/</span><span class="n">verdiLog</span><span class="o">/</span><span class="n">novas_autosave</span><span class="o">.</span><span class="n">ses</span>
+
+<span class="p">[</span><span class="n">qDockerWindow_C</span><span class="p">]</span>
+<span class="n">Verdi_1</span>\<span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">Verdi_1</span>\<span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">Verdi_1</span>\<span class="n">width</span><span class="o">=</span><span class="mi">900</span>
+<span class="n">Verdi_1</span>\<span class="n">height</span><span class="o">=</span><span class="mi">700</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>其中[]标注的部分是section，表示一类配置</li>
+<li>section下面每个=行表示具体配置的option，=左右分别代表这个option的key与value</li>
+<li>每个cfg文件都是由sections与options组成</li>
+<li>在平台的cfg文件规则中，value是支持多值的，多值之间用半角逗号 <code class="docutils literal"><span class="pre">,</span></code> 分隔。</li>
+</ul>
+</div>
+<div class="section" id="proj-cfg">
+<h2>proj.cfg配置文件<a class="headerlink" href="#proj-cfg" title="Permalink to this headline">¶</a></h2>
+<p>每个project只有一份的配置文件，用来配置项目级别的特性，只建议project owner修改，不建议module owner修改</p>
+<div class="section" id="boot-env-proj-env">
+<h3>[boot_env], [proj_env]<a class="headerlink" href="#boot-env-proj-env" title="Permalink to this headline">¶</a></h3>
+<p>这两个section是平台用到的runtime环境变量，这样设置的目的是防止env污染，这两个section中设置的环境变量只有在pj运行过程中有效，pj运行前后都无效</p>
+</div>
+<div class="section" id="proj-module">
+<h3>[proj_module]<a class="headerlink" href="#proj-module" title="Permalink to this headline">¶</a></h3>
+<p>proj_module section用来配置与module有关参数</p>
+<ul class="simple">
+<li>tree_ignore<ul>
+<li>用来配置tree命令的ignore目录，在pj提示所有可用module的时候过滤掉不需要显示的目录信息</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="regression-regression-opts">
+<h3>[regression], [regression_opts]<a class="headerlink" href="#regression-regression-opts" title="Permalink to this headline">¶</a></h3>
+<p>当kick off regression的时候，regression option负责统一管控 <strong>覆盖</strong> 所有默认的相同option的值，regression_opts option负责统一管控 <strong>添加</strong> 所有默认的相同option的值</p>
+</div>
+<div class="section" id="env-group">
+<h3>[env_group]<a class="headerlink" href="#env-group" title="Permalink to this headline">¶</a></h3>
+<p>env_group section用来提供所有group.cfg中可能用到的全部option的默认值，由于proj.cfg的优先级低于group.cfg的优先级，因此group.cfg中出现的相同option的值会覆盖这个section中的默认值</p>
+<ul class="simple">
+<li>sub_modules<ul>
+<li>用来指定该module下的子module，格式是MODULE:TYPE，其中MODULE为模块名，TYPE为模块类型，比如rtl、bfm等</li>
+<li>该配置会影响生成的filelist</li>
+<li>该配置为空的时候，pj自动产生用来analysis的filelist仅由rtl.flist与tb.flist构成</li>
+<li>该配置非空，除了模块自己的 会按照TYPE将所有子模块flist目录下的TYPE.flist拿来用以构成analysis用的filelist</li>
+</ul>
+</li>
+<li>vhdl_tool, ana_tool, elab_tool, dbg_tool<ul>
+<li>用来指定需要做vhdl analysis, verilog analysis, elaboration, 查看波形debug的tool名称</li>
+<li>默认值是vhdlan, vlogan, vcs, verdi</li>
+</ul>
+</li>
+<li>file__FILENAME<ul>
+<li>开放型option</li>
+<li>会在group analysis &amp; elaboration目录下成名为FILENAME、内容为对应option value的文件</li>
+<li>阶段执行前生成，以便analysis与elaboration过程使用</li>
+</ul>
+</li>
+<li>pre_cmd, post_cmd<ul>
+<li>用来配置在analysis和elaboration阶段之前与之后执行的自定义的命令</li>
+<li>可以在这里执行compilation(analysis+elaboration)的自定义脚本</li>
+</ul>
+</li>
+<li>tb_top<ul>
+<li>用来指定tb的top module名字</li>
+<li>默认值是test_top</li>
+</ul>
+</li>
+<li>uvm, cov, wave, gui, prof<ul>
+<li>analysis和elaboration阶段的主要管控开关，管控每个group的行为</li>
+<li>分别是uvm方法学环境参数开关、覆盖率收集参数开关、dump波形开关、设置断点单步执行开关、收集效率分析报告开关</li>
+</ul>
+</li>
+<li>wave_format<ul>
+<li>预留的支持多种格式的波形文件的option</li>
+<li>目前只支持fsdb</li>
+</ul>
+</li>
+<li>custom_ana_opts, custom_elab_opts<ul>
+<li>用户自定义添加的analysis阶段与elaboration阶段tool的options</li>
+</ul>
+</li>
+<li>cov_elab_opts, wave_elab_opts, gui_elab_opts, prof_elab_opts<ul>
+<li>分别受cov, wave, gui, prof开关控制的tool options</li>
+<li>当开关是on的时候会添加到相应阶段的tool otpions中</li>
+</ul>
+</li>
+<li>wf_WAVEFORMAT_elab_opts<ul>
+<li>这个option与wave_format option的值相关</li>
+<li>会根据wave_format的值添加到相应阶段的tool options中</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="env-case">
+<h3>[env_case]<a class="headerlink" href="#env-case" title="Permalink to this headline">¶</a></h3>
+<p>env_case section用来提供所有case.cfg中可能用到的全部option的默认值，由于proj.cfg的优先级低于case.cfg的优先级，因此case.cfg中出现的相同option的值会覆盖这个section中的默认值</p>
+<ul>
+<li><p class="first">lsf_*</p>
+<ul class="simple">
+<li>与lsf相关的参数可以在这里设置</li>
+</ul>
+</li>
+<li><p class="first">file__FILENAME</p>
+<ul class="simple">
+<li>与env_group section中的类似</li>
+<li>开放型option</li>
+<li>会在case simulation目录下先生成名为FILENAME、内容为对应option value的文件</li>
+<li>阶段执行前生成，以便simulation过程使用</li>
+</ul>
+</li>
+<li><p class="first">pre_cmd, post_cmd</p>
+<ul class="simple">
+<li>用来配置在simulation阶段之前与之后执行的自定义的命令</li>
+<li>可以在这里执行simulation的自定义脚本</li>
+</ul>
+</li>
+<li><p class="first">random_times</p>
+<ul class="simple">
+<li>用来配置一个case的simulation次数</li>
+<li>每次simulation都是不同的随机seed</li>
+</ul>
+</li>
+<li><p class="first">seed</p>
+<ul class="simple">
+<li>用来配置一个case的seed</li>
+<li>不设置的情况下seed为1</li>
+<li>设置具体数值的时候seed固定为该数值</li>
+<li>设置random的时候seed会随机产生</li>
+</ul>
+</li>
+<li><p class="first">uvm, cov, wave, wave_mem, wave_glitch, gui, prof_mem, prof_time</p>
+<ul class="simple">
+<li>simulation阶段的主要管控开关，管控每个case的行为</li>
+<li>分别是uvm方法学环境参数开关、覆盖率收集参数开关、dump波形开关、dump mem开关、dump波形显示glitch开关、设置断点单步执行开关、收集mem效率分析开关、收集time效率分析开关</li>
+</ul>
+</li>
+<li><p class="first">custom_simu_opts</p>
+<ul class="simple">
+<li>用户自定义添加simulation阶段tool的options</li>
+</ul>
+</li>
+<li><p class="first">uvm_simu_opts, cov_simu_opts, wave_glitch_simu_opts, gui_simu_opts, prof_mem_simu_opts, prof_time_simu_opts</p>
+<ul class="simple">
+<li>分别受uvm, cov, wave, wave_mem, wave_glitch, gui, prof_mem, prof_time开关控制的tool options</li>
+<li>当开关是on的时候会添加到相应阶段的tool options中</li>
+</ul>
+</li>
+<li><p class="first">seed_simu_opts</p>
+<ul class="simple">
+<li>这个option与seed的值相关</li>
+<li>会根据seed的至添加到相应阶段的tool options中</li>
+</ul>
+</li>
+<li><p class="first">regression_type</p>
+<ul>
+<li><p class="first">定义case的regression type</p>
+</li>
+<li><p class="first">支持多种类型，类型之间用 <code class="docutils literal"><span class="pre">,</span></code> 分隔</p>
+</li>
+<li><p class="first">用户可以从下表定义的regression类型中选择添加到这里</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">类型</th>
+<th class="head">周期描述</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>sanity</td>
+<td>用来检验基本功能是否正确，通常在rtl改动之后需要kick off</td>
+</tr>
+<tr class="row-odd"><td>nightly</td>
+<td>每晚kick off</td>
+</tr>
+<tr class="row-even"><td>weekly</td>
+<td>每周kick off</td>
+</tr>
+<tr class="row-odd"><td>all</td>
+<td>内置类型，无需用户填写，包括module的所有case</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+<li><p class="first">pass_string, fail_string, ignore_string</p>
+<ul class="simple">
+<li>log解析过程中判断该case是否pass的用户自定义string</li>
+<li>在平台log parser中有一些内置好的string，通常情况下log parser都会做出正确的判断，如果用户需要改变log parser的行为，可以在这里更改</li>
+<li>每种string都可以写多种，用 <code class="docutils literal"><span class="pre">,</span></code> 分隔</li>
+</ul>
+</li>
+</ul>
+<p>log parser解析原理是：</p>
+<ul class="simple">
+<li>对log按行解析</li>
+<li>检测到ignore_string，跳过该行</li>
+<li>检测到fail_string，该case是fail</li>
+<li>检测到case没有结束，该case是pending</li>
+<li>log所有行没有fail_string，检测到pass string，该case是pass</li>
+<li>log所有行没有fail_string，没有检测到pass string，该case是unknown</li>
+<li>对于uvm的case不需要pass_string，检测到没有UVM_ERROR与UVM_FATAL，而且case正常结束，该case是pass</li>
+</ul>
+</div>
+</div>
+<div class="section" id="group-cfg">
+<h2>group.cfg配置文件<a class="headerlink" href="#group-cfg" title="Permalink to this headline">¶</a></h2>
+<p>每个module只有一份的配置文件，用来配置模块级别在analyasis与elaboration阶段的特性，里面记录了该module的全部group，每个section就是一个group，每个group都有自己一套独立的analysis与elaboration结果，module owner负责修改</p>
+<div class="section" id="default">
+<h3>[DEFAULT]<a class="headerlink" href="#default" title="Permalink to this headline">¶</a></h3>
+<p>无论在cfg文件中是否写出来，每个cfg文件都会有一个DEFAULT section，该section的作用是提供所有其它section的默认值</p>
+<p>group所有的option的默认值在proj.cfg的env_group section里面都已经提供，但是proj.cfg是整个project层面的默认值，不允许module owner修改，所以DEFAULT这个section的目的就在于提供给module owner一个module层面的可以异于project层面的默认值</p>
+</div>
+<div class="section" id="group-name">
+<h3>[GROUP_NAME]<a class="headerlink" href="#group-name" title="Permalink to this headline">¶</a></h3>
+<p>除了DEFAULT section之外，其他每个section就是一个group，用户可以自己定义group name，可以在这个group section下面定制该group个性化的options</p>
+<p>group section, DEFAULT section, proj.cfg env_group section这三个section中可选的option是一致的，proj.cfg env_group section是一个全集，提供所有option的默认值，它们的优先级是group section &gt; DEFAULT section &gt; proj.cfg env_group section</p>
+<p>以下面一个group.cfg为例来说明用法：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># this config is used for group level, 2nd entry (analysis and elaboration stage)</span>
+<span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>
+<span class="c1">### group default pre/post cmd in analysis and elaboration</span>
+<span class="n">pre_cmd</span> <span class="o">=</span>
+<span class="n">post_cmd</span> <span class="o">=</span>
+
+<span class="c1">### group default TB top</span>
+<span class="n">tb_top</span> <span class="o">=</span> <span class="n">module_tb</span>
+
+<span class="c1">### group default flow control switches</span>
+<span class="n">uvm</span> <span class="o">=</span> <span class="n">on</span>
+<span class="n">cov</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">wave</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">gui</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">prof</span> <span class="o">=</span> <span class="n">off</span>
+
+<span class="c1">### group default analysis and elaboration options</span>
+<span class="n">custom_ana_opts</span> <span class="o">=</span>
+<span class="n">custom_elab_opts</span> <span class="o">=</span>
+
+<span class="p">[</span><span class="n">cov_group</span><span class="p">]</span>
+<span class="n">cov</span> <span class="o">=</span> <span class="n">on</span>
+
+<span class="p">[</span><span class="n">dump_group_module</span><span class="p">]</span>
+<span class="n">wave</span> <span class="o">=</span> <span class="n">on</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>DEFAULT section可以列出感兴趣的管控全部groups的options，options全集在proj.cfg文件的env_group section中</li>
+<li>该模块的tb_top叫module_tb，异于默认的test_top，同时所有的group在elaboration阶段都用module_tb，所以需要在DEFAULT section修改</li>
+<li>analysis与elaboration两个阶段的管控开关列在这里，只是给自己一个提示，方便修改，上面都是proj.cfg的默认值</li>
+<li>custom_ana_opts与custom_elab_opts也是为了方便修改列在这里</li>
+<li>该模块一共有三个group：DEFAULT, cov_group, dump_group，所以该模块会有三套编译结果</li>
+<li>cov_group里cov设置为on，虽然DEFAULT是off，但是因为优先级的原因cov_group里面cov = on，没有列出来的option与DEFAULT section一致，DEFAULT section里没有列出来的option与proj.cfg env_group section一致</li>
+</ul>
+</div>
+</div>
+<div class="section" id="case-cfg">
+<h2>case.cfg配置文件<a class="headerlink" href="#case-cfg" title="Permalink to this headline">¶</a></h2>
+<p>每个module只有一份的配置文件，用来配置模块级别在simulation阶段的特性，里面记录了该module的全部case，除了DEFAULT以外，每个section就是一个group，每个group都有自己一套独立的simulation结果，module owner负责修改</p>
+<div class="section" id="id4">
+<h3>[DEFAULT]<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>无论在cfg文件中是否写出来，每个cfg文件都会有一个DEFAULT section，该section的作用是提供所有其它section的默认值</p>
+<p>case所有的option的默认值在proj.cfg的env_case section里面都已经提供，但是proj.cfg是整个project层面的默认值，不允许module owner修改，所以DEFAULT这个section的目的就在于提供给module owner一个case层面的可以异于project层面的默认值</p>
+</div>
+<div class="section" id="case-name">
+<h3>[CASE_NAME]<a class="headerlink" href="#case-name" title="Permalink to this headline">¶</a></h3>
+<p>除了DEFAULT section之外，其他每个section就是一个case，用户需要在这里列出所有的case，同时可以在case section下面定制该case个性化的options</p>
+<p>case section, DEFAULT section, proj.cfg env_case section这三个section中可选的option是一致的，proj.cfg env_case section是一个全集，提供所有option的默认值，它们的优先级是case section &gt; DEFAULT section &gt; proj.cfg env_case section</p>
+<p>以下面一个case.cfg为例来说明用法：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># this config is used for case level, 2nd entry (simulation stage)</span>
+<span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>
+<span class="c1">### case default pre/post cmd in simulation</span>
+<span class="n">pre_cmd</span> <span class="o">=</span>
+<span class="n">post_cmd</span> <span class="o">=</span>
+
+<span class="c1">### case default simulation random times (No.)</span>
+<span class="n">random_times</span> <span class="o">=</span>
+
+<span class="c1">### case default seed (random/No.)</span>
+<span class="n">seed</span> <span class="o">=</span>
+
+<span class="c1">### case default flow control switches</span>
+<span class="n">uvm</span> <span class="o">=</span> <span class="n">on</span>
+<span class="n">cov</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">wave</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">wave_mem</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">wave_glitch</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">run_gui</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">prof_mem</span> <span class="o">=</span> <span class="n">off</span>
+<span class="n">prof_time</span> <span class="o">=</span> <span class="n">off</span>
+
+<span class="c1">### case default tools simulation options</span>
+<span class="n">custom_simu_opts</span> <span class="o">=</span>
+
+<span class="c1">### case default regression type</span>
+<span class="n">regression_type</span> <span class="o">=</span>
+
+<span class="p">[</span><span class="n">module__sanity_test</span><span class="p">]</span>
+<span class="n">regression_type</span> <span class="o">=</span> <span class="n">sanity</span>
+<span class="p">[</span><span class="n">module__direct_test</span><span class="p">]</span>
+<span class="n">regression_type</span> <span class="o">=</span> <span class="n">nightly</span><span class="p">,</span> <span class="n">weekly</span>
+<span class="n">group</span> <span class="o">=</span> <span class="n">dump_group_module</span>
+<span class="n">wave</span> <span class="o">=</span> <span class="n">on</span>
+<span class="n">wave_glitch</span> <span class="o">=</span> <span class="n">on</span>
+<span class="p">[</span><span class="n">module__random_test</span><span class="p">]</span>
+<span class="n">regression_type</span> <span class="o">=</span> <span class="n">nightly</span><span class="p">,</span> <span class="n">weekly</span>
+<span class="n">group</span> <span class="o">=</span> <span class="n">cov_group</span>
+<span class="n">random_times</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="p">[</span><span class="n">module__random_test2</span><span class="p">]</span>
+<span class="n">regression_type</span> <span class="o">=</span> <span class="n">weekly</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">12345</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>DEFAULT section可以列出感兴趣的管控全部case的options，options全集在proj.cfg文件的env_case section中</li>
+<li>该模块的没有使用全局管控的options开关，DEFAULT里面都是proj.cfg env_case section里的默认值</li>
+<li>该模块一共有4个case：module__sanity_test, module__direct_test, module__random_test, module__random_test2</li>
+<li>module__sanity_test<ul>
+<li>regression类型是sanity</li>
+<li>没有指定group就属于DEFAULT group，会使用DEFAULT group生成的simv进行simulation</li>
+</ul>
+</li>
+<li>module__direct_test<ul>
+<li>regression类型既是nightly，又是weekly</li>
+<li>属于group.cfg的dump_group_module，使用dump_group_module生成的simv进行simulation</li>
+<li>该case会dump波形，并且dump的波形会打开glitch</li>
+</ul>
+</li>
+<li>module_random_test<ul>
+<li>regression类型既是nightly，又是weekly</li>
+<li>属于group.cfg的cov_group，使用cov_group生成的simv进行simulation</li>
+<li>kick off 10次random的simulation，每次都使用不同的random seed</li>
+</ul>
+</li>
+<li>module_random_test2<ul>
+<li>regression类型是weekly</li>
+<li>使用12345的seed kick off 1次simulation</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="runner-pj">
+<h2>利用平台runner(pj)工作<a class="headerlink" href="#runner-pj" title="Permalink to this headline">¶</a></h2>
+<p>project owner配置好proj.cfg，module owner配置好group.cfg和case.cfg之后，来利用pj开始工作吧，具体说明请参考 <a class="reference internal" href="runner.html#runner"><span class="std std-ref">runner(pj)使用手册</span></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="runner.html" title="runner(pj)使用手册"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vp_intro.html" title="初识验证平台"
+             >previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Guanyu Yi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}
+INDEX
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+  <h2>Verification Platform</h2>
+  <p class="lead">This site targets at public service interface of Verification Platform.</p>
+</div>
+<div class="row-fluid marketing">
+  <div class="span6">
+    <h4><a href="/regr">{% bootstrap_button "Regression Report" size="lg" %}</a></h4>
+    <p>This app focuses on regression reports, which leads you to a magic world of regression.</p>
+  </div>
+  <div class="span6">
+    <h4><a href="/static/doc/_build/html/index.html">{% bootstrap_button "Document Platform" size="lg" %}</a></h4>
+    <p>This app describes our platform in detail.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<hr>
+<div style="float:right;">
+  <img src="{% static 'images/django_80x15.png' %}">
+  <img src="{% static 'images/postgresql_80x15.png' %}">
+</div>
+<!-- <br> -->
+<!-- <img style="float:right;" src="{% static 'images/panda_smile.jpg' %}"> -->
+{% endblock %}

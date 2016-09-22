@@ -1,0 +1,610 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>runner(pj)使用手册 &#8212; Verification Platform 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Verification Platform 1.0 documentation" href="index.html" />
+    <link rel="next" title="backend构架介绍" href="backend.html" />
+    <link rel="prev" title="配置文件使用手册" href="config.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="backend.html" title="backend构架介绍"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="配置文件使用手册"
+             accesskey="P">previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">runner(pj)使用手册</a><ul>
+<li><a class="reference internal" href="#pj">初始化pj</a></li>
+<li><a class="reference internal" href="#id1">子命令参数模式</a></li>
+<li><a class="reference internal" href="#id2">查看pj子命令</a></li>
+<li><a class="reference internal" href="#id3">pj子命令参数详细说明</a><ul>
+<li><a class="reference internal" href="#run">子命令run</a></li>
+<li><a class="reference internal" href="#regr">子命令regr</a></li>
+<li><a class="reference internal" href="#cov">子命令cov</a></li>
+<li><a class="reference internal" href="#flist">子命令flist</a></li>
+<li><a class="reference internal" href="#vplan">子命令vplan</a></li>
+<li><a class="reference internal" href="#reg">子命令reg</a></li>
+<li><a class="reference internal" href="#doc">子命令doc</a></li>
+<li><a class="reference internal" href="#clean">子命令clean</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id4">平台目录结构</a><ul>
+<li><a class="reference internal" href="#proj-root-share-cmn-config">PROJ_ROOT/share/cmn/config/</a></li>
+<li><a class="reference internal" href="#proj-root-verification-module">PROJ_ROOT/verification/MODULE</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">开发阶段说明</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="previous chapter">配置文件使用手册</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="backend.html"
+                        title="next chapter">backend构架介绍</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/runner.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="runner-pj">
+<span id="runner"></span><h1>runner(pj)使用手册<a class="headerlink" href="#runner-pj" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="pj">
+<h2>初始化pj<a class="headerlink" href="#pj" title="Permalink to this headline">¶</a></h2>
+<p>利用module来加载pj：</p>
+<p><code class="docutils literal"><span class="pre">$</span> <span class="pre">module</span> <span class="pre">load</span> <span class="pre">pj</span></code></p>
+<p>您也可以添加 <code class="docutils literal"><span class="pre">module</span> <span class="pre">load</span> <span class="pre">pj</span></code> 行到~/.cshrc将pj自动加载，module的详细用法可以参考 <a class="reference external" href="http://172.51.13.70/do/view/Main/Tools_configure">Tools工具配置</a></p>
+</div>
+<div class="section" id="id1">
+<h2>子命令参数模式<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>linux多参数tools基本都是子命令参数模式，如yum, apt-get, pip, git, svn等，这种参数模式的优点是将功能点按照子命令归类，模块化边界清晰。</p>
+<p>以svn为例，我们可以通过 <code class="docutils literal"><span class="pre">svn</span> <span class="pre">-h</span></code> 来查看svn所有的子命令：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ svn -h
+usage: svn &lt;subcommand&gt; [options] [args]
+Subversion command-line client, version 1.6.11.
+Type &#39;svn help &lt;subcommand&gt;&#39; for help on a specific subcommand.
+Type &#39;svn --version&#39; to see the program version and RA modules
+  or &#39;svn --version --quiet&#39; to see just the version number.
+
+Most subcommands take file and/or directory arguments, recursing
+on the directories.  If no arguments are supplied to such a
+command, it recurses on the current directory (inclusive) by default.
+
+Available subcommands:
+   add
+   blame (praise, annotate, ann)
+   cat
+   changelist (cl)
+   checkout (co)
+   cleanup
+   commit (ci)
+   copy (cp)
+   delete (del, remove, rm)
+   diff (di)
+   export
+   help (?, h)
+   import
+   info
+   list (ls)
+   lock
+   log
+   merge
+   mergeinfo
+   mkdir
+   move (mv, rename, ren)
+   propdel (pdel, pd)
+   propedit (pedit, pe)
+   propget (pget, pg)
+   proplist (plist, pl)
+   propset (pset, ps)
+   resolve
+   resolved
+   revert
+   status (stat, st)
+   switch (sw)
+   unlock
+   update (up)
+
+Subversion is a tool for version control.
+For additional information, see http://subversion.tigris.org/
+</pre></div>
+</div>
+<p>其中从add开始到update都是svn的子命令，每个子命令负责一类特征明显的操作，比如checkout负责从svn code repo中取code到本地所有相关的操作，checkout的行为根据checkout后面跟的参数的不同而不同。</p>
+<p>子命令checkout的参数可以通过 <code class="docutils literal"><span class="pre">svn</span> <span class="pre">checkout</span> <span class="pre">-h</span></code> 来查看：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ svn checkout -h
+checkout (co): Check out a working copy from a repository.
+usage: checkout URL[@REV]... [PATH]
+
+  If specified, REV determines in which revision the URL is first
+  looked up.
+
+  If PATH is omitted, the basename of the URL will be used as
+  the destination. If multiple URLs are given each will be checked
+  out into a sub-directory of PATH, with the name of the sub-directory
+  being the basename of the URL.
+
+  If --force is used, unversioned obstructing paths in the working
+  copy destination do not automatically cause the check out to fail.
+  If the obstructing path is the same type (file or directory) as the
+  corresponding path in the repository it becomes versioned but its
+  contents are left &#39;as-is&#39; in the working copy.  This means that an
+  obstructing directory&#39;s unversioned children may also obstruct and
+  become versioned.  For files, any content differences between the
+  obstruction and the repository are treated like a local modification
+  to the working copy.  All properties from the repository are applied
+  to the obstructing path.
+
+  See also &#39;svn help update&#39; for a list of possible characters
+  reporting the action taken.
+
+Valid options:
+  -r [--revision] ARG      : ARG (some commands also take ARG1:ARG2 range)
+                             A revision argument can be one of:
+                                NUMBER       revision number
+                                &#39;{&#39; DATE &#39;}&#39; revision at start of the date
+                                &#39;HEAD&#39;       latest in repository
+                                &#39;BASE&#39;       base rev of item&#39;s working copy
+                                &#39;COMMITTED&#39;  last commit at or before BASE
+                                &#39;PREV&#39;       revision just before COMMITTED
+  -q [--quiet]             : print nothing, or only summary information
+  -N [--non-recursive]     : obsolete; try --depth=files or --depth=immediates
+  --depth ARG              : limit operation by depth ARG (&#39;empty&#39;, &#39;files&#39;,
+                            &#39;immediates&#39;, or &#39;infinity&#39;)
+  --force                  : force operation to run
+  --ignore-externals       : ignore externals definitions
+
+Global options:
+  --username ARG           : specify a username ARG
+  --password ARG           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --trust-server-cert      : accept unknown SSL server certificates without
+                             prompting (but only with &#39;--non-interactive&#39;)
+  --config-dir ARG         : read user configuration files from directory ARG
+  --config-option ARG      : set user configuration option in the format:
+                                 FILE:SECTION:OPTION=[VALUE]
+                             For example:
+                                 servers:global:http-library=serf
+</pre></div>
+</div>
+<p>例如我们想checkout svn上某个特定changelist，就可以利用-r参数 <code class="docutils literal"><span class="pre">svn</span> <span class="pre">checkout</span> <span class="pre">URL</span> <span class="pre">-r</span> <span class="pre">CL</span></code> ；不想让checkout的信息打印在stdout上就可以利用-q参数 <code class="docutils literal"><span class="pre">svn</span> <span class="pre">checkout</span> <span class="pre">URL</span> <span class="pre">-q</span></code>。</p>
+<p>所以checkout子命令就只负责与checkout动作相关的所有操作，其他操作比如commit，merge会有其它子命令负责。</p>
+</div>
+<div class="section" id="id2">
+<h2>查看pj子命令<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ pj -h
+usage: pj [-h] [-l LOG] {run,regr,cov,flist,vplan,reg,doc,clean} ...
+
+positional arguments:
+  {run,regr,cov,flist,vplan,reg,doc,clean}
+    run                 sub cmd about running simulation
+    regr                sub cmd about kicking off regression
+    cov                 sub cmd about merging and analyzing coverage
+    flist                sub cmd about generating filelist
+    vplan               sub cmd about processing vplan
+    reg                 sub cmd about generating auto reg
+    doc                 sub cmd about generating natural docs
+    clean               sub cmd about cleaning output
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -l LOG                input log name &lt;MUST come first&gt;
+</pre></div>
+</div>
+<p>目前pj的全部子命令有：</p>
+<ul class="simple">
+<li>run：负责simulation相关的所有操作，包括verdi</li>
+<li>regr：负责regression相关</li>
+<li>cov：负责coverage相关</li>
+<li>flist：负责RTL、TB等filelist生成相关</li>
+<li>vplan：负责vplan相关</li>
+<li>reg：负责autoreg相关</li>
+<li>doc：负责NaturalDocs相关</li>
+<li>clean：负责clean output以及中间文件相关</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>pj子命令参数详细说明<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="run">
+<h3>子命令run<a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>查看子命令run的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>列出一个module下全部case：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-list</span></code></li>
+<li>pj允许在proj trunk的任意dir下面跑，所以需要得到module name信息</li>
+</ul>
+</li>
+<li>跑module下面的所有case：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-all</span></code></li>
+</ul>
+</li>
+<li>跑一个case：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-c</span> <span class="pre">CASE</span></code></li>
+</ul>
+</li>
+<li>跑一个case（支持case命名的隐式规则）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE(MODULE__***)</span></code></li>
+<li>如果一个case name的第一个双下划线 <code class="docutils literal"><span class="pre">__</span></code> 前面是module name，就无需通过 <code class="docutils literal"><span class="pre">-m</span></code> 指定module name</li>
+</ul>
+</li>
+<li>跑多个case：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE1</span> <span class="pre">CASE2</span> <span class="pre">...</span></code></li>
+</ul>
+</li>
+<li>只compilation(analysis+elaboration)，不simulation：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-comp</span></code></li>
+</ul>
+</li>
+<li>指定seed（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-seed</span> <span class="pre">SEED</span></code></li>
+</ul>
+</li>
+<li>random seed（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-seed</span> <span class="pre">random</span></code></li>
+</ul>
+</li>
+<li>dump波形（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-wave</span></code></li>
+</ul>
+</li>
+<li>dump mem（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-wave</span> <span class="pre">mem</span></code></li>
+</ul>
+</li>
+<li>波形显示glitch（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-wave</span> <span class="pre">glitch</span></code></li>
+</ul>
+</li>
+<li>打开verdi自动load波形：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-verdi</span></code></li>
+</ul>
+</li>
+<li>dump波形之后打开verdi自动load波形：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-wave</span> <span class="pre">-verdi</span></code></li>
+</ul>
+</li>
+<li>没有tb，供desinger用verdi查看rtl：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-verdi</span></code></li>
+</ul>
+</li>
+<li>用verdi设置断点，单步调试：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-gui</span></code></li>
+</ul>
+</li>
+<li>指定随机次数（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-rt</span> <span class="pre">TIMES</span></code></li>
+</ul>
+</li>
+<li>带coverage的simulation（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-cov</span></code></li>
+<li>会默认load vdb constraint file PROJ_MODULE/config/cov.filter</li>
+</ul>
+</li>
+<li>带效率分析报告的simulation（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-prof</span> <span class="pre">time</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-prof</span> <span class="pre">mem</span></code></li>
+</ul>
+</li>
+<li>自定义tools options（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-A</span> <span class="pre">ANA_OPTS</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-E</span> <span class="pre">ELAB_OPTS</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-E</span> <span class="pre">SIMU_OPTS</span></code></li>
+<li>在analysis, elaboration, simulation三个阶段添加用户自己需要的simulation tools的options</li>
+</ul>
+</li>
+</ul>
+<p>（*）group.cfg与case.cfg中如果配置了同样的功能，cmd中相同功能的参数可以去掉，都存在的情况下cmd args的优先级高</p>
+<p>根据*标注的特点，我们可以将绝大部分的cmd args放到cfg里面来配置，cmd会被简化成统一的样式 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span></code> 根据平台的这个特性，这里会有两种主要的工作方式：</p>
+<ul class="simple">
+<li>cfg based<ul>
+<li>平台的新特性</li>
+<li>cmd简单</li>
+<li>可以同时kick off不同options的case</li>
+<li>每个特殊case的配置不需要特别记录</li>
+<li>可以对所有case全局控制analysis, elaboration, simulation各个阶段</li>
+</ul>
+</li>
+<li>cmd args based<ul>
+<li>之前验证环境使用的比较传统的工作方式</li>
+<li>每个case都用cmd args的方式来控制</li>
+<li>学习成本低</li>
+</ul>
+</li>
+</ul>
+<p>大家可以根据自己的喜好来选择不同的工作方式，也可以各取所需，结合它们的特点混合使用</p>
+</div>
+<div class="section" id="regr">
+<h3>子命令regr<a class="headerlink" href="#regr" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>查看子命令regr的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>跑一个module的一种类型的regression：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-t</span> <span class="pre">REGR_TYPE</span></code></li>
+</ul>
+</li>
+<li>跑多个module的多种类型的regression：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE1</span> <span class="pre">MODULE2</span> <span class="pre">...</span> <span class="pre">-t</span> <span class="pre">REGR_TYPE1</span> <span class="pre">REGR_TYPE2</span> <span class="pre">...</span></code></li>
+</ul>
+</li>
+<li>默认的regression type是sanity，跑一个module的sanity可以简化为：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+</ul>
+</li>
+<li>跑一个module全部case的regression：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-t</span> <span class="pre">all</span></code></li>
+<li>all是一种内置的regression type，不需要用户配置</li>
+</ul>
+</li>
+<li>跑指定随机次数的regression：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rt</span> <span class="pre">TIMES</span></code></li>
+</ul>
+</li>
+<li>跑带coverage的regression：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-cov</span></code></li>
+</ul>
+</li>
+<li><strong>跑完regression自动显示web report：</strong><ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rpt</span></code></li>
+</ul>
+</li>
+</ul>
+<p>默认regression结束会在stdout上显示regression report table，并在output下生成regr_rpt文件。完整的包括所有人，所有历史的report可以访问 <a class="reference external" href="http://172.51.13.205:8000/regr">http://172.51.13.205:8000/regr</a> ，关于该report平台、platform server以及平台数据库请参考 <a class="reference internal" href="backend.html#backend"><span class="std std-ref">backend构架介绍</span></a></p>
+</div>
+<div class="section" id="cov">
+<h3>子命令cov<a class="headerlink" href="#cov" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>查看子命令cov的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>merge一个模块的coverage：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+</ul>
+</li>
+<li>利用verdi打开一个模块merge好的coverage：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-verdi</span></code></li>
+<li>会默认load vdb waiver PROJ_MODULE/config/*.el</li>
+</ul>
+</li>
+<li>生成coverage report：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rpt</span></code></li>
+<li>会默认load vdb waiver PROJ_MODULE/config/*.el</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="flist">
+<h3>子命令flist<a class="headerlink" href="#flist" title="Permalink to this headline">¶</a></h3>
+<p>flist是一套递归产生总体filelist的衍生规则，里面可以包含以下内容：</p>
+<ul class="simple">
+<li>包含路径的文件（相对路径或绝对路径）</li>
+<li>+define+宏定义</li>
+<li>+incdir+查询路径（相对路径或绝对路径）</li>
+<li>注释 （//或#行注释）</li>
+<li>-f FILE指定任意其它filelist</li>
+</ul>
+<p>rtl designer提供每个模块以及顶层的filelist，pj flist负责产生提供给design和verification使用的统一filelist。</p>
+<ul class="simple">
+<li>查看子命令flist的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">flist</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>根据提供的base files生成filelist：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">flist</span> <span class="pre">-f</span> <span class="pre">FILE1</span> <span class="pre">FILE2</span> <span class="pre">...</span></code></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="vplan">
+<h3>子命令vplan<a class="headerlink" href="#vplan" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>查看子命令vplan的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">vplan</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>反标PROJ_MODULE/vplan目录下的全部xml文件：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">vplan</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="reg">
+<h3>子命令reg<a class="headerlink" href="#reg" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>查看子命令reg的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">reg</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="doc">
+<h3>子命令doc<a class="headerlink" href="#doc" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>查看子命令doc的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">doc</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>利用NaturalDocs生成inline docs：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">doc</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="clean">
+<h3>子命令clean<a class="headerlink" href="#clean" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>查看子命令clean的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>clean一个module的output：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+<li>包括analysis、elaboration、simulation阶段的所有生成的文件以及所有case，请谨慎操作</li>
+</ul>
+</li>
+<li>clean一个case的simulation output：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-c</span> <span class="pre">CASE</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-c</span> <span class="pre">CASE</span></code> （case命名满足隐式规则情况下）</li>
+<li>包括这个case的所有seed目录</li>
+</ul>
+</li>
+<li>clean多个case的simulation output：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-c</span> <span class="pre">CASE1</span> <span class="pre">CASE2</span> <span class="pre">...</span></code></li>
+<li>包括多个case的所有seed目录</li>
+</ul>
+</li>
+<li>clean一个module的coverage：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-cov</span></code></li>
+<li>包括merge的结果以及coverage reports</li>
+</ul>
+</li>
+</ul>
+<p>pj将全部中间文件按类放置于PROJ_MODULE/output下，在了解这些分类目录的前提下，用rm也可以很方便的clean，目录结构功能细节请参考 <a class="reference internal" href="#id4">平台目录结构</a></p>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>平台目录结构<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>这里主要介绍和平台有关的目录结构</p>
+<div class="section" id="proj-root-share-cmn-config">
+<h3>PROJ_ROOT/share/cmn/config/<a class="headerlink" href="#proj-root-share-cmn-config" title="Permalink to this headline">¶</a></h3>
+<p>proj.cfg所在目录</p>
+</div>
+<div class="section" id="proj-root-verification-module">
+<h3>PROJ_ROOT/verification/MODULE<a class="headerlink" href="#proj-root-verification-module" title="Permalink to this headline">¶</a></h3>
+<p>每个模块的主要工作目录</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>MODULE
+├── c                         # 模块simulation所需要的c和asm文件
+├── config                    # module.cfg, case.cfg, cov.filter, \*.el等文件
+├── doc                       # NaturalDocs生成的doc
+├── flist                     # rtl.flist, tb.flist
+├── output                    # 所有仿真文件，临时文件，中间文件等不需要checkin的文件
+│   ├── __c_lib__             # c和asm编译出来的库文件
+│   ├── __cov__               # coverage相关文件
+│   │   ├── cm                # coverage数据
+│   │   └── merge             # coverage merge后的数据以及生成的report
+│   ├── __group__             # analysis+elaboration相关文件
+│   │   ├── DEFAULT           # DEFAULT group compilation相关文件，包括生成的simv
+│   │   ├── group1            # group1 group compilation相关文件，包括生成的simv
+│   │   └── group2
+│   └── module_sanity_test    # module_sanity_test case相关文件
+│       ├── 1                 # 以seed命令的目录，在该seed下simulation相关文件
+│       ├── 119974
+│       ├── 205236
+│       ├── 316245
+│       ├── 370561
+│       ├── 415104
+│       ├── 563042
+│       ├── 716947
+│       ├── 753549
+│       ├── 91185
+│       └── 979315
+├── reg                       # reg相关文件
+├── scr                       # custom script相关文件
+├── tb                        # tb所有文件
+└── vplan                     # vplan相关文件
+</pre></div>
+</div>
+<p>每个新模块在已经有c与tb目录的情况下，只需要完成 <strong>config目录下的module.cfg和case.cfg</strong> 还有 <strong>flist目录下的rtl.flist与tb.flist</strong> 就可以调用pj了</p>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>开发阶段说明<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<p>pj目前还在开发阶段，以上列出的所有子命令包括参数以及目录结构只是开发计划中的一小部分，有些子命令已经基本完备，例如run, regr, cov，有些子命令还没有开始全面开发，例如vplan, reg，因此该手册也会根据pj的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 <strong>yigy&#64;cpu.com.cn</strong></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="backend.html" title="backend构架介绍"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="配置文件使用手册"
+             >previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Guanyu Yi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

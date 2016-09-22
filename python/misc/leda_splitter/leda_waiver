@@ -1,0 +1,3 @@
+/workspace/cpu0/qiwq/cpu0/trunk/core/rtl/clock/clk_sel.v  , all  , ERROR  , ATPG_004 # test
+// test
+/workspace/cpu0/qiwq/cpu0/trunk/core/rtl/ao486/pipeline/write_string.v, 105, ERROR, XPROP_TERN_RHS

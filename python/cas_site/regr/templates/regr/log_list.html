@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+log_list_page
+{% endblock %}
+
+{% block content %}
+<p><i><a href="/regr">index</a> -> <a href="{% url 'regr:date' user %}">{{ user }}</a> -> <a href="{% url 'regr:proj' user date %}">{{ date }}</a> -> <a href="{% url 'regr:module' user date proj %}">{{proj}}</a> -> <a href="{% url 'regr:case' user date proj module %}">{{module}}</a> -> {{log_path}} </i></p>
+<br>
+<!-- {{log|linebreaks}} -->
+{% endblock %}

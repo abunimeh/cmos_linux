@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+proj_list_page
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function()
+  {
+  $("#my_table").dataTable({
+  "order": [[0, 'asc']],
+  });
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<p><i><a href="/regr">index</a> -> <a href="{% url 'regr:date' user %}">{{ user }}</a> -> {{ date }} </i></p>
+<table id="my_table" class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>Project Leader</th>
+      <th>Project Design Leader</th>
+      <th>Project Verif Leader</th>
+      <th>Passing Rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for proj, proj_pr_dic in proj_dic.items %}
+    <tr align="center">
+      <td><a href="{% url 'regr:module' user date proj.name %}">{{ proj.name }}</a></td>
+      <td>{{ proj.leader }}</td>
+      <td>{{ proj.dleader }}</td>
+      <td>{{ proj.vleader }}</td>
+      <td bgcolor="{{proj_pr_dic.bc}}">{{ proj_pr_dic.pr }}% ({{ proj_pr_dic.pn }}/{{ proj_pr_dic.tn }})</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

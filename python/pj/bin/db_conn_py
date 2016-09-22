@@ -1,0 +1,11 @@
+# Author: Guanyu Yi @ CPU Verification Platform Group
+# Email: yigy@cpu.com.cn
+# Description: pg db connection creator of security
+
+### modules
+import psycopg2
+
+### functions
+def gen_conn():
+    db = 'cpudb'
+    return psycopg2.connect(None, db, db, db, 'platform')

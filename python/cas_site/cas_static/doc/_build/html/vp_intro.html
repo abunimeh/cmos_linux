@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>初识验证平台 &#8212; Verification Platform 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Verification Platform 1.0 documentation" href="index.html" />
+    <link rel="next" title="配置文件使用手册" href="config.html" />
+    <link rel="prev" title="Welcome to Verification Platform’s documentation!" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="config.html" title="配置文件使用手册"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Verification Platform’s documentation!"
+             accesskey="P">previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">初识验证平台</a><ul>
+<li><a class="reference internal" href="#id2">这是做什么的</a></li>
+<li><a class="reference internal" href="#id3">为什么要用它</a></li>
+<li><a class="reference internal" href="#id6">它由哪几部分组成</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Verification Platform&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="next chapter">配置文件使用手册</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vp_intro.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="vp-intro">
+<span id="id1"></span><h1>初识验证平台<a class="headerlink" href="#vp-intro" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>这是做什么的<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>平台组是中心2016年6月成立的一个新组，验证平台是平台组的第一款产品。</p>
+<p>验证平台的目标是为中心的验证、设计人员搭建一套简单、自动、统一的验证环境。</p>
+</div>
+<div class="section" id="id3">
+<h2>为什么要用它<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>首先，在验证平台之前， <a class="reference external" href="http://172.51.13.70/do/view/Main/SimCmd2">验证一组</a> 、 <a class="reference external" href="http://172.51.13.70/do/view/Main/SimCmd">验证二组</a> 的环境在命令、路径和方法上有许多不统一的地方。</p>
+<p>这种不统一会造成许多问题，例如重复开发、迁移与集成困难等。</p>
+<p>为了避免这些问题，使验证、设计人员将更多的精力放在验证、设计本身上，需要一个统一的验证平台。</p>
+<p>其次，之前的验证环境的整体设计方法可以归结为面向过程的方式，按照项目需求在核心组件上直接改动。</p>
+<p>这种方式有很多缺点：</p>
+<ol class="arabic simple">
+<li>与项目的耦合度太高，不利于验证环境的迁移与独立开发；</li>
+<li>没有将变化的部分封装，不利于验证环境的拓展与维护；</li>
+<li>对核心组件的频繁改动，不利于验证环境的稳定性。</li>
+</ol>
+<p>新的平台设计方法采用的面向对象的设计方法，将整个验证环境抽象为平台，每个项目使用的验证环境可以看作是平台的实例化。</p>
+<p>这样做的优点：</p>
+<ol class="arabic simple">
+<li>将平台开发与项目开发解耦合，项目的环境需求抽象为平台需求在平台开发层面实现，平台可以任意的迁移与独立开发</li>
+<li>将验证环境与项目关联的部分封装成对用户友好的可配置文件，也是对用户开放的唯一接口文件，平台的拓展与维护只需要针对该配置文件的变化部分</li>
+<li>封装好的可配置文件是项目中唯一频繁改动的地方，配置的改变不会影响平台的稳定性</li>
+</ol>
+<p>除了设计方法上的差异，之前的验证环境缺少一个集中的数据库，所有的数据都是零散在各处的文本、数据，平台会建立一个统一的集中数据库将宝贵的数据收集起来，并且会开发相匹配web前端方便大家归类查询。</p>
+<p>总之，平台的设计宗旨是简单、自动、统一；设计原则是：可配置性、可复用性、可拓展性。</p>
+</div>
+<div class="section" id="id6">
+<h2>它由哪几部分组成<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<p>平台正式release之后会有如下的组成部分：</p>
+<ul class="simple">
+<li>config files<ul>
+<li>配置文件</li>
+<li>只有这一部分在proj trunk中，也只有这一部分允许用户修改</li>
+<li>详细用法请参考 <a class="reference internal" href="config.html#config"><span class="std std-ref">配置文件使用手册</span></a></li>
+</ul>
+</li>
+<li>runner(pj)<ul>
+<li>执行cmd</li>
+<li>详细用法请参考 <a class="reference internal" href="runner.html#runner"><span class="std std-ref">runner(pj)使用手册</span></a></li>
+</ul>
+</li>
+<li>backend<ul>
+<li>查看report</li>
+<li>详细用法请参考 <a class="reference internal" href="backend.html#backend"><span class="std std-ref">backend构架介绍</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="config.html" title="配置文件使用手册"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Verification Platform’s documentation!"
+             >previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Guanyu Yi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

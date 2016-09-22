@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>backend构架介绍 &#8212; Verification Platform 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Verification Platform 1.0 documentation" href="index.html" />
+    <link rel="prev" title="runner(pj)使用手册" href="runner.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="runner.html" title="runner(pj)使用手册"
+             accesskey="P">previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">backend构架介绍</a><ul>
+<li><a class="reference internal" href="#database">Database</a></li>
+<li><a class="reference internal" href="#web-framework">Web Framework</a></li>
+<li><a class="reference internal" href="#id2">如何访问平台</a></li>
+<li><a class="reference internal" href="#id3">开发阶段说明</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="runner.html"
+                        title="previous chapter">runner(pj)使用手册</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/backend.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="backend">
+<span id="id1"></span><h1>backend构架介绍<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h1>
+<p>平台的backend框架主要是给runner提供一些辅助功能来实现更好的用户体验，同时它还是数据中心，所有simulation、regression的数据通过一个web前端向外展示</p>
+<div class="section" id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<p>使用PostgreSQL9.5搭建的SQL Server，目前只有记录regression信息的一个database，所有regression的信息会汇总到这里</p>
+</div>
+<div class="section" id="web-framework">
+<h2>Web Framework<a class="headerlink" href="#web-framework" title="Permalink to this headline">¶</a></h2>
+<p>利用Django1.10, bootstrap3搭建的web框架，详细的regression report以及平台文档都是通过这个web框架对外展示</p>
+</div>
+<div class="section" id="id2">
+<h2>如何访问平台<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>在linux eda和windows虚拟机通过访问 <a class="reference external" href="http://172.51.13.205:8000">http://172.51.13.205:8000</a> 打开平台的index</p>
+<p>index页面如下图所示：</p>
+<blockquote>
+<div><img alt="_images/INDEX.png" src="_images/INDEX.png" />
+</div></blockquote>
+<p>进入regression report web app，会显示一个所有kick off regression的用户列表：</p>
+<blockquote>
+<div><img alt="_images/user_list.png" src="_images/user_list.png" />
+</div></blockquote>
+<p>点击想要查看report的用户，会显示一个日期入口列表，上半部分列出的是该日期merge到一起的regression report，下半部分列出的是每次的regression report：</p>
+<blockquote>
+<div><img alt="_images/date_list.png" src="_images/date_list.png" />
+</div></blockquote>
+<p>点击想要查看的merged report或者single report，会显示一个项目入口列表，列出该report所有的projects以及这个用户在这个report里面的project的passing rate：</p>
+<blockquote>
+<div><img alt="_images/proj_list.png" src="_images/proj_list.png" />
+</div></blockquote>
+<p>点击想要查看的project，会显示模块的入口列表，列出该project所有的modules以及module的passing rate：</p>
+<blockquote>
+<div><img alt="_images/module_list.png" src="_images/module_list.png" />
+</div></blockquote>
+<p>继续点击想要查看的module，会显示case的状态列表，列出该module已经被kick off的case以及case的status：</p>
+<blockquote>
+<div><img alt="_images/case_list.png" src="_images/case_list.png" />
+</div></blockquote>
+<p>点击case的status链接，将会指出相关的log路径。因为我们目前的workspace没有nas支持，eda之间的log不同步，后面在nas支持开启之后，会通过这个链接直接显示log内容：</p>
+<blockquote>
+<div><img alt="_images/log_list.png" src="_images/log_list.png" />
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>开发阶段说明<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>backend目前还在开发初期阶段，regression report只是一个初期试用版，因此该手册也会根据backend的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 <strong>yigy&#64;cpu.com.cn</strong></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="runner.html" title="runner(pj)使用手册"
+             >previous</a> |</li>
+<li><a href="http://172.51.13.205:8000">HOME</a> &raquo;</li>
+
+        <li class="nav-item nav-item-0"><a href="index.html">Verification Platform 1.0 documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Guanyu Yi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

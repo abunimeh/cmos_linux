@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}
+case_list_page
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function()
+  {
+  $("#my_table").dataTable({
+  "order": [[0, 'asc']],
+  });
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<p><i><a href="/regr">index</a> -> <a href="{% url 'regr:date' user %}">{{ user }}</a> -> <a href="{% url 'regr:proj' user date %}">{{ date }}</a> -> <a href="{% url 'regr:module' user date proj %}">{{proj}}</a> -> {{module}} </i></p>
+<table id="my_table" class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Case Name</th>
+      <th>Case Group</th>
+      <th>SVN CL</th>
+      <th>Seed</th>
+      <th>Status</th>
+      <th>Error Stage</th>
+      <th>Error Info</th>
+      <th>CPU Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sim, sim_info_dic in sim_dic.items %}
+    <tr align="center">
+      <td>{{ sim_info_dic.cn }}</td>
+      <td>{{ sim_info_dic.gn }}</td>
+      <td>{{ sim.proj_cl }}</td>
+      <td>{{ sim.seed }}</td>
+      <td bgcolor="{{sim_info_dic.bc}}"><a href="{% url 'regr:log' user date proj module sim_info_dic.status_log %}">{{ sim_info_dic.status }}</a></td>
+      <td>{{ sim_info_dic.error_stage }}</td>
+      <td>{{ sim_info_dic.error_info|linebreaks }}</td>
+      <td>{{ sim.simu_cpu_time }}s</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
