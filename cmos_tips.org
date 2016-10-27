@@ -455,3 +455,7 @@ verdi -undockWin -nologo
 verdi -autoalias -sv +v2k -ssv -ssy -undockWin -nologo
 ** nWave options
 nWave -ssf <fsdb> -sswr <novas_rc>
+
+* ubuntu touch
+** RW system image
+sudo touch /userdata/.writable_image
