@@ -480,3 +480,9 @@ reboot
 df -h
 ** pkg list
 build-essential
+
+* crontab
+crontab -l
+crontab -e
+# using absolute path both in crontab -e and scripts
+*/3 * * * * /usr/local/bin/python3.5 /home/firefly/ff_server/svn_monitor.py
