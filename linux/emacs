@@ -129,11 +129,11 @@
 (global-set-key (kbd "C-c d") 'delete-region)
 (global-set-key (kbd "C-c r") 'shell-resync-dirs)
 (global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
-(global-set-key (kbd "<f5>") 'revert-buffer)
-(global-set-key (kbd "<f6>") 'rename-uniquely)
-(global-set-key (kbd "<f7>") 'shell)
-(global-set-key (kbd "S-<f7>") 'ansi-term)
-(global-set-key (kbd "<f8>") 'flyspell-mode)
+(global-set-key (kbd "M-0") 'revert-buffer)
+(global-set-key (kbd "M-6") 'rename-uniquely)
+(global-set-key (kbd "M-7") 'shell)
+(global-set-key (kbd "C-M-7") 'ansi-term)
+(global-set-key (kbd "M-8") 'flyspell-mode)
 
 ;; emacs_server
 (server-start)
