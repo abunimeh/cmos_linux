@@ -467,8 +467,11 @@ sed -i 's/ro.setupwizard.network_required=true/ro.setupwizard.network_required=f
 ** linux deploy
 source path: mirrors.ustc.edu.cn/archlinuxarm
 ** razor(flo)
-rm -rf Books/ CalendarGooglePrebuilt/ CloudPrint2/ DMAgent/ Drive/ Editors* GoogleContactsSyncAdapter/ Hangouts/ Maps/ Music2/ NewsstandStub/ Photos/ PlayGames/ PlusOne/ PrebuiltGmail/ PrebuiltKeepStub/ Videos/ YouTube/
-rm -rf GCS/ GoogleBackupTransport/ GoogleContacts/ GoogleFeedback/ GoogleLoginService/ GoogleServicesFramework/ Phonesky/ PrebuiltGmsCore/
+rm apps after system boot once
+rm Velvet need to unset app assist default setting
+rm -rf Books/ CalendarGooglePrebuilt/ CloudPrint2/ DMAgent/ Drive/ Editors* GoogleContactsSyncAdapter/ GoogleEars/ Hangouts/ Maps/ Music2/ NewsstandStub/ PartnerBookmarksProvider/ Photos/ PlayGames/ PlusOne/ PrebuiltExchange3Google/ PrebuiltGmail/ PrebuiltKeepStub/ Videos/ YouTube/ talkback/
+rm -rf ConfigUpdater/ GCS/ GoogleBackupTransport/ GoogleContacts/ GoogleFeedback/ GoogleLoginService/ GoogleOneTimeInitializer/ GooglePartnerSetup/ GoogleServicesFramework/ Phonesky/ PrebuiltGmsCore/ SetupWizard/ Velvet/
 ** nakasi(grouper)
-rm -rf Books/ CalendarGooglePrebuilt/ CloudPrint2/ DMAgent/ Drive/ Editors* GoogleContactsSyncAdapter/ Maps/ Music2/ Newsstand/ Photos/ PlayGames/ PlusOne/ PrebuiltGmailGoogle/ PrebuiltKeepStub/ Videos/ YouTube/
-rm -rf GCS/ GoogleBackupTransport/ GoogleContacts/ GoogleFeedback/ GoogleLoginService/ GoogleServicesFramework/ Hangouts/ Phonesky/ PrebuiltGmsCore/ Velvet/ Wallet/
+rm apps after system boot once
+rm -rf Books/ CalendarGooglePrebuilt/ CloudPrint2/ ConfigUpdater/ DMAgent/ Drive/ Editors* GoogleContactsSyncAdapter/ GoogleEars/ Maps/ Music2/ Newsstand/ PartnerBookmarksProvider/ Photos/ PlayGames/ PlusOne/ PrebuiltEmailGoogle/ PrebuiltExchange3Google/ PrebuiltGmail/ Street/ Videos/ YouTube/ talkback/
+rm -rf GCS/ GoogleBackupTransport/ GoogleContacts/ GoogleFeedback/ GoogleLoginService/ GoogleOneTimeInitializer/ GooglePartnerSetup/ GoogleServicesFramework/ Hangouts/ Phonesky/ PrebuiltGmsCore/ SetupWizard/ Velvet/ Wallet/
