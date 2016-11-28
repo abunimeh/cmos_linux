@@ -115,16 +115,5 @@ class TestFindIter(unittest.TestCase):
         shutil.rmtree(self.base_dir)
         del self.base_dir
 
-class TestNestedDict(unittest.TestCase):
-    def test_nested_dict(self):
-        nor_dic = {}
-        nst_dic = pcom.NestedDict()
-        with self.assertRaises(KeyError):
-            nor_dic['a']['b'] = 'c'
-        nst_dic['a']['b'] = 'c'
-        self.assertIsInstance(nst_dic, dict)
-        self.assertIsInstance(nst_dic['a'], dict)
-        self.assertEqual(nst_dic['a']['b'], 'c')
-
 if __name__ == '__main__':
     unittest.main()

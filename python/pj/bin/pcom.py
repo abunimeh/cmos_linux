@@ -75,14 +75,6 @@ class NoDaemonProcess(mp.Process):
 class MyPool(mp.pool.Pool):
     Process = NoDaemonProcess
 
-class NestedDict(dict):
-    def __getitem__(self, item):
-        try:
-            return dict.__getitem__(self, item)
-        except KeyError:
-            value = self[item] = type(self)()
-            return value
-
 class ColoredFormatter(logging.Formatter):
     def format(self, record):
         LOG_COLORS = {'DEBUG': '\033[1;35m[DEBUG]\033[1;0m',
