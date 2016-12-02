@@ -11,13 +11,14 @@ import makefile_gen
 import filelst_gen
 import log_parser
 import fpga_signals_gen
+import vplan_proc
 import os
 import argparse
 import subprocess
 import shutil
-import sys
 import datetime as dt
 import texttable
+import json
 
 ##### functions
 def gen_args_top():
@@ -32,6 +33,9 @@ def gen_args_top():
     run_parser.add_argument('-m', dest='run_module', default='', help=h_str)
     h_str = ("toggle to elaborate all case groups")
     run_parser.add_argument('-comp', dest='run_comp', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("toggle to compile c code for module")
+    run_parser.add_argument('-cc', dest='run_cc', default=False,
                             action='store_true', help=h_str)
     h_str = ("toggle to list all cases in module")
     run_parser.add_argument('-list', dest='run_list', default=False,
@@ -70,6 +74,14 @@ def gen_args_top():
     run_parser.add_argument('-E', dest='run_elab_opts', default='', help=h_str)
     h_str = ("input simulation options")
     run_parser.add_argument('-S', dest='run_simu_opts', default='', help=h_str)
+    h_str = ("input custom C options")
+    run_parser.add_argument('-CC', dest='run_cc_opts', default='', help=h_str)
+    h_str = ("toggle to compilation from fresh")
+    run_parser.add_argument('-fresh', dest='run_fresh', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("toggle to perform x86 instruction generation before")
+    run_parser.add_argument('-x86_ins', dest='run_x86_ins', default=False,
+                            action='store_true', help=h_str)
     run_parser.set_defaults(func=main_run)
 
     h_str = ("sub cmd about kicking off regression")
@@ -97,25 +109,27 @@ def gen_args_top():
     cov_parser = subparsers.add_parser('cov', help=h_str)
     h_str = ("input coverage merge modules")
     cov_parser.add_argument('-m', dest='cov_module', default='', help=h_str)
-    h_str = ("toggle to kick off verdi to analyze coverage")
-    cov_parser.add_argument('-verdi', dest='cov_verdi', default=False,
-                             action='store_true', help=h_str)
+    h_str = ("toggle to merge coverage together")
+    cov_parser.add_argument('-merge', dest='cov_merge', default=False,
+                            action='store_true', help=h_str)
     h_str = ("toggle to generate coverage report")
     cov_parser.add_argument('-rpt', dest='cov_rpt', default=False,
-                             action='store_true', help=h_str)
+                            action='store_true', help=h_str)
+    h_str = ("toggle to kick off verdi to analyze coverage")
+    cov_parser.add_argument('-verdi', dest='cov_verdi', default=False,
+                            action='store_true', help=h_str)
     cov_parser.set_defaults(func=main_cov)
-
-    h_str = ("sub cmd about generating filelist")
-    flist_parser = subparsers.add_parser('flist', help=h_str)
-    h_str = ("input base files")
-    flist_parser.add_argument('-f', dest='flist_files', default=[], nargs='+',
-                             help=h_str)
-    flist_parser.set_defaults(func=main_flist)
 
     h_str = ("sub cmd about processing vplan")
     vplan_parser = subparsers.add_parser('vplan', help=h_str)
     h_str = ("input vplan module")
     vplan_parser.add_argument('-m', dest='vplan_module', default='',
+                              help=h_str)
+    h_str = ("toggle to generating or annotating vplan according to cfg files")
+    vplan_parser.add_argument('-proc', dest='vplan_proc', default=False,
+                              action='store_true', help=h_str)
+    h_str = ("input vplan case passing rate query dates")
+    vplan_parser.add_argument('-d', dest='vplan_days', type=int, default=1,
                               help=h_str)
     vplan_parser.set_defaults(func=main_vplan)
 
@@ -123,7 +137,10 @@ def gen_args_top():
     reg_parser = subparsers.add_parser('reg', help=h_str)
     h_str = ("input reg module")
     reg_parser.add_argument('-m', dest='reg_module', default='',
-                              help=h_str)
+                            help=h_str)
+    h_str = ("toggle to generate auto reg files")
+    reg_parser.add_argument('-gen', dest='reg_gen', default=False,
+                            action='store_true', help=h_str)
     reg_parser.set_defaults(func=main_reg)
 
     h_str = ("sub cmd about generating natural docs")
@@ -131,6 +148,9 @@ def gen_args_top():
     h_str = ("input doc module")
     doc_parser.add_argument('-m', dest='doc_module', default='',
                             help=h_str)
+    h_str = ("toggle to generate natural docs")
+    doc_parser.add_argument('-gen', dest='doc_gen', default=False,
+                            action='store_true', help=h_str)
     doc_parser.set_defaults(func=main_doc)
 
     h_str = ("sub cmd about cleaning output")
@@ -144,7 +164,38 @@ def gen_args_top():
     h_str = ("toggle to clean output coverage dir")
     clean_parser.add_argument('-cov', dest='clean_cov', default=False,
                               action='store_true', help=h_str)
+    h_str = ("toggle to clean leda dir")
+    clean_parser.add_argument('-leda', dest='clean_leda', default=False,
+                              action='store_true', help=h_str)
     clean_parser.set_defaults(func=main_clean)
+
+    h_str = ("sub cmd about generating environments")
+    gen_parser = subparsers.add_parser('gen', help=h_str)
+    h_str = ("input gen module")
+    gen_parser.add_argument('-m', dest='gen_module', default='', help=h_str)
+    h_str = ("input gen module dir")
+    gen_parser.add_argument('-d', dest='gen_module_dir', default='',
+                            help=h_str)
+    gen_parser.set_defaults(func=main_gen)
+
+    h_str = ("sub cmd about leda flow")
+    leda_parser = subparsers.add_parser('leda', help=h_str)
+    leda_gg_group = leda_parser.add_mutually_exclusive_group()
+    h_str = ("toggle to generate leda logs")
+    leda_gg_group.add_argument('-gen_log', dest='leda_gen_log', default=False,
+                             action='store_true', help=h_str)
+    h_str = ("input base rtl flist files")
+    leda_parser.add_argument('-f', dest='leda_flist_lst', default=[],
+                             nargs='+', help=h_str)
+    h_str = ("input black box flist files")
+    leda_parser.add_argument('-bbf', dest='leda_bb_flist_lst', default=[],
+                             nargs='+', help=h_str)
+    h_str = ("input base rtl top module")
+    leda_parser.add_argument('-t', dest='leda_top', default='', help=h_str)
+    h_str = ("toggle to kick off leda gui")
+    leda_gg_group.add_argument('-gui', dest='leda_gui', default=False,
+                             action='store_true', help=h_str)
+    leda_parser.set_defaults(func=main_leda)
 
     return parser.parse_args()
 
@@ -163,7 +214,10 @@ def rmtree(path_lst):
         LOG.info("canceled")
 
 def update_status(case_dic):
-    if case_dic['simu_status'] == 'passed':
+    if (case_dic['simu_status'] == 'passed' and
+        case_dic['elab_status'] == 'passed' and
+        case_dic['tb_ana_status'] == 'passed' and
+        case_dic['dut_ana_status'] == 'passed'):
         case_dic['status'] = case_dic['simu_status']
         case_dic['estage'] = 'NA'
         case_dic['einfo'] = case_dic['simu_error']
@@ -197,6 +251,7 @@ def main_run(args):
                   args.run_case_lst,
                   args.run_all,
                   args.run_comp,
+                  args.run_cc,
                   args.run_list,
                   args.run_wave,
                   args.run_verdi,
@@ -205,10 +260,13 @@ def main_run(args):
                   args.run_cov,
                   args.run_prof,
                   args.run_fpga,
+                  args.run_fresh,
+                  args.run_x86_ins,
                   args.run_seed,
                   args.run_ana_opts,
                   args.run_elab_opts,
-                  args.run_simu_opts)
+                  args.run_simu_opts,
+                  args.run_cc_opts)
         run.simulation()
         LOG.info("running simulation of {0} from {1} module done".format(
             args.run_case_lst, args.run_module))
@@ -230,50 +288,60 @@ def main_regr(args):
         raise Exception("missing main arguments")
 
 def main_cov(args):
-    if args.cov_module:
-        cov = Cov(args.cov_module,
-                  args.cov_verdi,
-                  args.cov_rpt)
-        cov.coverage()
+    if args.cov_module and (args.cov_merge or args.cov_rpt or args.cov_verdi):
+        ced, cfg_dic = env_booter.EnvBooter(LOG, args.cov_module).proj_env()
+        ef_str = gen_ef_str(ced)
+        cov_merge_vdb = ced['COV_MERGE_DIR']+os.sep+ced['MODULE']+'_merge.vdb'
+        cd_str = 'cd {0} && '.format(os.path.dirname(cov_merge_vdb))
+        cov_str = ''
+        if args.cov_merge:
+            vdb_lst = list(pcom.find_iter(ced['COV_CM_DIR'], '*.vdb', True))
+            if not vdb_lst:
+                raise Exception("no coverage data found")
+            merge_lst_file = ced['COV_MERGE_DIR']+os.sep+'merge_lst'
+            os.makedirs(os.path.dirname(merge_lst_file), exist_ok=True)
+            with open(merge_lst_file, 'w') as mf:
+                for vdb_dir in vdb_lst:
+                    mf.write(vdb_dir+os.linesep)
+                    if os.path.isdir(cov_merge_vdb):
+                        mf.write(cov_merge_vdb)
+            cov_str = ('{0} urg -full64 -f {1} -dbname {2} -noreport {3}'
+                       ''.format(cd_str, merge_lst_file,
+                                 os.path.basename(cov_merge_vdb), ef_str))
+            subprocess.run(cov_str, shell=True, check=True)
+            for cc_dir in pcom.find_iter(ced['COV_CM_DIR'], 'testdata', True):
+                shutil.rmtree(cc_dir, ignore_errors=True)
+        if args.cov_rpt:
+            if not os.path.isdir(cov_merge_vdb):
+                raise Exception("coverage merge dir {0} is NA".format(
+                    cov_merge_vdb))
+            cov_str = '{0} urg -full64 -dir {1} {2} -format both'.format(
+                cd_str, cov_merge_vdb, ef_str)
+            subprocess.run(cov_str, shell=True)
+        if args.cov_verdi:
+            if not os.path.isdir(cov_merge_vdb):
+                raise Exception("coverage merge dir {0} is NA".format(
+                    cov_merge_vdb))
+            cov_str = '{0} verdi -cov -covdir {1} {2} &'.format(
+                cd_str, cov_merge_vdb, ef_str)
+            subprocess.run(cov_str, shell=True)
         LOG.info("running coverage of {0} module done".format(args.cov_module))
     else:
         raise Exception("missing main arguments")
 
-def main_flist(args):
-    if args.flist_files:
-        dir_lst, vlog_lst, vhdl_lst = filelst_gen.FilelstGen(LOG).gen_file_lst(
-            args.flist_files)
-        with open('vlog_gen.flist', 'w') as vf:
-            for vlog_file in vlog_lst:
-                vf.write(vlog_file+os.linesep)
-            for dir_line in dir_lst:
-                vf.write(dir_line+os.linesep)
-        with open('vhdl_gen.flist', 'w') as vf:
-            for vhdl_file in vhdl_lst:
-                vf.write(vhdl_file+os.linesep)
-        LOG.info("generating filelist 'vlog_gen.flist' and 'vhdl_gen.flist' "
-                 "from files {0} done".format(args.flist_files))
-    else:
-        raise Exception("missing main arguments")
-
 def main_vplan(args):
-    if args.vplan_module:
-        ced, cfg_dic = env_booter.EnvBooter(args.vplan_module, LOG).boot_env()
-        ef_str = gen_ef_str(ced)
-        vdb_dir = ced['COV_MERGE_DIR']+os.sep+ced['MODULE']+'_merge.vdb'
-        vdb_str = '-dir {0} '.format(vdb_dir) if os.path.isdir(vdb_dir) else ''
-        vplan_str_lst = []
-        for vplan in pcom.find_iter(
-                ced['MODULE_VPLAN'], '*.xml', i_str='.ann.'):
-            vplan_str_lst.append('hvp annotate -lca -plan {0} {1} {2} '.format(
-                vplan, ef_str, vdb_str))
-        subprocess.run(' && '.join(vplan_str_lst), shell=True)
+    if args.vplan_module and args.vplan_proc:
+        ced, cfg_dic = env_booter.EnvBooter(LOG, args.vplan_module).proj_env()
+        vplan = vplan_proc.VPlanProc(LOG, ced, cfg_dic, args.vplan_days)
+        vplan.proc_vplan()
+        LOG.info("processing vplan of {0} module done".format(
+            args.vplan_module))
     else:
         raise Exception("missing main arguments")
 
 def main_reg(args):
-    if args.reg_module:
-        ced, cfg_dic = env_booter.EnvBooter(args.reg_module, LOG).boot_env()
+    if args.reg_module and args.reg_gen:
+        ced, cfg_dic = env_booter.EnvBooter(LOG, args.reg_module).proj_env()
         tb_top_lst = pcom.rd_cfg(cfg_dic['group'], 'DEFAULT', 'tb_top')
         tb_top = tb_top_lst[0] if tb_top_lst else 'test_top'
         reg_str_lst = []
@@ -285,8 +353,8 @@ def main_reg(args):
         raise Exception("missing main arguments")
 
 def main_doc(args):
-    if args.doc_module:
-        ced, cfg_dic = env_booter.EnvBooter(args.doc_module, LOG).boot_env()
+    if args.doc_module and args.doc_gen:
+        ced, cfg_dic = env_booter.EnvBooter(LOG, args.doc_module).proj_env()
         os.makedirs(ced['MODULE_DOC'], exist_ok=True)
         doc_str = ('NaturalDocs -i ${PROJ_MODULE} -o HTML ${MODULE_DOC} '
                    '-p ${MODULE_DOC}')
@@ -303,7 +371,7 @@ def main_clean(args):
                 "case {0} is not in standard format <module__case>, "
                 "so module name must be specified".format(
                     args.clean_case_lst[0]))
-        ced, cfg_dic = env_booter.EnvBooter(module_name, LOG).boot_env()
+        ced, cfg_dic = env_booter.EnvBooter(LOG, module_name).proj_env()
         if args.clean_cov:
             rmtree([ced['COV_DIR']])
         elif not args.clean_case_lst:
@@ -311,6 +379,101 @@ def main_clean(args):
         else:
             rmtree([ced['MODULE_OUTPUT']+os.sep+cc for cc in
                     args.clean_case_lst if cc])
+    elif args.clean_leda:
+        rm_rsp = input("leda dir will be cleaned, except leda.tcl{0}"
+                       "--> yes or no? ".format(os.linesep))
+        if rm_rsp in ('yes', 'y'):
+            ced, cfg_dic = env_booter.EnvBooter(LOG).boot_env()
+            for dir_name in pcom.find_iter(ced['SHARE_LEDA'], '*', True):
+                shutil.rmtree(dir_name, ignore_errors=True)
+            for file_name in pcom.find_iter(
+                    ced['SHARE_LEDA'], 'leda*', i_str='leda.tcl'):
+                os.remove(file_name)
+    else:
+        raise Exception("missing main arguments")
+
+def main_gen(args):
+    ced, cfg_dic = env_booter.EnvBooter(LOG).boot_env()
+    if args.gen_module:
+        module_dir = (args.gen_module_dir if
+                      args.gen_module_dir else ced['PROJ_VERIF'])
+        module_path = os.path.expandvars(module_dir+os.sep+args.gen_module)
+        if os.path.isdir(module_path):
+            raise Exception("module path you typed {0} has already existed"
+                            "".format(module_path))
+        shutil.copytree(ced['PJ_TEMPLATES']+os.sep+'module', module_path)
+        LOG.info(
+            "module {0} env is generated, and its path is {1}."
+            "{2}{2}It is necessary to modify the following files according to "
+            "pj doc (//http://172.51.13.205:8000/static/doc/_build/html/"
+            "index.html) to make it work:{2}{3}{2}{4}{2}{5}{2}{6}{2}{2}"
+            "It is optional to modify the following files according to "
+            "pj doc to make it work:{2}{7}{2}".format(
+                args.gen_module, module_path, os.linesep,
+                module_path+os.sep+'config'+os.sep+'case.cfg',
+                module_path+os.sep+'config'+os.sep+'group.cfg',
+                module_path+os.sep+'flist'+os.sep+'rtl.flist',
+                module_path+os.sep+'flist'+os.sep+'tb.flist',
+                module_path+os.sep+'flist'+os.sep+'bfm.flist'))
+    else:
+        raise Exception("missing main arguments")
+
+def main_leda(args):
+    ced, cfg_dic = env_booter.EnvBooter(LOG).boot_env()
+    leda_dir = ced['PROJ_SHARE']+os.sep+'leda'
+    if args.leda_gen_log and args.leda_flist_lst:
+        for leda_flist in args.leda_flist_lst:
+            if not os.path.isfile(leda_flist):
+                raise Exception(
+                    "base flist file {0} is NA".format(leda_flist))
+        os.makedirs(leda_dir, exist_ok=True)
+        df_tup = filelst_gen.FilelstGen(LOG).gen_file_lst(args.leda_flist_lst)
+        dir_lst, verilog_lst, vhdl_lst = df_tup
+        flist_file = leda_dir+os.sep+'leda.flist'
+        wl_file = leda_dir+os.sep+'leda_on_off_warning.log'
+        with open(flist_file, 'w') as lf, open(wl_file, 'w') as wf:
+            for lf_line in verilog_lst+vhdl_lst:
+                lf.write(lf_line+os.linesep)
+                with open(lf_line, errors='replace') as vf:
+                    vf_con = vf.read()
+                if 'leda off' in vf_con:
+                    wline = "leda off in file {0}".format(lf_line)
+                    LOG.warning(wline)
+                    wf.write(wline)
+                if 'leda on' in vf_con:
+                    wline = "leda on in file {0}".format(lf_line)
+                    LOG.warning(wline)
+                    wf.write(wline)
+            for ld_line in dir_lst:
+                lf.write(ld_line+os.linesep)
+        bb_str = ''
+        if args.leda_bb_flist_lst:
+            bb_con = ''
+            for leda_bb_flist in args.leda_bb_flist_lst:
+                if not os.path.isfile(leda_bb_flist):
+                    raise Exception(
+                        "black box flist file {0} is NA".format(leda_bb_flist))
+                with open(leda_bb_flist) as bf:
+                    bb_con += bf.read()+os.linesep
+            bb_flist_file = leda_dir+os.sep+'leda_bb.flist'
+            with open(bb_flist_file, 'w') as lbf:
+                lbf.write(bb_con)
+            bb_str = '-bbox_file {0} '.format(bb_flist_file)
+        leda_opts = ' '.join(pcom.rd_cfg(cfg_dic['proj'], 'leda', 'opts'))
+        top_str = args.leda_top if args.leda_top else pcom.rd_cfg(
+            cfg_dic['proj'], 'proj', 'rtl_top')[0]
+        leda_str = 'cd {0} && leda {1} -config {2} -f {3} {4} -top {5}'.format(
+            leda_dir, leda_opts, leda_dir+os.sep+'leda.tcl', flist_file,
+            bb_str, top_str)
+        with open(leda_dir+os.sep+'leda_cmd', 'w') as lcf:
+            lcf.write(leda_str+os.linesep)
+        subprocess.run(leda_str, shell=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    elif args.leda_gui:
+        leda_str = 'cd {0} && leda +gui -config {1} -l {2}'.format(
+            leda_dir, leda_dir+os.sep+'leda.tcl',
+            leda_dir+os.sep+'leda-logs'+os.sep+'leda.log')
+        subprocess.run(leda_str, shell=True)
     else:
         raise Exception("missing main arguments")
 
@@ -320,6 +483,7 @@ class Run(object):
                  run_case_lst,
                  run_all,
                  run_comp,
+                 run_cc,
                  run_list,
                  run_wave,
                  run_verdi,
@@ -328,10 +492,13 @@ class Run(object):
                  run_cov,
                  run_prof,
                  run_fpga,
+                 run_fresh,
+                 run_x86_ins,
                  run_seed,
                  run_ana_opts,
                  run_elab_opts,
-                 run_simu_opts):
+                 run_simu_opts,
+                 run_cc_opts):
         self.run_module = run_module
         self.run_case_lst = [cc.split('.')[0] for cc in run_case_lst if cc]
         if not run_module:
@@ -342,10 +509,15 @@ class Run(object):
                 "module name must be specified".format(self.run_case_lst[0]))
         self.run_all = run_all
         self.run_comp = run_comp
+        self.run_cc = run_cc
         self.run_list = run_list
         self.run_wave = run_wave
         self.run_verdi = run_verdi
         self.run_fpga = run_fpga
+        self.run_fresh = run_fresh
+        self.run_x86_ins = run_x86_ins
+        self.run_seed = run_seed
+        self.run_cc_opts = run_cc_opts
         self.ow_dic = {'ae': {}, 'su': {}}
         if run_seed:
             self.ow_dic['su']['seed'] = run_seed.strip()
@@ -381,15 +553,21 @@ class Run(object):
                 self.ow_dic['su']['prof_mem'] = 'on'
         if run_fpga:
             self.ow_dic['ae']['fpga'] = 'on'
+        self.ced, self.cfg_dic = env_booter.EnvBooter(
+            LOG, self.run_module, self.run_x86_ins).proj_env()
     def simulation(self):
-        ced, cfg_dic = env_booter.EnvBooter(self.run_module, LOG).boot_env()
         mk_dir, mk_file, cgs_dic, _ = makefile_gen.MakefileGen(
-            ced, cfg_dic, self.ow_dic, regr_flg=False, LOG=LOG).gen_makefile()
+            LOG, self.ced, self.cfg_dic, self.ow_dic, self.run_case_lst,
+            self.run_cc_opts, regr_flg=False, fresh_flg=self.run_fresh,
+            x86_ins_flg=self.run_x86_ins,
+            all_case_flg=self.run_all).gen_makefile()
         tar_str = ''
         if self.run_list:
             tar_str += 'list_all '
         if self.run_comp:
             tar_str += 'compile_all '
+        if self.run_cc:
+            tar_str += 'compile_c'
         if self.run_all:
             self.run_case_lst = list(cgs_dic)
         if self.run_case_lst:
@@ -402,18 +580,22 @@ class Run(object):
         if not tar_str:
             tar_str = 'analysis_dut_all '
         mk_str = 'cd {0} && make -f {1} {2}'.format(mk_dir, mk_file, tar_str)
-        subprocess.run(mk_str, check=True, shell=True)
+        proc = subprocess.Popen(mk_str, shell=True)
+        try:
+            proc.communicate()
+        except KeyboardInterrupt:
+            proc.communicate()
         if self.run_case_lst:
             rpt_rows = [['Case Name', 'Case Group', 'SVN CL', 'Seed', 'Status',
                          'Error Stage', 'CPU Time']]
             if self.run_fpga:
-                fsg = fpga_signals_gen.FPGASignalsGen(ced)
+                fsg = fpga_signals_gen.FPGASignalsGen(self.ced)
                 fsg.gen_h_lst()
             for run_case in self.run_case_lst:
                 for seed in cgs_dic[run_case][1:]:
                     cgs_tup = (run_case, cgs_dic[run_case][0], seed)
                     case_dic = update_status(log_parser.LogParser(
-                        ced, cfg_dic, cgs_tup, LOG=LOG).parse_log())
+                        LOG, self.ced, self.cfg_dic, cgs_tup).parse_log())
                     if self.run_fpga:
                         fsg.gen_fpga_signals(cgs_tup)
                     rpt_rows.append([case_dic['c_name'],
@@ -427,7 +609,7 @@ class Run(object):
             table.set_cols_width([30,7,7,7,7,7,7])
             table.add_rows(rpt_rows)
             sim_table = table.draw()
-            LOG.info('simulation report table:'+os.linesep+sim_table)
+            LOG.info("simulation report table:"+os.linesep+sim_table)
 
 class Regr(object):
     def __init__(self, regr_module_lst,
@@ -450,16 +632,16 @@ class Regr(object):
             self.ow_dic['ae']['fpga'] = 'on'
     def regression(self):
         for regr_module in self.regr_module_lst:
-            ced, cfg_dic = env_booter.EnvBooter(regr_module, LOG).boot_env()
+            ced, cfg_dic = env_booter.EnvBooter(LOG, regr_module).proj_env()
             subprocess.run('cd ${PROJ_ROOT} && svn up', shell=True, check=True,
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             LOG.info("updating svn to latest version done")
             mk_dir, mk_file, _, regr_dic = makefile_gen.MakefileGen(
-                ced, cfg_dic, self.ow_dic, regr_flg=True,
-                LOG=LOG).gen_makefile()
+                LOG, ced, cfg_dic, self.ow_dic, regr_flg=True).gen_makefile()
             mk_str = 'cd {0} && make -f {1} '.format(mk_dir, mk_file)
             rpt_rows = [['Case Name', 'Case Group', 'SVN CL', 'Seed', 'Status',
                          'Error Stage', 'CPU Time']]
+            rpt_dic_lst = []
             if self.regr_fpga:
                 fsg = fpga_signals_gen.FPGASignalsGen(ced)
                 fsg.gen_h_lst()
@@ -474,7 +656,7 @@ class Regr(object):
                         stderr=subprocess.PIPE)
                     ngs_tup = (name, group, seed)
                     case_dic = update_status(log_parser.LogParser(
-                        ced, cfg_dic, ngs_tup, LOG=LOG).parse_log())
+                        LOG, ced, cfg_dic, ngs_tup).parse_log())
                     if self.regr_fpga:
                         fsg.gen_fpga_signals(ngs_tup)
                     log_str = ("Case Name: {1}{0}Seed: {2}{0}Status: {3}"
@@ -495,60 +677,29 @@ class Regr(object):
                                      case_dic['status'],
                                      case_dic['estage'],
                                      case_dic['simu_cpu_time']+'s'])
+                    rpt_dic_lst.append({'name': case_dic['c_name'],
+                                        'seed': case_dic['seed'],
+                                        'status': case_dic['status']})
             if self.regr_rpt:
-                rpt_str = ('firefox platform:8000/regr/{0}/{1}/{2}/{3} &'
-                           ''.format(ced['USER_NAME'], dt.datetime.strftime(
-                               ced['TIME'], '%Y_%m_%d'),
-                                     ced['PROJ_NAME'], ced['MODULE']))
+                rpt_str = (
+                    'firefox platform:8000/regr/{0}/{1}/{2}/{3} &'.format(
+                        ced['USER_NAME'], dt.datetime.strftime(
+                            ced['TIME'], '%Y_%m_%d'), ced['PROJ_NAME'],
+                        ced['MODULE']))
                 subprocess.run(rpt_str, shell=True)
             else:
                 table = texttable.Texttable()
                 table.set_cols_width([30,7,7,7,7,7,7])
                 table.add_rows(rpt_rows)
                 regr_table = table.draw()
-                LOG.info('regression report table:'+os.linesep+regr_table)
+                LOG.info("regression report table:"+os.linesep+regr_table)
                 regr_rpt_file = ced['MODULE_OUTPUT']+os.sep+'regr_rpt'
                 with open(regr_rpt_file, 'w') as rf:
                     rf.write(regr_table)
-                LOG.info('regression report file {0}'.format(regr_rpt_file))
-
-class Cov(object):
-    def __init__(self, cov_module,
-                 cov_verdi,
-                 cov_rpt):
-        self.cov_module = cov_module
-        self.cov_verdi = cov_verdi
-        self.cov_rpt = cov_rpt
-    def coverage(self):
-        ced, cfg_dic = env_booter.EnvBooter(self.cov_module, LOG).boot_env()
-        ef_str = gen_ef_str(ced)
-        cov_merge_vdb = ced['COV_MERGE_DIR']+os.sep+ced['MODULE']+'_merge.vdb'
-        cd_str = 'cd {0} && '.format(os.path.dirname(cov_merge_vdb))
-        if self.cov_verdi:
-            if not os.path.isdir(cov_merge_vdb):
-                raise Exception("coverage merge dir {0} is NA".format(
-                    cov_merge_vdb))
-            cov_str = '{0} verdi -cov -covdir {1} {2} &'.format(
-                cd_str, cov_merge_vdb, ef_str)
-        elif self.cov_rpt:
-            if not os.path.isdir(cov_merge_vdb):
-                raise Exception("coverage merge dir {0} is NA".format(
-                    cov_merge_vdb))
-            cov_str = '{0} urg -full64 -dir {1} {2}'.format(
-                cd_str, cov_merge_vdb, ef_str)
-        else:
-            vdb_lst = list(pcom.find_iter(ced['COV_CM_DIR'], '*.vdb', True))
-            if not vdb_lst:
-                raise Exception("no coverage data found")
-            merge_lst_file = ced['COV_MERGE_DIR']+os.sep+'merge_lst'
-            os.makedirs(os.path.dirname(merge_lst_file), exist_ok=True)
-            with open(merge_lst_file, 'w') as mf:
-                for vdb_dir in vdb_lst:
-                    mf.write(vdb_dir+os.linesep)
-            cov_str = ('{0} urg -full64 -f {1} -dbname {2} -noreport {3}'
-                       ''.format(cd_str, merge_lst_file,
-                                 os.path.basename(cov_merge_vdb), ef_str))
-        subprocess.run(cov_str, shell=True)
+                regr_rpt_jf = ced['MODULE_OUTPUT']+os.sep+'regr_status.json'
+                with open(regr_rpt_jf, 'w')  as jf:
+                    json.dump(rpt_dic_lst, jf)
+                LOG.info("regression report file {0}".format(regr_rpt_file))
 
 ##### main
 def main():

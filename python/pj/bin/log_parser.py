@@ -8,23 +8,12 @@ import os
 import re
 import subprocess
 import json
-import db_conn
+import requests
+import datetime as dt
 
 ### classes
-class REOpter(object):
-    def __init__(self, re_str):
-        self.re_str = re_str
-    def match(self, re_pat):
-        self.re_result = re_pat.match(self.re_str)
-        return bool(self.re_result)
-    def search(self, re_pat):
-        self.re_result = re_pat.search(self.re_str)
-        return bool(self.re_result)
-    def group(self, i):
-        return self.re_result.group(i)
-
 class LogParser(object):
-    def __init__(self, ced, cfg_dic, ngs_tup, LOG=None):
+    def __init__(self, LOG, ced, cfg_dic, ngs_tup):
         self.LOG = LOG if LOG else pcom.gen_logger()
         self.ced = ced
         self.cfg_dic = cfg_dic
@@ -35,7 +24,7 @@ class LogParser(object):
         fp_str = pass_str+'|'+cp_str if cp_str else pass_str
         self.p_pat = re.compile(fp_str)
         fail_str = (r'\b[Ee]rror\b|\bERROR\b|\*E\b|'
-                    r'\bUVM_(ERROR|FATAL)\s+:\s+([^0\s]|0[^$])')
+                    r'\bUVM_(ERROR|FATAL)\s*:\s*[1-9]\d*')
         cf_str = '|'.join(pcom.rd_cfg(
             cfg_dic['case'], self.name, 'fail_string'))
         ff_str = fail_str+'|'+cf_str if cf_str else fail_str
@@ -70,7 +59,7 @@ class LogParser(object):
         module_name = self.ced['MODULE']+'___'+self.ced['PROJ_NAME']
         group_name = self.group+'___'+module_name
         case_name = self.name+'___'+group_name
-        self.case_dic = {'pub_date': self.ced['TIME'],
+        self.case_dic = {'pub_date': dt.datetime.timestamp(self.ced['TIME']),
                          'case_name': case_name,
                          'c_name': self.name,
                          'group_name': group_name,
@@ -96,54 +85,13 @@ class LogParser(object):
                           'elab_status': 'NA',
                           'elab_error': 'NA',
                           'comp_cpu_time': 'NA'}
-    def add_case_db(self):
-        conn = db_conn.gen_conn()
-        c = conn.cursor()
-        c.execute('insert into regr_user (name) values (%s) on conflict '
-                  '(name) do nothing;', (self.case_dic['user_name'],))
-        c.execute('insert into regr_proj (name) values (%s) on conflict '
-                  '(name) do nothing;', (self.case_dic['proj_name'],))
-        c.execute('insert into regr_module (name) values (%s) on conflict '
-                  '(name) do nothing;', (self.case_dic['module_name'],))
-        c.execute('insert into regr_group (name) values (%s) on conflict '
-                  '(name) do nothing;', (self.case_dic['group_name'],))
-        c.execute('insert into regr_case (name) values (%s) on conflict '
-                  '(name) do nothing;', (self.case_dic['case_name'],))
-        c.execute(
-            'insert into regr_sim (pub_date, proj_cl, seed, dut_ana_log, '
-            'dut_ana_status, dut_ana_error, tb_ana_log, tb_ana_status, '
-            'tb_ana_error, elab_log, elab_status, elab_error, simu_log, '
-            'simu_status, simu_error, comp_cpu_time, simu_cpu_time, '
-            'simu_time, case_id, group_id, module_id, proj_id, user_id) '
-            'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, '
-            '%s, %s, %s, %s, %s, '
-            '(select id from regr_case where name=%s), '
-            '(select id from regr_group where name=%s), '
-            '(select id from regr_module where name=%s), '
-            '(select id from regr_proj where name=%s), '
-            '(select id from regr_user where name=%s))', (
-                self.case_dic['pub_date'], self.case_dic['proj_cl'],
-                self.case_dic['seed'], self.case_dic['dut_ana_log'],
-                self.case_dic['dut_ana_status'],
-                self.case_dic['dut_ana_error'], self.case_dic['tb_ana_log'],
-                self.case_dic['tb_ana_status'], self.case_dic['tb_ana_error'],
-                self.case_dic['elab_log'], self.case_dic['elab_status'],
-                self.case_dic['elab_error'], self.case_dic['simu_log'],
-                self.case_dic['simu_status'], self.case_dic['simu_error'],
-                self.case_dic['comp_cpu_time'], self.case_dic['simu_cpu_time'],
-                self.case_dic['simu_time'], self.case_dic['case_name'],
-                self.case_dic['group_name'], self.case_dic['module_name'],
-                self.case_dic['proj_name'], self.case_dic['user_name']))
-        conn.commit()
-        c.close()
-        conn.close()
     def parse_dut_ana_log(self):
         if not os.path.isfile(self.dut_ana_log):
             return
         with open(self.dut_ana_log) as f:
             for line in f:
                 line = line.strip()
-                m = REOpter(line)
+                m = pcom.REOpter(line)
                 if m.search(self.i_pat):
                     continue
                 elif m.search(self.f_pat):
@@ -151,7 +99,7 @@ class LogParser(object):
         if self.dut_ana_error_lst:
             self.group_dic['dut_ana_status'] = 'failed'
             self.group_dic['dut_ana_error'] = os.linesep.join(
-                self.dut_ana_error_lst)
+                self.dut_ana_error_lst)[-1000:]
         else:
             self.group_dic['dut_ana_status'] = 'passed'
         self.LOG.debug("parsing group {0} analysis log file {1} done"
@@ -162,7 +110,7 @@ class LogParser(object):
         with open(self.tb_ana_log) as f:
             for line in f:
                 line = line.strip()
-                m = REOpter(line)
+                m = pcom.REOpter(line)
                 if m.search(self.i_pat):
                     continue
                 elif m.search(self.f_pat):
@@ -170,7 +118,7 @@ class LogParser(object):
         if self.tb_ana_error_lst:
             self.group_dic['tb_ana_status'] = 'failed'
             self.group_dic['tb_ana_error'] = os.linesep.join(
-                self.tb_ana_error_lst)
+                self.tb_ana_error_lst)[-1000:]
         else:
             self.group_dic['tb_ana_status'] = 'passed'
         self.LOG.debug("parsing group {0} analysis log file {1} done"
@@ -182,7 +130,7 @@ class LogParser(object):
             fin_flg = False
             for line in f:
                 line = line.strip()
-                m = REOpter(line)
+                m = pcom.REOpter(line)
                 if m.search(self.i_pat):
                     continue
                 elif m.search(self.f_pat):
@@ -192,7 +140,8 @@ class LogParser(object):
                     self.group_dic['comp_cpu_time'] = m.group(1)
         if self.elab_error_lst:
             self.group_dic['elab_status'] = 'failed'
-            self.group_dic['elab_error'] = os.linesep.join(self.elab_error_lst)
+            self.group_dic['elab_error'] = os.linesep.join(
+                self.elab_error_lst)[-1000:]
         elif not fin_flg:
             self.group_dic['elab_status'] = 'pending'
         else:
@@ -208,7 +157,7 @@ class LogParser(object):
             pass_flg = False
             for line in f:
                 line = line.strip()
-                m = REOpter(line)
+                m = pcom.REOpter(line)
                 if m.search(self.i_pat):
                     continue
                 elif m.search(self.f_pat):
@@ -224,7 +173,8 @@ class LogParser(object):
                     pass_flg = True
         if self.simu_error_lst:
             self.case_dic['simu_status'] = 'failed'
-            self.case_dic['simu_error'] = os.linesep.join(self.simu_error_lst)
+            self.case_dic['simu_error'] = os.linesep.join(
+                self.simu_error_lst)[-1000:]
         elif not fin_flg:
             self.case_dic['simu_status'] = 'pending'
         elif uvm_flg:
@@ -253,5 +203,6 @@ class LogParser(object):
                 json.dump(self.group_dic, jf)
         self.parse_simu_log()
         self.case_dic.update(self.group_dic)
-        self.add_case_db()
+        query_url = 'http://172.51.13.205:8000/regr/db_query/query_insert_case/'
+        requests.post(query_url, json=self.case_dic)
         return self.case_dic

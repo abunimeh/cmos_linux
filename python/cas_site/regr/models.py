@@ -17,6 +17,8 @@ class Proj(models.Model):
                                 related_name='vleader_fk', blank=True, null=True)
     def __str__(self):
         return self.name
+    def pname(self):
+        return self.name
 
 class Module(models.Model):
     name = models.CharField(max_length=100, unique=True)

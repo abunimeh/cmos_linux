@@ -23,6 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="Verification Platform 1.0 documentation" href="index.html" />
     <link rel="next" title="backend构架介绍" href="backend.html" />
     <link rel="prev" title="配置文件使用手册" href="config.html" /> 
@@ -58,11 +60,11 @@
 <li><a class="reference internal" href="#run">子命令run</a></li>
 <li><a class="reference internal" href="#regr">子命令regr</a></li>
 <li><a class="reference internal" href="#cov">子命令cov</a></li>
-<li><a class="reference internal" href="#flist">子命令flist</a></li>
 <li><a class="reference internal" href="#vplan">子命令vplan</a></li>
 <li><a class="reference internal" href="#reg">子命令reg</a></li>
 <li><a class="reference internal" href="#doc">子命令doc</a></li>
 <li><a class="reference internal" href="#clean">子命令clean</a></li>
+<li><a class="reference internal" href="#gen">子命令gen</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id4">平台目录结构</a><ul>
@@ -233,18 +235,18 @@ Global options:
 <h2>查看pj子命令<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令：</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ pj -h
-usage: pj [-h] [-l LOG] {run,regr,cov,flist,vplan,reg,doc,clean} ...
+usage: pj [-h] [-l LOG] {run,regr,cov,vplan,reg,doc,clean,gen} ...
 
 positional arguments:
-  {run,regr,cov,flist,vplan,reg,doc,clean}
+  {run,regr,cov,vplan,reg,doc,clean,gen}
     run                 sub cmd about running simulation
     regr                sub cmd about kicking off regression
     cov                 sub cmd about merging and analyzing coverage
-    flist                sub cmd about generating filelist
     vplan               sub cmd about processing vplan
     reg                 sub cmd about generating auto reg
     doc                 sub cmd about generating natural docs
     clean               sub cmd about cleaning output
+    gen                 sub cmd about generating environments
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -256,11 +258,11 @@ optional arguments:
 <li>run：负责simulation相关的所有操作，包括verdi</li>
 <li>regr：负责regression相关</li>
 <li>cov：负责coverage相关</li>
-<li>flist：负责RTL、TB等filelist生成相关</li>
 <li>vplan：负责vplan相关</li>
 <li>reg：负责autoreg相关</li>
 <li>doc：负责NaturalDocs相关</li>
 <li>clean：负责clean output以及中间文件相关</li>
+<li>gen：负责模板生成相关</li>
 </ul>
 </div>
 <div class="section" id="id3">
@@ -355,6 +357,15 @@ optional arguments:
 <li>在analysis, elaboration, simulation三个阶段添加用户自己需要的simulation tools的options</li>
 </ul>
 </li>
+<li>从头执行compilation与simulation的动作<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-fresh</span></code></li>
+<li>忽略之前compilation的结果，从头执行compilation阶段</li>
+</ul>
+</li>
+<li>生成fpga组相应的signal data数据（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-fpga</span></code></li>
+</ul>
+</li>
 </ul>
 <p>（*）group.cfg与case.cfg中如果配置了同样的功能，cmd中相同功能的参数可以去掉，都存在的情况下cmd args的优先级高</p>
 <p>根据*标注的特点，我们可以将绝大部分的cmd args放到cfg里面来配置，cmd会被简化成统一的样式 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span></code> 根据平台的这个特性，这里会有两种主要的工作方式：</p>
@@ -412,6 +423,10 @@ optional arguments:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rpt</span></code></li>
 </ul>
 </li>
+<li>regression支持fpga相应的signal data生成：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-fpga</span></code></li>
+</ul>
+</li>
 </ul>
 <p>默认regression结束会在stdout上显示regression report table，并在output下生成regr_rpt文件。完整的包括所有人，所有历史的report可以访问 <a class="reference external" href="http://172.51.13.205:8000/regr">http://172.51.13.205:8000/regr</a> ，关于该report平台、platform server以及平台数据库请参考 <a class="reference internal" href="backend.html#backend"><span class="std std-ref">backend构架介绍</span></a></p>
 </div>
@@ -423,7 +438,7 @@ optional arguments:
 </ul>
 </li>
 <li>merge一个模块的coverage：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-merge</span></code></li>
 </ul>
 </li>
 <li>利用verdi打开一个模块merge好的coverage：<ul>
@@ -438,28 +453,6 @@ optional arguments:
 </li>
 </ul>
 </div>
-<div class="section" id="flist">
-<h3>子命令flist<a class="headerlink" href="#flist" title="Permalink to this headline">¶</a></h3>
-<p>flist是一套递归产生总体filelist的衍生规则，里面可以包含以下内容：</p>
-<ul class="simple">
-<li>包含路径的文件（相对路径或绝对路径）</li>
-<li>+define+宏定义</li>
-<li>+incdir+查询路径（相对路径或绝对路径）</li>
-<li>注释 （//或#行注释）</li>
-<li>-f FILE指定任意其它filelist</li>
-</ul>
-<p>rtl designer提供每个模块以及顶层的filelist，pj flist负责产生提供给design和verification使用的统一filelist。</p>
-<ul class="simple">
-<li>查看子命令flist的全部参数：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">flist</span> <span class="pre">-h</span></code></li>
-</ul>
-</li>
-<li>根据提供的base files生成filelist：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">flist</span> <span class="pre">-f</span> <span class="pre">FILE1</span> <span class="pre">FILE2</span> <span class="pre">...</span></code></li>
-</ul>
-</li>
-</ul>
-</div>
 <div class="section" id="vplan">
 <h3>子命令vplan<a class="headerlink" href="#vplan" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -467,8 +460,16 @@ optional arguments:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">vplan</span> <span class="pre">-h</span></code></li>
 </ul>
 </li>
-<li>反标PROJ_MODULE/vplan目录下的全部xml文件：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">vplan</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+<li>自动生成或反标模块vplan目录下的vplan：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">vplan</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-proc</span></code></li>
+<li>当模块vplan目录下没有vplan时，proc起到生成的作用</li>
+<li>当模块vplan目录下有vplan是，proc起到反标的作用</li>
+</ul>
+</li>
+<li>指定case sheet的case抽取天数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">vplan</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-proc</span> <span class="pre">-d</span> <span class="pre">5</span></code></li>
+<li>默认抽取jenkins帐号kick off regression 1天的结果</li>
+<li>case sheet的CL Ver会指定版本号范围</li>
 </ul>
 </li>
 </ul>
@@ -480,6 +481,7 @@ optional arguments:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">reg</span> <span class="pre">-h</span></code></li>
 </ul>
 </li>
+<li>reg子命令功能开发中……</li>
 </ul>
 </div>
 <div class="section" id="doc">
@@ -490,7 +492,7 @@ optional arguments:
 </ul>
 </li>
 <li>利用NaturalDocs生成inline docs：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">doc</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">doc</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-gen</span></code></li>
 </ul>
 </li>
 </ul>
@@ -525,6 +527,25 @@ optional arguments:
 </li>
 </ul>
 <p>pj将全部中间文件按类放置于PROJ_MODULE/output下，在了解这些分类目录的前提下，用rm也可以很方便的clean，目录结构功能细节请参考 <a class="reference internal" href="#id4">平台目录结构</a></p>
+</div>
+<div class="section" id="gen">
+<h3>子命令gen<a class="headerlink" href="#gen" title="Permalink to this headline">¶</a></h3>
+<p>gen是方便用户生成相应的验证目录结构，运行pj的必须文件以及中心UVM template的子命令：</p>
+<ul class="simple">
+<li>查看子命令gen的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">gen</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>生成模块的验证目录结构：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">gen</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+</ul>
+</li>
+<li>指定相应的目录生成模块的验证目录结构：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">gen</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-d</span> <span class="pre">MODULE_DIR</span></code></li>
+<li>没有指定目录的情况下会在verification下面生成-m指定参数的文件夹</li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 <div class="section" id="id4">
@@ -574,7 +595,7 @@ optional arguments:
 </div>
 <div class="section" id="id5">
 <h2>开发阶段说明<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
-<p>pj目前还在开发阶段，以上列出的所有子命令包括参数以及目录结构只是开发计划中的一小部分，有些子命令已经基本完备，例如run, regr, cov，有些子命令还没有开始全面开发，例如vplan, reg，因此该手册也会根据pj的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 <strong>yigy&#64;cpu.com.cn</strong></p>
+<p>pj目前还在开发阶段，以上列出的所有子命令包括参数以及目录结构只是开发计划中的一小部分，有些子命令已经基本完备，例如run, regr, cov，有些子命令还没有开始全面开发，例如reg，因此该手册也会根据pj的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 <strong>yigy&#64;cpu.com.cn</strong></p>
 </div>
 </div>
 
@@ -604,7 +625,7 @@ optional arguments:
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
   </body>
 </html>

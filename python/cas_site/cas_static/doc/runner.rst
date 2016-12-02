@@ -138,18 +138,18 @@ pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令�
 ::
 
    $ pj -h
-   usage: pj [-h] [-l LOG] {run,regr,cov,flist,vplan,reg,doc,clean} ...
+   usage: pj [-h] [-l LOG] {run,regr,cov,vplan,reg,doc,clean,gen} ...
    
    positional arguments:
-     {run,regr,cov,flist,vplan,reg,doc,clean}
+     {run,regr,cov,vplan,reg,doc,clean,gen}
        run                 sub cmd about running simulation
        regr                sub cmd about kicking off regression
        cov                 sub cmd about merging and analyzing coverage
-       flist                sub cmd about generating filelist
        vplan               sub cmd about processing vplan
        reg                 sub cmd about generating auto reg
        doc                 sub cmd about generating natural docs
        clean               sub cmd about cleaning output
+       gen                 sub cmd about generating environments
    
    optional arguments:
      -h, --help            show this help message and exit
@@ -160,11 +160,11 @@ pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令�
 - run：负责simulation相关的所有操作，包括verdi
 - regr：负责regression相关
 - cov：负责coverage相关
-- flist：负责RTL、TB等filelist生成相关
 - vplan：负责vplan相关
 - reg：负责autoreg相关
 - doc：负责NaturalDocs相关
 - clean：负责clean output以及中间文件相关
+- gen：负责模板生成相关
 
 pj子命令参数详细说明
 ----------------------------------------
@@ -258,6 +258,15 @@ pj子命令参数详细说明
   + ``$ pj run -c CASE -E SIMU_OPTS``
   + 在analysis, elaboration, simulation三个阶段添加用户自己需要的simulation tools的options
 
+- 从头执行compilation与simulation的动作
+
+  + ``$ pj run -c CASE -fresh``
+  + 忽略之前compilation的结果，从头执行compilation阶段
+
+- 生成fpga组相应的signal data数据（*）：
+
+  + ``$ pj run -c CASE -fpga``
+
 （*）group.cfg与case.cfg中如果配置了同样的功能，cmd中相同功能的参数可以去掉，都存在的情况下cmd args的优先级高
 
 根据\*标注的特点，我们可以将绝大部分的cmd args放到cfg里面来配置，cmd会被简化成统一的样式 ``$ pj run -c CASE`` 根据平台的这个特性，这里会有两种主要的工作方式：
@@ -313,6 +322,10 @@ pj子命令参数详细说明
 
   + ``$ pj regr -m MODULE -rpt``
 
+- regression支持fpga相应的signal data生成：
+
+  + ``$ pj regr -m MODULE -fpga``
+
 默认regression结束会在stdout上显示regression report table，并在output下生成regr_rpt文件。完整的包括所有人，所有历史的report可以访问 http://172.51.13.205:8000/regr ，关于该report平台、platform server以及平台数据库请参考 :ref:`backend`
 
 子命令cov
@@ -323,7 +336,7 @@ pj子命令参数详细说明
 
 - merge一个模块的coverage：
 
-  + ``$ pj cov -m MODULE``
+  + ``$ pj cov -m MODULE -merge``
 
 - 利用verdi打开一个模块merge好的coverage：
 
@@ -335,41 +348,31 @@ pj子命令参数详细说明
   + ``$ pj cov -m MODULE -rpt``
   + 会默认load vdb waiver PROJ_MODULE/config/\*.el
 
-子命令flist
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-flist是一套递归产生总体filelist的衍生规则，里面可以包含以下内容：
-
-- 包含路径的文件（相对路径或绝对路径）
-- +define+宏定义
-- +incdir+查询路径（相对路径或绝对路径）
-- 注释 （//或#行注释）
-- -f FILE指定任意其它filelist
-
-rtl designer提供每个模块以及顶层的filelist，pj flist负责产生提供给design和verification使用的统一filelist。
-
-- 查看子命令flist的全部参数：
-
-  + ``$ pj flist -h``
-
-- 根据提供的base files生成filelist：
-
-  + ``$ pj flist -f FILE1 FILE2 ...``
-
 子命令vplan
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 - 查看子命令vplan的全部参数：
 
   + ``$ pj vplan -h``
 
-- 反标PROJ_MODULE/vplan目录下的全部xml文件：
+- 自动生成或反标模块vplan目录下的vplan：
 
-  + ``$ pj vplan -m MODULE``
+  + ``$ pj vplan -m MODULE -proc``
+  + 当模块vplan目录下没有vplan时，proc起到生成的作用
+  + 当模块vplan目录下有vplan是，proc起到反标的作用
+
+- 指定case sheet的case抽取天数：
+
+  + ``$ pj vplan -m MODULE -proc -d 5``
+  + 默认抽取jenkins帐号kick off regression 1天的结果
+  + case sheet的CL Ver会指定版本号范围
 
 子命令reg
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 - 查看子命令reg的全部参数：
 
   + ``$ pj reg -h``
+
+- reg子命令功能开发中……
 
 子命令doc
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -379,7 +382,7 @@ rtl designer提供每个模块以及顶层的filelist，pj flist负责产生提�
 
 - 利用NaturalDocs生成inline docs：
 
-  + ``$ pj doc -m MODULE``
+  + ``$ pj doc -m MODULE -gen``
 
 子命令clean
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -409,6 +412,24 @@ rtl designer提供每个模块以及顶层的filelist，pj flist负责产生提�
   + 包括merge的结果以及coverage reports
 
 pj将全部中间文件按类放置于PROJ_MODULE/output下，在了解这些分类目录的前提下，用rm也可以很方便的clean，目录结构功能细节请参考 `平台目录结构`_
+
+子命令gen
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+gen是方便用户生成相应的验证目录结构，运行pj的必须文件以及中心UVM template的子命令：
+
+- 查看子命令gen的全部参数：
+
+  + ``$ pj gen -h``
+
+- 生成模块的验证目录结构：
+
+  + ``$ pj gen -m MODULE``
+
+- 指定相应的目录生成模块的验证目录结构：
+
+  + ``$ pj gen -m MODULE -d MODULE_DIR``
+  + 没有指定目录的情况下会在verification下面生成-m指定参数的文件夹
 
 平台目录结构
 ----------------------------------------
@@ -458,4 +479,4 @@ PROJ_ROOT/verification/MODULE
 
 开发阶段说明
 ----------------------------------------
-pj目前还在开发阶段，以上列出的所有子命令包括参数以及目录结构只是开发计划中的一小部分，有些子命令已经基本完备，例如run, regr, cov，有些子命令还没有开始全面开发，例如vplan, reg，因此该手册也会根据pj的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 **yigy@cpu.com.cn**
+pj目前还在开发阶段，以上列出的所有子命令包括参数以及目录结构只是开发计划中的一小部分，有些子命令已经基本完备，例如run, regr, cov，有些子命令还没有开始全面开发，例如reg，因此该手册也会根据pj的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 **yigy@cpu.com.cn**

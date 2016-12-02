@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+<!-- start content -->
+{% block content %}
+  <div id="container" class="clearfix">
+    <div class="content">
+      <div id="slideshow">
+        <div id="slider">
+          <div class="oneByOne_item"> <div><img src="{% static 'images/slideshow/map-usa.png' %}" class="item_1_1" alt="" /></div>
+            <h3 class="text_1_1">Pj Tool</h3>
+            <p class="text_1_2 large">Pj tool can make your works easy and convenience---<a href="/static/doc/_build/html/runner.html">learn more</a></p>
+          </div>
+          <div class="oneByOne_item"> <div><img src="{% static 'images/slideshow/map-ger.png' %}" class="item_1_2" alt="" /></div>
+            <h3 class="text_1_1">Document Platform</h3>
+            <p class="text_1_2 large"> This app describes our platform in detail---<a href="/static/doc/_build/html/index.html">learn more</a></p>
+          </div>
+        </div>
+        <!-- end slider -->
+      </div>
+      <!-- end slideshow -->
+      <!-- start slideshow navigation -->
+      <div id="cyclenav" class="alignright"></div>
+      <!-- end slideshow navigation -->
+      <div id="quote" class="clear">
+        <div class="coda-slider-wrapper">
+          <div class="coda-slider preload" id="coda-slider-1">
+            <div class="panel">
+              <div class="panel-wrapper">
+                <div class="logos alignleft"><img src="{% static 'images/logos/verification_platform.png' %}"  /></div>
+                <div class="quote">
+                  <p class="quoter">Verification Platform</p>
+                  <p>This site targets at public service interface of Verification Platform</p>
+                   <br />
+                   <br />
+               </div>
+              </div>
+            </div>
+            <!-- end panel -->
+          </div>
+        </div>
+      </div>
+      <!-- end quote -->
+    </div>
+  </div>
+<!-- end content -->
+{% endblock %}
+
+
+{% block js %}
+
+<script type="text/javascript">
+$(function() {
+    $('#slider').cycle({
+        fx: 'scrollLeft',
+        timeout:5000,
+        speed:400,
+        pager:  '#cyclenav'
+    });
+
+    
+}); 
+</script>
+
+{% endblock%}
+
+

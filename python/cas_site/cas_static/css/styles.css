@@ -1,0 +1,181 @@
+@charset "utf-8";
+/* CSS Document */
+
+#background { background:url(../images/background.jpg) no-repeat center top; left:0; width:100%; min-width:100%; height:100%; min-height:100%; position:fixed; top:0; z-index:0; }
+.clear { clear: both; }
+.clearfix:after { content: "."; display:block; height:0; clear:both; visibility:hidden; }/* ----- clear fix for floats ----- */
+.clearfix { display:inline-block; }
+* html .clearfix { height:1%; }/* hides clearfix from IE-mac */
+.clearfix { display:block; }/* end hide from IE-mac */
+.alignleft { float:left; }
+.alignright { float:right; }
+.aligncenter { margin:auto; display:block; }
+.alignnone { clear:both; font-size:0; line-height:0; margin:0; padding:0; border:0; height:0; width:0; }
+.centered { text-align:center; }
+
+
+/* =Typography
+--------------------------------------------------------------------------------------------------------*/
+body { font: 13px Arial, Helvetica, sans-serif; color:#363636; }
+.bold {font-size:11px; font-weight:700; }
+strong { font-weight:700; }
+/* End Typography
+--------------------------------------------------------------------------------------------------------*/
+
+
+/* =Headings
+--------------------------------------------------------------------------------------------------------*/
+h1 { }
+h2 { font-size:60px; font-weight:normal; color:#000; font-family:'Trebuchet MS', Arial, Helvetica, sans-serif; line-height:60px; text-transform:uppercase; }
+h3 { font-size:24px; font-weight:normal; color:#000; font-family:'Trebuchet MS', Arial, Helvetica, sans-serif; line-height:24px; }
+h4 { font-size:16px; font-weight:normal; color:#000; font-family:'Trebuchet MS', Arial, Helvetica, sans-serif; line-height:20px; }
+/* End Headings
+--------------------------------------------------------------------------------------------------------*/
+
+
+/* =Branding
+--------------------------------------------------------------------------------------------------------*/
+p { padding:4px 0 5px 0; line-height:20px; }
+p a { color:#0073bf; text-decoration:none; border-bottom:1px dotted #0073bf; }
+p a:hover { text-decoration:none; border-bottom:1px solid #0073bf; }
+a:link,a:visited{text-decoration:none}
+#wrapper { width:100%; background:#dbdcdd; z-index:1; }
+#header { background:#fff url(../images/header-bg.jpg) top repeat-x; border-bottom:#d1d1d1 0px solid; position:fixed; top:0px; left:0px; width:100%; z-index:109; }
+#header-bottom { background:url(../images/bg-header-bottom.png) bottom repeat-x; height:4px; top:4px; position:relative; }
+#wrapper .header-content #CAS_site {float:left; margin:-10px 0px 6px -40px;}
+/* End Branding
+--------------------------------------------------------------------------------------------------------*/
+
+
+/* =Main Content
+--------------------------------------------------------------------------------------------------------*/
+#container { padding:231px 10px 45px 10px; width:1200px; margin:0 auto; z-index:1; position:relative; }
+.col1-2 { width:460px; padding:0 20px 0 0; float:left; }
+.col1-3 { width:300px; padding:0 20px 0 0; float:left; }
+.col2-3 { width:620px; padding:0 20px 0 0; float:left; }
+.col1-4 { width:220px; padding:0 20px 0 0; float:left; }
+.col3-4 { width:700px; padding:0 20px 0 0; float:left; }
+.last { padding:0 0 0 0; }
+.padding-top { padding-top:35px; }
+.padding-right { padding-right:15px; }
+.googlemaps { padding:11px 10px 45px 10px !important; }
+.copyrights{text-indent:-9999px;height:0;line-height:0;font-size:0;overflow:hidden;}
+#googlemaps { z-index:108 !important; display:block; position:relative; margin-top:167px; }
+#googlemaps-bottom { z-index:108 !important; display:block; position:relative; height:4px; background:#fff; border-bottom:1px solid #d2d2d2; }
+/* =End Main Content
+--------------------------------------------------------------------------------------------------------*/
+
+
+/* =Secondary Content
+--------------------------------------------------------------------------------------------------------*/
+.header-content { width:940px; margin:0 auto; padding:0 10px; }
+.header-content .ddsmoothmenu { width:auto; height:35px; }
+.topnavbar { padding-bottom:10px; background: url(../images/header-bg.jpg) top repeat-x; }
+.topnavbar a { line-height:40px; color:#eee; font-size:15px; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none; padding-bottom:1px; }
+.topnavbar a.padding-left { padding-right:20px; }
+.topnavbar .padding { padding:0 13px; }
+.topnavbar a.active { font-weight:700; }
+.topnavbar a:hover { color:#dbdcdd; text-decoration:none; }
+.content { width:1100px; height:500px;margin:36px 0px 0px 50px ;}
+.content h2 { padding-bottom:24px; }
+.content h2.no-subtext { padding-bottom:0px; }
+.content h2.second { padding-top:41px; display:inline-block; position:relative; width:100%; font-size:60px; line-height:60px; }
+.content h3 { padding:41px 0 17px 0; }
+.content h3 a { text-decoration:none; color:#000; }
+.content h3 a:hover { text-decoration:none; color:#363636; }
+.content h4 { padding:5px 0 4px 0; }
+.content h4 a { text-decoration:none; color:#000; }
+.content h4 a:hover { text-decoration:none; color:#0073bf; }
+.content p { line-height:20px; width:auto; }
+.content p.large { line-height:24px; font-size:18px; }
+.content p a.button { display:inline-block; padding:4px 16px 6px 15px; padding:5px 16px 5px 15px\9; background:url(../images/buttons/bg-button.jpg) repeat-x; border-bottom:0px; border:1px solid #206d9e; color:#fff; margin:5px 0 4px 0; }
+.content p a.button:hover { background:url(../images/buttons/bg-buttonHover.jpg) repeat-x; }
+ul.list, ul.check, ul.normal { padding:3px 0 2px 0; }
+/* End Secondary Content
+--------------------------------------------------------------------------------------------------------*/
+
+
+/* =Footer
+--------------------------------------------------------------------------------------------------------*/
+#footer { border-top:#d2d2d2 1px solid; width:100%; background:#fff; z-index:1; position:relative; }
+.footer-content { width:940px; margin:0 auto; padding:10px 10px 18px 10px; }
+.footer-content h3 { font-size:20px; padding:41px 0 17px 0; line-height:20px; }
+.footer-content p { padding:4px 15px 5px 0; }
+#footer-bottom { border-top:#d2d2d2 1px solid; height:40px; width:940px; position:relative; display:inline-block; margin:45px 0 0 0; padding:10px 0 0px 0; }
+#footer-bottom p { font-size:11px; padding:4px 0px 5px 0; }
+#footer-bottom p a { border-bottom:0px; color:#363636; }
+#footer-bottom p a:hover { border-bottom:0px; color:#0073bf; }
+#footer-bottom .padding { padding:0px 4px; color:#d2d2d2; }
+/* End Footer
+--------------------------------------------------------------------------------------------------------*/
+
+/* =Slideshow
+--------------------------------------------------------------------------------------------------------*/
+#slideshow { width:940px; height:auto; position:relative; z-index:99; background:none; overflow:visible; margin-left: 71px;}
+#slideshow-full-width-image { width:930px; height:auto; position:relative; z-index:99; background:#fff; border:#d2d2d2 1px solid; padding:4px; overflow:visible; }
+#slider { position:relative; z-index:100; overflow:visible; }
+#cyclenav { position:relative; display:inline-block; margin-bottom:10px; }
+#cyclenav-full-width-image { position:relative; display:inline-block; z-index:101; top:-40px; left:-30px; }
+#cyclenav a { font-size:12px; color:#363636; text-decoration:none; background:url(../images/bg-transparent.png) repeat; padding:4px 7px; border:1px solid #d2d2d2; margin-left:5px; }
+#cyclenav-full-width-image a { font-size:12px; margin-left:5px; text-decoration:none; padding:4px 7px; border:0px solid #fff; background:url(../images/bg-transparent-dark.png) repeat; color:#d2d2d2; }
+#cyclenav a:hover { color:#0074c0; }
+#cyclenav-full-width-image a:hover { color:#fff; }
+#cyclenav a.activeSlide { font-weight:700; background:#fff; }
+#cyclenav-full-width-image a.activeSlide { font-weight:700; background:url(../images/bg-transparent-dark2.png) repeat !important; color:#fff !important; }
+/* End Slideshow
+--------------------------------------------------------------------------------------------------------*/
+
+
+/* =Quote
+--------------------------------------------------------------------------------------------------------*/
+#quote { width:902px; height:auto; background:#fff; border:1px solid #d2d2d2; margin:45px 0 10px 71px; display:inline-block; padding:18px; position:relative; }
+.logos { padding:25px 0px 0 30px; display:inline-block; width:189px; }
+.quoter { font-size:24px; text-transform:capitalize; font-weight:bold; padding:0px 0 5px 0; }
+.quote { width:640px; display:inline-block; border-left:1px solid #d2d2d2; padding:10px 0 13px 20px; }
+/* End Quote
+--------------------------------------------------------------------------------------------------------*/
+
+/* Datatable list1
+----------------------------------------o----------------------------------------------------------------*/
+.domab {height: 50px;}
+.domab label {float:right; font-size:15px; font-style:blique;} 
+.wt100 label .dsearch {width: 172px; height: 22px;border-radius: 6px;margin-right: 5px;}
+.wt100 label #tsearch {border-radius: 6px;background: rgb(198, 192, 192);}
+.domab #button {float:left; height: 30px; border: 2px solid rgb(245, 244, 244); font-size: 16px; border-radius: 6px;} 
+.domab #label_list {float:left; position:relative; z-index:9999;height:3%; margin-left: 34px;}
+.domab #label_list .showul {list-style:none;display:none; position:absolute; left:80px; top:30px; background-color: #fff; border:1px solid #ccc; width:200px;}
+.domab #label_list .showcol {height: 30px; border: 2px solid rgb(245, 244, 244); font-size: 16px; border-radius: 6px;}
+.wt100 {position:relative; overflow:hidden; height:100%;}
+.wt100 .dataTables_info {font-size: 16px;}
+.wt100 .dataTables_paginate, .wt100 .paging_simple_numbers {font-size: 16px;}
+/* End Datatable
+--------------------------------------------------------------------------------------------------------*/
+
+/* Datatable list2
+----------------------------------------o----------------------------------------------------------------*/
+.domab1 {height: 50px;}
+.domab1 label {float:right; font-size:15px; font-style:blique;} 
+.wt1001 label .dsearch1 {width: 172px; height: 22px;border-radius: 6px;margin-right: 5px;}
+.wt1001 label #tsearch1 {border-radius: 6px;background: rgb(198, 192, 192);}
+.domab1 #button {float:left; height: 30px; border: 2px solid rgb(245, 244, 244); font-size: 16px; border-radius: 6px;} 
+.domab1 #label_list {float:left; position:relative; z-index:9999;height:3%; margin-left: 34px;}
+.domab1 #label_list .showul {list-style:none;display:none; position:absolute; left:80px; top:30px; background-color: #fff; border:1px solid #ccc; width:200px;}
+.domab1 #label_list .showcol {height: 30px; border: 2px solid rgb(245, 244, 244); font-size: 16px; border-radius: 6px;}
+.wt1001 {position:relative; overflow:hidden; height:100%;}
+.wt1001 .dataTables_info {font-size: 16px;}
+.wt1001 .dataTables_paginate, .wt1001 .paging_simple_numbers {font-size: 16px;}
+/* End Datatable
+--------------------------------------------------------------------------------------------------------*/
+
+#container .content > #items_list {margin-top: -55px; margin-left: -54px;}
+.datainp{ width:150px; height:30px; border:1px #ccc solid;border-radius: 6px;}
+.datep{ margin-bottom:40px;}
+#container .content #items_list span {font-size: 17px; margin-right: 3px;}
+#container .content #items_list select {height: 26px; margin-right: 9px; border-radius: 5px;}
+#container .content #items_list #module {margin-right: 25px;}
+#container .content #items_list .tsearch {margin-left: 10px; border-radius: 8px; height: 28px; width: 67px; background: lightgrey;}
+#container .content #show_all #show_tab1 {margin: 12px 76px 0px -57px;}
+#container .content #show_all #show_tab2 {margin: 12px 76px 0px -57px;}
+
+
+

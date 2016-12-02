@@ -59,25 +59,26 @@ def gen_args_top():
     h_str = ("input leda log file")
     parser.add_argument('-lf', dest='log_file', required=True, help=h_str)
     h_str = ("input waiver csv file")
-    parser.add_argument('-wf', dest='waiver_file', required=True, help=h_str)
+    parser.add_argument('-wfl', dest='waiver_file_lst', required=True,
+                        nargs='+', help=h_str)
     return parser.parse_args()
 
 args = gen_args_top()
-if not os.path.isfile(args.log_file):
-    os.sys.exit("signal file {0} is NA".format(args.log_file))
-if not os.path.isfile(args.waiver_file):
-    os.sys.exit("duplicated port signal file {0} is NA".format(
-        args.waiver_file))
-
 w_lst_lst = []
-with open(args.waiver_file) as f:
-    for line in f:
-        if '//' in line or '#' in line:
-            line = re.sub(r'(//|#).*$', '', line)
-        line = line.strip()
-        if not line:
-            continue
-        w_lst_lst.append([cc.strip() for cc in line.split(',') if cc.strip()])
+if not os.path.isfile(args.log_file):
+    os.sys.exit("leda log file {0} is NA".format(args.log_file))
+for waiver_file in args.waiver_file_lst:
+    if not os.path.isfile(waiver_file):
+        os.sys.exit("leda waiver file {0} is NA".format(waiver_file))
+    with open(waiver_file) as f:
+        for line in f:
+            if '//' in line or '#' in line:
+                line = re.sub(r'(//|#).*$', '', line)
+            line = line.strip()
+            if not line:
+                continue
+            w_lst_lst.append(
+                [cc.strip() for cc in line.split(',') if cc.strip()])
 
 with open(args.log_file, errors='replace') as f:
     l_lst = re.split(r'{0}\s+\d+:.*?{0}\s+\^+{0}'.format(os.linesep),
@@ -104,6 +105,11 @@ for head_line in l_lst[0].split(os.linesep):
     elif m.match(r'\d+\s+in\s+(.*)'):
         file_dic[m.group(1)] = {'num': 0}
 
+if 'user' not in info_dic:
+    info_dic['user'] = 'null'
+if 'date' not in info_dic:
+    info_dic['date'] = 'null'
+
 winfo_dic = copy.deepcopy(info_dic)
 wrule_dic = copy.deepcopy(rule_dic)
 wfile_dic = copy.deepcopy(file_dic)
@@ -112,25 +118,43 @@ wv_lst = []
 for v_item in l_lst[1:]:
     line = v_item.split(os.linesep)[0]
     m = REOpter(line)
-    if m.match(r'(.*?):(\d+):.*?\[(\w+)\]\s+(\w+):'):
-        line_lst = [m.group(1), m.group(2), m.group(3), m.group(4)]
+    if m.match(r'(.*?):(\d+):.*?\[(\w+)\]\s+(\w+):(.*)'):
+        line_lst = [m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)]
     else:
         os.sys.exit("line {0} is not obey leda report rules".format(line))
     for w_lst in w_lst_lst:
-        hit_flg = (True if line_lst == w_lst or
+        hit_flg = (True if line_lst[0:4] == w_lst[0:4] or
                    w_lst[1] == 'all' and line_lst[0] == w_lst[0] and
                    line_lst[2] == w_lst[2] and line_lst[3] == w_lst[3] else
                    False)
         if hit_flg:
-            winfo_dic[line_lst[2]] += 1
-            wrule_dic[line_lst[3]]['num'] += 1
-            wfile_dic[os.path.basename(line_lst[0])]['num'] += 1
+            if line_lst[2] not in winfo_dic:
+                winfo_dic[line_lst[2]] = 0
+            else:
+                winfo_dic[line_lst[2]] += 1
+            if line_lst[3] not in wrule_dic:
+                wrule_dic[line_lst[3]] = {'num': 1, 'desc': line_lst[4]}
+            else:
+                wrule_dic[line_lst[3]]['num'] += 1
+            if os.path.basename(line_lst[0]) not in wfile_dic:
+                wfile_dic[os.path.basename(line_lst[0])] = {'num': 1}
+            else:
+                wfile_dic[os.path.basename(line_lst[0])]['num'] += 1
             wv_lst.append(line)
             break;
     else:
-        info_dic[line_lst[2]] += 1
-        rule_dic[line_lst[3]]['num'] += 1
-        file_dic[os.path.basename(line_lst[0])]['num'] += 1
+        if line_lst[2] not in info_dic:
+            info_dic[line_lst[2]] = 0
+        else:
+            info_dic[line_lst[2]] += 1
+        if line_lst[3] not in rule_dic:
+            rule_dic[line_lst[3]] = {'num': 1, 'desc': line_lst[4]}
+        else:
+            rule_dic[line_lst[3]]['num'] += 1
+        if os.path.basename(line_lst[0]) not in file_dic:
+            file_dic[os.path.basename(line_lst[0])] = {'num': 1}
+        else:
+            file_dic[os.path.basename(line_lst[0])]['num'] += 1
         v_lst.append(line)
 
 log_file_base, log_file_ext = os.path.splitext(args.log_file)

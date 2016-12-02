@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap3',
     'regr.apps.RegrConfig',
 ]
 
@@ -72,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cas_site.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -81,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cpudb',
         'USER': 'cpudb',
-        'PASSWORD': 'cpudb',
+        'PASSWORD': 'cpudbcpudbcpudb',
         'HOST': 'platform',
         'PORT': '5432',
     }
@@ -130,9 +128,3 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'cas_static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-BOOTSTRAP3 = {
-    'jquery_url': '/static/DataTables/media/js/jquery.js',
-    'base_url': '/static/bootstrap/',
-    'javascript_in_head': True
-    }

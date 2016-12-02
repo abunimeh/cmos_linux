@@ -10,6 +10,7 @@ import multiprocessing as mp
 import multiprocessing.pool
 import logging
 import configparser
+import psutil
 
 ##### functions
 def gen_logger(con_level=logging.INFO, file_log=False):
@@ -30,16 +31,21 @@ def gen_logger(con_level=logging.INFO, file_log=False):
         logger.addHandler(file_log)
     return logger
 
-def gen_cfg(cfg_file_iter):
-    config = configparser.ConfigParser(allow_no_value=True)
+def gen_cfg(cfg_file_iter, d=('=', ':')):
+    config = configparser.ConfigParser(allow_no_value=True, delimiters=d)
     config.optionxform = str
+    config.SECTCRE = re.compile(r'\[\s*(?P<header>[^]]+?)\s*\]')
     for cfg_file in cfg_file_iter:
         config.read(cfg_file)
     return config
 
 def rd_cfg(cfg, sec, opt):
-    return [cc.strip() for cc in re.split(r',|{0}'.format(
-        os.linesep), os.path.expandvars(cfg.get(sec, opt, fallback=''))) if cc]
+    value_str = os.path.expandvars(cfg.get(sec, opt, fallback=''))
+    if not value_str:
+        value_str = ''
+    split_str = r'{0}'.format(os.linesep) if opt.endswith(
+        '_opts') else r',|{0}'.format(os.linesep)
+    return [cc.strip() for cc in re.split(split_str, value_str) if cc]
 
 def find_iter(path, pattern, dir_flg=False, cur_flg=False, i_str=''):
     if cur_flg:
@@ -64,6 +70,18 @@ def find_iter(path, pattern, dir_flg=False, cur_flg=False, i_str=''):
                 if os.access(root_find_name, os.R_OK):
                     yield root_find_name
 
+def pterminate(proc_pid):
+    proc = psutil.Process(proc_pid)
+    for sub_proc in proc.children(recursive=True):
+        sub_proc.terminate()
+    proc.terminate()
+
+def pkill(proc_pid):
+    proc = psutil.Process(proc_pid)
+    for sub_proc in proc.children(recursive=True):
+        sub_proc.kill()
+    proc.kill()
+
 ##### classes
 class NoDaemonProcess(mp.Process):
     def _get_daemon(self):
@@ -85,3 +103,15 @@ class ColoredFormatter(logging.Formatter):
         level_name = record.levelname
         msg = logging.Formatter.format(self, record)
         return msg.replace(level_name, LOG_COLORS.get(level_name, level_name))
+
+class REOpter(object):
+    def __init__(self, re_str):
+        self.re_str = re_str
+    def match(self, re_pat):
+        self.re_result = re_pat.match(self.re_str)
+        return bool(self.re_result)
+    def search(self, re_pat):
+        self.re_result = re_pat.search(self.re_str)
+        return bool(self.re_result)
+    def group(self, i):
+        return self.re_result.group(i)

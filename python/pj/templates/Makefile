@@ -7,30 +7,6 @@
 dir_guard = @mkdir -p ${@D}
 cd_guard = @cd ${@D}
 
-### EDA options
-vlogan_dut_ana_opts = vlogan -full64 \
--nc -kdb
-
-vlogan_tb_ana_opts = vlogan -full64 \
--nc -kdb \
--sverilog +v2k \
-+libext+.v+.V+.sv+.svi+.src+.svh \
-+define+vcs \
-+notimingcheck +nospecify \
--override_timescale=1ns/1ns \
-${UVM_HOME}/src/uvm.sv
-
-vcs_elab_opts = vcs -full64 \
--lca -kdb\
-+vcs+lic+wait \
--Mupdate \
-+acc +vpi \
-${UVM_HOME}/src/dpi/uvm_dpi.cc -CFLAGS -DVCS
-
-verdi_opts = verdi -autoalias -sv +v2k -ssv -ssy
-
-cc_opts = -w -pipe -fPIC -DVCS -O
-
 ### targets
 .PHONY: list_all
 list_all:
@@ -97,11 +73,11 @@ verdi_{{case}}__{{seed}}
 {%-for c in c_lst%}
 ${CLIB_DIR}/{{c}}.o: ${MODULE_C}/{{c}}.c
 	${dir_guard}
-	${cd_guard} && gcc ${cc_opts} -I${VCS_HOME}/include -c $<
+	${cd_guard} && gcc {{c_opts}} -I${VCS_HOME}/include -c $<
 {%-endfor%}
 ${CLIB_DIR}/uvm_dpi.o: ${UVM_HOME}/src/dpi/uvm_dpi.cc
 	${dir_guard}
-	${cd_guard} && g++ ${cc_opts} -I${VCS_HOME}/include -c $<
+	${cd_guard} && g++ {{c_opts}} -I${VCS_HOME}/include -c $<
 ${CLIB_DIR}/lib${MODULE}.so: \
 {%-for c in c_lst%}
 ${CLIB_DIR}/{{c}}.o \
@@ -109,6 +85,7 @@ ${CLIB_DIR}/{{c}}.o \
 ${CLIB_DIR}/uvm_dpi.o
 	${dir_guard}
 	${cd_guard} && gcc -shared -o $@ $^
+compile_c: ${CLIB_DIR}/lib${MODULE}.so
 {%-endif%}
 
 ### group targets
@@ -159,9 +136,10 @@ ${GROUP_DIR}/{{group.name}}/group_tbfl.pcl
 ${GROUP_DIR}/{{group.name}}/.dut_ana: \
 ${GROUP_DIR}/{{group.name}}/dut.flist \
 ${GROUP_DIR}/{{group.name}}/group_cfg.json \
-${SHARE_CMN_CONFIG}/proj.cfg
+${CMN_CONFIG}/proj.cfg
 	${cd_guard} && \
-	$({{group.ana_tool}}_dut_ana_opts) \
+	{{group.ana_tool}} \
+	{{group.da_opts}} \
 {%-if group.ca_opts%}
 	{{group.ca_opts}} \
 {%-endif%}
@@ -172,9 +150,10 @@ ${SHARE_CMN_CONFIG}/proj.cfg
 ${GROUP_DIR}/{{group.name}}/.tb_ana: \
 ${GROUP_DIR}/{{group.name}}/tb.flist \
 ${GROUP_DIR}/{{group.name}}/group_cfg.json \
-${SHARE_CMN_CONFIG}/proj.cfg
+${CMN_CONFIG}/proj.cfg
 	${cd_guard} && \
-	$({{group.ana_tool}}_tb_ana_opts) \
+	{{group.ana_tool}} \
+	{{group.ta_opts}} \
 {%-if group.ca_opts%}
 	{{group.ca_opts}} \
 {%-endif%}
@@ -185,7 +164,7 @@ ${SHARE_CMN_CONFIG}/proj.cfg
 {%for file_name, file_line_lst in group.file_dic|dictsort%}
 ${GROUP_DIR}/{{group.name}}/{{file_name}}: \
 ${GROUP_DIR}/{{group.name}}/group_cfg.json \
-${SHARE_CMN_CONFIG}/proj.cfg
+${CMN_CONFIG}/proj.cfg
 	${dir_guard}
 {%-for file_line in file_line_lst%}
 {%-if loop.first%}
@@ -201,7 +180,7 @@ ${GROUP_DIR}/{{group.name}}/simv: \
 ${GROUP_DIR}/{{group.name}}/{{file_name}} \
 {%-endfor%}
 {%-if c_lst%}
-${CLIB_DIR}/lib${MODULE}.so \
+compile_c \
 {%-endif%}
 ${GROUP_DIR}/{{group.name}}/.dut_ana \
 ${GROUP_DIR}/{{group.name}}/.tb_ana
@@ -209,7 +188,8 @@ ${GROUP_DIR}/{{group.name}}/.tb_ana
 {%-for pre_cmd in group.pre_cmd_lst%}
 	{{pre_cmd}} && \
 {%-endfor%}
-	$({{group.elab_tool}}_elab_opts) \
+	{{group.elab_tool}} \
+	{{group.e_opts}} \
 {%-if group.ce_opts%}
 	{{group.ce_opts}} \
 {%-endif%}
@@ -227,7 +207,7 @@ ${GROUP_DIR}/{{group.name}}/.tb_ana
 .PHONY: verdi_{{group.name}}
 verdi_{{group.name}}: ${GROUP_DIR}/{{group.name}}/.dut_ana
 	cd ${GROUP_DIR}/{{group.name}} && \
-	${verdi_opts} -simflow -lib work -nologo &
+	verdi {{group.w_opts}} -simflow -lib work -nologo &
 {%endfor%}
 
 ### case targets
@@ -292,7 +272,7 @@ ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}}/{{file_name}}:
 verdi_{{case.name}}__{{case.seed}}: ${GROUP_DIR}/{{case.group}}/simv
 	mkdir -p ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}} && \
 	cd ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}} && \
-	${verdi_opts} -simflow -simBin $< \
+	verdi {{case.w_opts}} -simflow -simBin $< \
 	-ssf ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}}/{{case.name}}__{{case.seed}}.fsdb \
 	-nologo &
 {%endfor%}

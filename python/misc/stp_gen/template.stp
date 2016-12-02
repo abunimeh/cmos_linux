@@ -1,0 +1,120 @@
+<session sof_file="">
+  <display_tree gui_logging_enabled="0">
+  {%- for inst_dic in inst_dic_lst %}
+    <display_branch instance="inst{{ inst_dic.inst_num }}" signal_set="USE_GLOBAL_TEMP" trigger="USE_GLOBAL_TEMP"/>
+  {%- endfor %}
+  </display_tree>
+  {%- for inst_dic in inst_dic_lst %}
+  <instance enabled="true" entity_name="sld_signaltap" is_auto_node="yes" is_expanded="true" name="inst{{ inst_dic.inst_num }}" source_file="sld_signaltap.vhd">
+    <node_ip_info instance_id="{{ inst_dic.inst_num+1 }}" mfg_id="110" node_id="0" version="6"/>
+    <position_info>
+      <single attribute="active tab" value="0"/>
+      <single attribute="setup horizontal scroll position" value="0"/>
+      <single attribute="setup vertical scroll position" value="0"/>
+    </position_info>
+    <signal_set global_temp="1" is_expanded="true" name="signal_set: {{ inst_dic.inst_time }}  #0">
+      <clock name="core:u_core|ao486:ao486_inst|clk" polarity="posedge" tap_mode="classic"/>
+      <config ram_type="AUTO" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="64" trigger_in_enable="no" trigger_out_enable="no"/>
+      <top_entity/>
+      <signal_vec>
+        <trigger_input_vec>
+        {%- for num, sig_dic_lst in inst_dic.group_dic|dictsort %}
+        {%- for sig_dic in sig_dic_lst %}
+          <wire name="{{ sig_dic.sig_name }}" tap_mode="classic"/>
+        {%- endfor %}
+        {%- endfor %}
+        </trigger_input_vec>
+        <data_input_vec>
+        {%- for num, sig_dic_lst in inst_dic.group_dic|dictsort %}
+        {%- for sig_dic in sig_dic_lst %}
+          <wire name="{{ sig_dic.sig_name }}" tap_mode="classic"/>
+        {%- endfor %}
+        {%- endfor %}
+        </data_input_vec>
+        <storage_qualifier_input_vec>
+        {%- for num, sig_dic_lst in inst_dic.group_dic|dictsort %}
+        {%- for sig_dic in sig_dic_lst %}
+          <wire name="{{ sig_dic.sig_name }}" tap_mode="classic"/>
+        {%- endfor %}
+        {%- endfor %}
+        </storage_qualifier_input_vec>
+      </signal_vec>
+      <presentation>
+        <unified_setup_data_view>
+        {%- for num, sig_dic_lst in inst_dic.group_dic|dictsort %}
+          <node alias="{{num}}" is_selected="false" level-0="alt_or" name="Group{{num}}" order="msb_to_lsb" state="collapse" storage-0="alt_or" storage-1="alt_or" storage-2="alt_or" type="unknown">
+          {%- for sig_dic in sig_dic_lst %}
+            <node data_index="{{sig_dic.index}}" duplicate_name_allowed="false" is_data_input="true" is_node_valid="false" is_selected="false" is_storage_input="true" is_trigger_input="true" level-0="dont_care" name="{{sig_dic.sig_name}}" pwr_level-0="dont_care" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="{{sig_dic.index}}" tap_mode="classic" trigger_index="{{sig_dic.index}}" type="unknown"/>
+          {%- endfor %}
+          </node>
+        {%- endfor %}
+        </unified_setup_data_view>
+        <data_view>
+        {%- for num, sig_dic_lst in inst_dic.group_dic|dictsort %}
+          <bus alias="{{num}}" is_selected="false" level-0="alt_or" name="Group{{num}}" order="msb_to_lsb" state="collapse" storage-0="alt_or" storage-1="alt_or" storage-2="alt_or" type="unknown">
+          {%- for sig_dic in sig_dic_lst %}
+            <net data_index="{{sig_dic.index}}" duplicate_name_allowed="false" is_data_input="true" is_node_valid="false" is_selected="false" is_storage_input="true" is_trigger_input="true" level-0="dont_care" name="sig_dic.sig_name" pwr_level-0="dont_care" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="{{sig_dic.index}}" tap_mode="classic" trigger_index="{{sig_dic.index}}" type="unknown"/>
+          {%- endfor %}
+          </bus>
+        {%- endfor %}
+        </data_view>
+        <setup_view>
+        {%- for num, sig_dic_lst in inst_dic.group_dic|dictsort %}
+          <bus alias="{{num}}" is_selected="false" level-0="alt_or" name="Group{{num}}" order="msb_to_lsb" state="collapse" storage-0="alt_or" storage-1="alt_or" storage-2="alt_or" type="unknown">
+          {%- for sig_dic in sig_dic_lst %}
+            <net data_index="{{sig_dic.index}}" duplicate_name_allowed="false" is_data_input="true" is_node_valid="false" is_selected="false" is_storage_input="true" is_trigger_input="true" level-0="dont_care" name="sig_dic.sig_name" pwr_level-0="dont_care" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="{{sig_dic.index}}" tap_mode="classic" trigger_index="{{sig_dic.index}}" type="unknown"/>
+          {%- endfor %}
+          </bus>
+        {%- endfor %}
+        </setup_view>
+        <trigger_in_editor/>
+        <trigger_out_editor/>
+      </presentation>
+      <trigger attribute_mem_mode="false" gap_record="true" global_temp="1" name="trigger: {{inst_dic.inst_time}}  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_type="circular">
+        <power_up_trigger position="pre" storage_qualifier_disabled="no"/>
+        <events use_custom_flow_control="no">
+          <level enabled="yes" name="condition1" type="basic">
+            <power_up enabled="yes">
+            </power_up>
+            <op_node/>
+          </level>
+        </events>
+        <storage_qualifier_events>
+          <transitional>1111111111111111111111111111111111111111111111111111111111111111
+            <pwr_up_transitional>1111111111111111111111111111111111111111111111111111111111111111</pwr_up_transitional>
+          </transitional>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+        </storage_qualifier_events>
+      </trigger>
+    </signal_set>
+  </instance>
+  {%- endfor %}
+  <mnemonics/>
+  <static_plugin_mnemonics/>
+  <global_info>
+    <single attribute="active instance" value="1"/>
+    <single attribute="config widget visible" value="1"/>
+    <single attribute="data log widget visible" value="1"/>
+    <single attribute="hierarchy widget visible" value="1"/>
+    <single attribute="instance widget visible" value="1"/>
+    <single attribute="jtag widget visible" value="1"/>
+    <single attribute="lock mode" value="0"/>
+    <multi attribute="column width" size="23" value="34,70,220,74,68,78,95,96,98,98,88,88,110,101,101,101,101,101,101,101,101,107,78"/>
+    <multi attribute="frame size" size="2" value="1904,998"/>
+    <multi attribute="jtag widget size" size="2" value="378,137"/>
+  </global_info>
+</session>

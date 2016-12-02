@@ -10,7 +10,7 @@ import re
 
 ### classes
 class FilelstGen(object):
-    def __init__(self, LOG=None):
+    def __init__(self, LOG):
         self.LOG = LOG if LOG else pcom.gen_logger()
         self.file_dic = collections.OrderedDict()
         self.dir_lst = []

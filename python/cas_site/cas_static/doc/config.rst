@@ -28,6 +28,7 @@
   + 配置文件覆盖优先级高
   + 里面设置了模块所有的case以及每个case的特性
   + case是基于simulation阶段的概念，每个case只能使用一个simv进行simulation，所以每个case对应一个group进行simulation
+  + 同级目录下的case_*.cfg也会被pj拿到并解析，但是DEFAULT section仍然是case.cfg的DEFAULT
 
 配置文件格式
 ----------------------------------------
@@ -73,6 +74,10 @@ proj_module section用来配置与module有关参数
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 当kick off regression的时候，regression option负责统一管控 **覆盖** 所有默认的相同option的值，regression_opts option负责统一管控 **添加** 所有默认的相同option的值
 
+[vplan_sheets], [vplan_column_width]
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+vplan是由验证相关人员维护的一套用于表征验证进度与验证完备性的文档，作为sign off的标准之一存在，目前是以excel表格的方式存放。这两个section是控制中心自行开发的vplan的格式，分别控制vplan内部的sheets的表格头名称与宽度，不可随意更改
+
 [env_group]
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 env_group section用来提供所有group.cfg中可能用到的全部option的默认值，由于proj.cfg的优先级低于group.cfg的优先级，因此group.cfg中出现的相同option的值会覆盖这个section中的默认值
@@ -83,6 +88,14 @@ env_group section用来提供所有group.cfg中可能用到的全部option的默
   + 该配置会影响生成的filelist
   + 该配置为空的时候，pj自动产生用来analysis的filelist仅由rtl.flist与tb.flist构成
   + 该配置非空，除了模块自己的 会按照TYPE将所有子模块flist目录下的TYPE.flist拿来用以构成analysis用的filelist
+
+- flist是一套递归产生总体filelist的衍生规则，里面可以包含以下内容：
+
+  + 包含路径的文件（相对路径或绝对路径）
+  + +define+宏定义
+  + +incdir+查询路径（相对路径或绝对路径）
+  + 注释 （//或#行注释）
+  + -f FILE指定任意其它filelist
 
 - vhdl_tool, ana_tool, elab_tool, dbg_tool
 
@@ -105,7 +118,7 @@ env_group section用来提供所有group.cfg中可能用到的全部option的默
   + 用来指定tb的top module名字
   + 默认值是test_top
 
-- uvm, cov, wave, gui, prof
+- uvm, cov, wave, gui, prof, fpga
 
   + analysis和elaboration阶段的主要管控开关，管控每个group的行为
   + 分别是uvm方法学环境参数开关、覆盖率收集参数开关、dump波形开关、设置断点单步执行开关、收集效率分析报告开关
@@ -119,7 +132,7 @@ env_group section用来提供所有group.cfg中可能用到的全部option的默
 
   + 用户自定义添加的analysis阶段与elaboration阶段tool的options
 
-- cov_elab_opts, wave_elab_opts, gui_elab_opts, prof_elab_opts
+- cov_elab_opts, wave_elab_opts, gui_elab_opts, prof_elab_opts, fpga_ana_opts
 
   + 分别受cov, wave, gui, prof开关控制的tool options
   + 当开关是on的时候会添加到相应阶段的tool otpions中
@@ -210,6 +223,11 @@ log parser解析原理是：
 - log所有行没有fail_string，检测到pass string，该case是pass
 - log所有行没有fail_string，没有检测到pass string，该case是unknown
 - 对于uvm的case不需要pass_string，检测到没有UVM_ERROR与UVM_FATAL，而且case正常结束，该case是pass
+
+- vplan_desc, vplan_owner, vplan_priority
+
+  + 对应vplan中test_case那张sheet的相应case的描述部分
+  + 分别反标case的description, owner, priority
 
 group.cfg配置文件
 ----------------------------------------

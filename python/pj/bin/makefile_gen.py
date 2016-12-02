@@ -13,26 +13,46 @@ import copy
 import random
 import json
 import pickle
+import subprocess
 
 ### functions
 def check_seed(seed, seed_set):
     if seed in seed_set:
-        check_seed(seed+1, seed_set)
+        return check_seed(seed+1, seed_set)
     else:
         return seed
 
 ### classes
 class MakefileGen(object):
-    def __init__(self, ced, cfg_dic, ow_dic, regr_flg=False, LOG=None):
+    def __init__(self, LOG, ced, cfg_dic, ow_dic, case_lst=[], cc_opts='',
+                 regr_flg=False, fresh_flg=False, x86_ins_flg=False,
+                 all_case_flg=False):
         self.LOG = LOG if LOG else pcom.gen_logger()
         self.ced = ced
         self.cfg_dic = cfg_dic
         self.ow_dic = ow_dic
+        self.case_lst = case_lst
+        self.cc_opts = cc_opts
         self.regr_flg = regr_flg
+        self.fresh_flg = fresh_flg
+        self.x86_ins_flg = x86_ins_flg
         self.cgs_dic = {}
         self.regr_dic = {}
         self.vip_dep_file_lst = list(
             pcom.find_iter(self.ced['PROJ_VERIF']+os.sep+'vip', '*.sv'))
+        if self.x86_ins_flg:
+            scr_xi_dir = self.ced['CMN_SCRIPTS']+os.sep+'X86_INS'
+            ins_gen_file = scr_xi_dir+os.sep+'ins_gen.py'
+            if not os.path.isfile(ins_gen_file):
+                raise Exception(
+                    "ins_gen.py file {0} is NA".format(ins_gen_file))
+            self.test_gen_file = scr_xi_dir+os.sep+'test_gen.pl'
+            if not os.path.isfile(self.test_gen_file):
+                raise Exception(
+                    "test_gen.pl file {0} is NA".format(self.test_gen_file))
+            self.cfg_lst = list(
+                pcom.find_iter(self.ced['MODULE_CONFIG'], 'case_*.cfg'))
+        self.all_case_flg = all_case_flg
     def rd_cfg(self, cfg_key, sec, opt):
         return pcom.rd_cfg(self.cfg_dic[cfg_key], sec, opt)
     def chk_group_cfg(self, gn):
@@ -46,7 +66,7 @@ class MakefileGen(object):
                 ojson = json.load(jf)
         self.cfg_dic['group']['DEFAULT'].update(gn_cfg)
         njson = dict(self.cfg_dic['group']['DEFAULT'])
-        if ojson != njson:
+        if ojson != njson or self.fresh_flg:
             with open(group_cfg_json, 'w') as jf:
                 json.dump(njson, jf)
     def gen_smf_lst(self, gn):
@@ -102,12 +122,10 @@ class MakefileGen(object):
                        self.rd_cfg('group', gn, 'prof') == ['on'] else [])
         fpga_ca_lst = (self.rd_cfg('group', gn, 'fpga_ana_opts') if
                        self.rd_cfg('group', gn, 'fpga') == ['on'] else [])
-        ca_opts = ' '.join(ca_opts_lst+fpga_ca_lst)
-        group_dic['ca_opts'] = ca_opts
-        ce_opts = ' '.join(ce_opts_lst+cov_ce_lst+wave_ce_lst+gui_ce_lst+
-                           prof_ce_lst)
-        group_dic['ce_opts'] = ce_opts.replace(
-            '{{group_name}}', group_dic['name'])
+        group_dic['ca_opts'] = ' '.join(ca_opts_lst+fpga_ca_lst)
+        group_dic['ce_opts'] = ' '.join(
+            ce_opts_lst+cov_ce_lst+wave_ce_lst+gui_ce_lst+prof_ce_lst).replace(
+                '{{group_name}}', group_dic['name'])
         dut_flist_lst = ([self.ced['MODULE_FLIST']+os.sep+'rtl.flist'] +
                          self.gen_smf_lst(gn))
         df_tup = filelst_gen.FilelstGen(self.LOG).gen_file_lst(dut_flist_lst)
@@ -121,18 +139,31 @@ class MakefileGen(object):
         group_dic['tb_dep_file_lst'] = self.vip_dep_file_lst + list(
             pcom.find_iter(self.ced['MODULE_TB'], '*.sv'))
         vhdl_tool_lst = self.rd_cfg('group', gn, 'vhdl_tool')
-        group_dic['vhdl_tool'] = (vhdl_tool_lst[0] if vhdl_tool_lst else
-                                   'vhdlan')
+        group_dic['vhdl_tool'] = (
+            vhdl_tool_lst[0] if vhdl_tool_lst else 'vhdlan')
+        group_dic['vhdl_da_opts'] = ' '.join(self.rd_cfg(
+            'group', gn, 'vt_{0}_dut_ana_opts'.format(group_dic['vhdl_tool'])))
+        group_dic['vhdl_ta_opts'] = ' '.join(self.rd_cfg(
+            'group', gn, 'vt_{0}_tb_ana_opts'.format(group_dic['vhdl_tool'])))
         ana_tool_lst = self.rd_cfg('group', gn, 'ana_tool')
-        group_dic['ana_tool'] = (ana_tool_lst[0] if ana_tool_lst else
-                                   'vlogan')
+        group_dic['ana_tool'] = ana_tool_lst[0] if ana_tool_lst else 'vlogan'
+        group_dic['da_opts'] = ' '.join(self.rd_cfg(
+            'group', gn, 'at_{0}_dut_ana_opts'.format(group_dic['ana_tool'])))
+        group_dic['ta_opts'] = ' '.join(self.rd_cfg(
+            'group', gn, 'at_{0}_tb_ana_opts'.format(group_dic['ana_tool'])))
         elab_tool_lst = self.rd_cfg('group', gn, 'elab_tool')
-        group_dic['elab_tool'] = (elab_tool_lst[0] if elab_tool_lst else
-                                   'vcs')
+        group_dic['elab_tool'] = elab_tool_lst[0] if elab_tool_lst else 'vcs'
+        group_dic['e_opts'] = ' '.join(self.rd_cfg(
+            'group', gn, 'et_{0}_elab_opts'.format(group_dic['elab_tool'])))
+        group_dic['w_opts'] = ' '.join(self.rd_cfg('group', gn, 'verdi_opts'))
         tb_top_lst = self.rd_cfg('group', gn, 'tb_top')
         group_dic['tb_top'] = tb_top_lst[0] if tb_top_lst else 'test_top'
-        group_dic['pre_cmd_lst'] = self.rd_cfg('group', gn, 'pre_cmd')
-        group_dic['post_cmd_lst'] = self.rd_cfg('group', gn, 'post_cmd')
+        group_dic['pre_cmd_lst'] = [
+            cc.replace('{{group_name}}', group_dic['name']) for cc in
+            self.rd_cfg('group', gn, 'pre_cmd') if cc]
+        group_dic['post_cmd_lst'] = [
+            cc.replace('{{group_name}}', group_dic['name']) for cc in
+            self.rd_cfg('group', gn, 'post_cmd') if cc]
         group_dic['file_dic'] = {}
         for sec_name, sec_cont in self.cfg_dic['group'][gn].items():
             if not sec_name.startswith('file__'):
@@ -162,7 +193,11 @@ class MakefileGen(object):
                 'proj', 'regression_opts', 'custom_simu_opts')+su_opts_lst
         cov_su_lst = (self.rd_cfg('case', cn, 'cov_simu_opts') if
                       self.rd_cfg('case', cn, 'cov') == ['on'] else [])
-        wg_su_lst = (self.rd_cfg('case', cn, 'wave_glitch_simu_opts') if
+        wave_su_lst = (self.rd_cfg('case', cn, 'wf_{0}_simu_opts'.format(
+            case_dic['wave_format'])) if
+                       self.rd_cfg('case', cn, 'wave') == ['on'] else [])
+        wg_su_lst = (self.rd_cfg('case', cn, 'wf_{0}_glitch_simu_opts'.format(
+            case_dic['wave_format'])) if
                      self.rd_cfg('case', cn, 'wave') == ['on'] and
                      self.rd_cfg('case', cn, 'wave_glitch') == ['on'] else [])
         seed_su_lst = self.rd_cfg('case', cn, 'seed_simu_opts')
@@ -176,11 +211,11 @@ class MakefileGen(object):
         prof_time_su_lst = (
             self.rd_cfg('case', cn, 'prof_time_simu_opts') if
             self.rd_cfg('case', cn, 'prof_time') == ['on'] else [])
-        su_opts = ' '.join(su_opts_lst+cov_su_lst+wg_su_lst+seed_su_lst
-                           +uvm_su_lst+gui_su_lst+prof_mem_su_lst+
+        su_opts = ' '.join(su_opts_lst+cov_su_lst+wave_su_lst+wg_su_lst+
+                           seed_su_lst+uvm_su_lst+gui_su_lst+prof_mem_su_lst+
                            prof_time_su_lst)
-        case_dic['pre_cmd_lst'] = self.rd_cfg('case', cn, 'pre_cmd')
-        case_dic['post_cmd_lst'] = self.rd_cfg('case', cn, 'post_cmd')
+        case_dic['w_opts'] = ' '.join(self.rd_cfg(
+            'group', case_dic['group'], 'verdi_opts'))
         case_dic['file_dic'] = {}
         for sec_name, sec_cont in self.cfg_dic['case'][cn].items():
             if not sec_name.startswith('file__'):
@@ -221,6 +256,28 @@ class MakefileGen(object):
                     self.regr_dic[regr_type].append(ngs_tup)
                 else:
                     self.regr_dic[regr_type] = [ngs_tup]
+            if self.x86_ins_flg and (self.case_lst or self.all_case_flg):
+                import ins_gen
+                ins_gen.InsGen(
+                    self.cfg_lst, [new_case_dic['name']],
+                    seed=new_case_dic['seed'],
+                    path=self.ced['PROJ_MODULE']).gen_ins()
+                subprocess.run(
+                    'perl {0} test_name={1} seed={2} inst_mod={3} '
+                    'sfile_type={4} input={5}{6}{1}{6}{2} output='
+                    '{5}{6}{1}{6}{2}'.format(
+                        self.test_gen_file, new_case_dic['name'],
+                        new_case_dic['seed'], '16', 'asm',
+                        self.ced['MODULE_OUTPUT'], os.sep), shell=True,
+                    check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            new_case_dic['pre_cmd_lst'] = [
+                cc.replace('{{seed}}', new_case_dic['seed']).replace(
+                    '{{case_name}}', new_case_dic['name']) for cc in
+                self.rd_cfg('case', cn, 'pre_cmd') if cc]
+            new_case_dic['post_cmd_lst'] = [
+                cc.replace('{{seed}}', new_case_dic['seed']).replace(
+                    '{{case_name}}', new_case_dic['name']) for cc in
+                self.rd_cfg('case', cn, 'post_cmd') if cc]
             case_dic_lst.append(new_case_dic)
         return case_dic_lst
     def gen_mk_dic(self):
@@ -240,8 +297,9 @@ class MakefileGen(object):
             if self.regr_flg:
                 self.cfg_dic['case'][cn].update(
                     self.cfg_dic['proj']['regression'])
-            if self.ow_dic['su']:
-                self.cfg_dic['case'][cn].update(self.ow_dic['su'])
+            if self.case_lst and cn not in self.case_lst:
+                continue
+            self.cfg_dic['case'][cn].update(self.ow_dic['su'])
             case_dic_lst += self.gen_case_dic_lst(cn)
         mk_dic['group_dic_lst'] = group_dic_lst
         mk_dic['case_dic_lst'] = case_dic_lst
@@ -250,6 +308,8 @@ class MakefileGen(object):
             os.path.basename(os.path.splitext(cc)[0]) for cc in pcom.find_iter(
                 self.ced['MODULE_C'], '*.c', cur_flg=True) if
             cc] if os.path.isdir(self.ced['MODULE_C']) else []
+        mk_dic['c_opts'] = self.cc_opts if self.cc_opts else ' '.join(
+            self.rd_cfg('proj', 'proj', 'c_opts'))
         return mk_dic
     def gen_makefile(self):
         mk_dic = self.gen_mk_dic()
