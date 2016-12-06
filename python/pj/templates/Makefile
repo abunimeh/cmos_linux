@@ -8,47 +8,37 @@ dir_guard = @mkdir -p ${@D}
 cd_guard = @cd ${@D}
 
 ### targets
-.PHONY: list_all
-list_all:
-	@echo '******************************'
-	@echo all cases of module ${PROJ_MODULE}
-	@echo '******************************'
-{%-for case, seed_lst in cgs_dic|dictsort%}
-	@echo {{case}}
-{%-endfor%}
-	@echo '******************************'
-
 .PHONY: compile_all
 compile_all: \
-{%-for group in group_dic_lst%}
+{%-for simv in simv_dic_lst%}
 {%-if loop.last%}
-${GROUP_DIR}/{{group.name}}/simv
+${SIMV_DIR}/{{simv.name}}/simv
 {%-else%}
-${GROUP_DIR}/{{group.name}}/simv \
+${SIMV_DIR}/{{simv.name}}/simv \
 {%-endif%}
 {%-endfor%}
 
 .PHONY: analysis_dut_all
 analysis_dut_all: \
-{%-for group in group_dic_lst%}
+{%-for simv in simv_dic_lst%}
 {%-if loop.last%}
-${GROUP_DIR}/{{group.name}}/.dut_ana
+${SIMV_DIR}/{{simv.name}}/.dut_ana
 {%-else%}
-${GROUP_DIR}/{{group.name}}/.dut_ana \
+${SIMV_DIR}/{{simv.name}}/.dut_ana \
 {%-endif%}
 {%-endfor%}
 
 .PHONY: analysis_tb_all
 analysis_tb_all: \
-{%-for group in group_dic_lst%}
+{%-for simv in simv_dic_lst%}
 {%-if loop.last%}
-${GROUP_DIR}/{{group.name}}/.tb_ana
+${SIMV_DIR}/{{simv.name}}/.tb_ana
 {%-else%}
-${GROUP_DIR}/{{group.name}}/.tb_ana \
+${SIMV_DIR}/{{simv.name}}/.tb_ana \
 {%-endif%}
 {%-endfor%}
 
-{%for case, gs_lst in cgs_dic|dictsort%}
+{%for case, gs_lst in cvs_dic|dictsort%}
 .PHONY: run_simv_{{case}}
 run_simv_{{case}}: \
 {%-for seed in gs_lst[1:]%}
@@ -88,82 +78,82 @@ ${CLIB_DIR}/uvm_dpi.o
 compile_c: ${CLIB_DIR}/lib${MODULE}.so
 {%-endif%}
 
-### group targets
-{%-for group in group_dic_lst%}
-${GROUP_DIR}/{{group.name}}/dut.flist: \
-{%-for dut_file in group.dut_file_lst%}
+### simv targets
+{%-for simv in simv_dic_lst%}
+${SIMV_DIR}/{{simv.name}}/dut.flist: \
+{%-for dut_file in simv.dut_file_lst%}
 {{dut_file}} \
 {%-endfor%}
-${GROUP_DIR}/{{group.name}}/group_dutfl.pcl
+${SIMV_DIR}/{{simv.name}}/simv_dutfl.pcl
 	${dir_guard}
-{%-if not group.dut_file_lst%}
+{%-if not simv.dut_file_lst%}
 	@echo > $@
 {%-endif%}
-{%-for dut_file in group.dut_file_lst%}
+{%-for dut_file in simv.dut_file_lst%}
 {%-if loop.first%}
 	@echo {{dut_file}} > $@
 {%-else%}
 	@echo {{dut_file}} >> $@
 {%-endif%}
 {%-endfor%}
-{%-for dut_dir in group.dut_dir_lst%}
+{%-for dut_dir in simv.dut_dir_lst%}
 	@echo {{dut_dir}} >> $@
 {%-endfor%}
 
-${GROUP_DIR}/{{group.name}}/tb.flist: \
-{%-for tb_file in group.tb_file_lst%}
+${SIMV_DIR}/{{simv.name}}/tb.flist: \
+{%-for tb_file in simv.tb_file_lst%}
 {{tb_file}} \
 {%-endfor%}
-{%-for tb_file in group.tb_dep_file_lst%}
+{%-for tb_file in simv.tb_dep_file_lst%}
 {{tb_file}} \
 {%-endfor%}
-${GROUP_DIR}/{{group.name}}/group_tbfl.pcl
+${SIMV_DIR}/{{simv.name}}/simv_tbfl.pcl
 	${dir_guard}
-{%-if not group.tb_file_lst%}
+{%-if not simv.tb_file_lst%}
 	@echo > $@
 {%-endif%}
-{%-for tb_file in group.tb_file_lst%}
+{%-for tb_file in simv.tb_file_lst%}
 {%-if loop.first%}
 	@echo {{tb_file}} > $@
 {%-else%}
 	@echo {{tb_file}} >> $@
 {%-endif%}
 {%-endfor%}
-{%-for tb_dir in group.tb_dir_lst%}
+{%-for tb_dir in simv.tb_dir_lst%}
 	@echo {{tb_dir}} >> $@
 {%-endfor%}
 
-${GROUP_DIR}/{{group.name}}/.dut_ana: \
-${GROUP_DIR}/{{group.name}}/dut.flist \
-${GROUP_DIR}/{{group.name}}/group_cfg.json \
+${SIMV_DIR}/{{simv.name}}/.dut_ana: \
+${SIMV_DIR}/{{simv.name}}/dut.flist \
+${SIMV_DIR}/{{simv.name}}/simv_cfg.json \
 ${CMN_CONFIG}/proj.cfg
 	${cd_guard} && \
-	{{group.ana_tool}} \
-	{{group.da_opts}} \
-{%-if group.ca_opts%}
-	{{group.ca_opts}} \
+	{{simv.ana_tool}} \
+	{{simv.da_opts}} \
+{%-if simv.ca_opts%}
+	{{simv.ca_opts}} \
 {%-endif%}
 	-f $< \
-	-l ${GROUP_DIR}/{{group.name}}/dut_ana.log && \
+	-l ${SIMV_DIR}/{{simv.name}}/dut_ana.log && \
 	touch $@
 
-${GROUP_DIR}/{{group.name}}/.tb_ana: \
-${GROUP_DIR}/{{group.name}}/tb.flist \
-${GROUP_DIR}/{{group.name}}/group_cfg.json \
+${SIMV_DIR}/{{simv.name}}/.tb_ana: \
+${SIMV_DIR}/{{simv.name}}/tb.flist \
+${SIMV_DIR}/{{simv.name}}/simv_cfg.json \
 ${CMN_CONFIG}/proj.cfg
 	${cd_guard} && \
-	{{group.ana_tool}} \
-	{{group.ta_opts}} \
-{%-if group.ca_opts%}
-	{{group.ca_opts}} \
+	{{simv.ana_tool}} \
+	{{simv.ta_opts}} \
+{%-if simv.ca_opts%}
+	{{simv.ca_opts}} \
 {%-endif%}
 	-f $< \
-	-l ${GROUP_DIR}/{{group.name}}/tb_ana.log && \
+	-l ${SIMV_DIR}/{{simv.name}}/tb_ana.log && \
 	touch $@
 
-{%for file_name, file_line_lst in group.file_dic|dictsort%}
-${GROUP_DIR}/{{group.name}}/{{file_name}}: \
-${GROUP_DIR}/{{group.name}}/group_cfg.json \
+{%for file_name, file_line_lst in simv.file_dic|dictsort%}
+${SIMV_DIR}/{{simv.name}}/{{file_name}}: \
+${SIMV_DIR}/{{simv.name}}/simv_cfg.json \
 ${CMN_CONFIG}/proj.cfg
 	${dir_guard}
 {%-for file_line in file_line_lst%}
@@ -175,46 +165,46 @@ ${CMN_CONFIG}/proj.cfg
 {%-endfor%}
 {%endfor%}
 
-${GROUP_DIR}/{{group.name}}/simv: \
-{%-for file_name, file_cont in group.file_dic|dictsort%}
-${GROUP_DIR}/{{group.name}}/{{file_name}} \
+${SIMV_DIR}/{{simv.name}}/simv: \
+{%-for file_name, file_cont in simv.file_dic|dictsort%}
+${SIMV_DIR}/{{simv.name}}/{{file_name}} \
 {%-endfor%}
 {%-if c_lst%}
 compile_c \
 {%-endif%}
-${GROUP_DIR}/{{group.name}}/.dut_ana \
-${GROUP_DIR}/{{group.name}}/.tb_ana
+${SIMV_DIR}/{{simv.name}}/.dut_ana \
+${SIMV_DIR}/{{simv.name}}/.tb_ana
 	${cd_guard} && \
-{%-for pre_cmd in group.pre_cmd_lst%}
+{%-for pre_cmd in simv.pre_cmd_lst%}
 	{{pre_cmd}} && \
 {%-endfor%}
-	{{group.elab_tool}} \
-	{{group.e_opts}} \
-{%-if group.ce_opts%}
-	{{group.ce_opts}} \
+	{{simv.elab_tool}} \
+	{{simv.e_opts}} \
+{%-if simv.ce_opts%}
+	{{simv.ce_opts}} \
 {%-endif%}
-	-top {{group.tb_top}} \
+	-top {{simv.tb_top}} \
 {%-if c_lst%}
 	-LDFLAGS -L${CLIB_DIR} -l${MODULE} \
 {%-endif%}
-	-l ${GROUP_DIR}/{{group.name}}/elab.log \
+	-l ${SIMV_DIR}/{{simv.name}}/elab.log \
 	-o $@
-{%-for post_cmd in group.post_cmd_lst-%}
+{%-for post_cmd in simv.post_cmd_lst-%}
 	{{' '}}&& \
 	{{post_cmd}}
 {%-endfor%}
 
-.PHONY: verdi_{{group.name}}
-verdi_{{group.name}}: ${GROUP_DIR}/{{group.name}}/.dut_ana
-	cd ${GROUP_DIR}/{{group.name}} && \
-	verdi {{group.w_opts}} -simflow -lib work -nologo &
+.PHONY: verdi_{{simv.name}}
+verdi_{{simv.name}}: ${SIMV_DIR}/{{simv.name}}/.dut_ana
+	cd ${SIMV_DIR}/{{simv.name}} && \
+	verdi {{simv.w_opts}} -simflow -lib work -nologo &
 {%endfor%}
 
 ### case targets
 {%-for case in case_dic_lst%}
 .PHONY: run_simv_{{case.name}}__{{case.seed}}
 run_simv_{{case.name}}__{{case.seed}}: \
-${GROUP_DIR}/{{case.group}}/simv \
+${SIMV_DIR}/{{case.simv}}/simv \
 {%-for file_name, file_cont in case.file_dic|dictsort%}
 ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}}/{{file_name}} \
 {%-endfor%}
@@ -269,7 +259,7 @@ ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}}/{{file_name}}:
 {%endfor%}
 
 .PHONY: verdi_{{case.name}}__{{case.seed}}
-verdi_{{case.name}}__{{case.seed}}: ${GROUP_DIR}/{{case.group}}/simv
+verdi_{{case.name}}__{{case.seed}}: ${SIMV_DIR}/{{case.simv}}/simv
 	mkdir -p ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}} && \
 	cd ${MODULE_OUTPUT}/{{case.name}}/{{case.seed}} && \
 	verdi {{case.w_opts}} -simflow -simBin $< \

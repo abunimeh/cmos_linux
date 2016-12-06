@@ -267,7 +267,7 @@ pj子命令参数详细说明
 
   + ``$ pj run -c CASE -fpga``
 
-（*）group.cfg与case.cfg中如果配置了同样的功能，cmd中相同功能的参数可以去掉，都存在的情况下cmd args的优先级高
+（*）simv.cfg与case.cfg中如果配置了同样的功能，cmd中相同功能的参数可以去掉，都存在的情况下cmd args的优先级高
 
 根据\*标注的特点，我们可以将绝大部分的cmd args放到cfg里面来配置，cmd会被简化成统一的样式 ``$ pj run -c CASE`` 根据平台的这个特性，这里会有两种主要的工作方式：
 
@@ -317,10 +317,6 @@ pj子命令参数详细说明
 - 跑带coverage的regression：
 
   + ``$ pj regr -m MODULE -cov``
-
-- **跑完regression自动显示web report：**
-
-  + ``$ pj regr -m MODULE -rpt``
 
 - regression支持fpga相应的signal data生成：
 
@@ -454,10 +450,10 @@ PROJ_ROOT/verification/MODULE
    │   ├── __cov__               # coverage相关文件
    │   │   ├── cm                # coverage数据
    │   │   └── merge             # coverage merge后的数据以及生成的report
-   │   ├── __group__             # analysis+elaboration相关文件
-   │   │   ├── DEFAULT           # DEFAULT group compilation相关文件，包括生成的simv
-   │   │   ├── group1            # group1 group compilation相关文件，包括生成的simv
-   │   │   └── group2
+   │   ├── __simv__             # analysis+elaboration相关文件
+   │   │   ├── DEFAULT           # DEFAULT simv compilation相关文件，包括生成的simv
+   │   │   ├── simv1            # simv1 simv compilation相关文件，包括生成的simv
+   │   │   └── simv2
    │   └── module_sanity_test    # module_sanity_test case相关文件
    │       ├── 1                 # 以seed命令的目录，在该seed下simulation相关文件
    │       ├── 119974

@@ -1,4 +1,4 @@
-from .models import User, Proj, Module, Group, Case, Sim
+from .models import User, Proj, Module, Simv, Case, Sim
 from django.views.generic import ListView
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -133,7 +133,7 @@ def gen_wrap_dic(sim_obj_qs, sim_fk='sim', sec_flg=False ,day_flg=False):
                     model_list.append({'sec': {'time': {'model': model, 'runt': sec_str}, 'model_list':[model,'None','None','None'] , 'items': model_pr_dic}})
             else:
                 for sim, sim_info_dic in gen_sim_dic(sec_obj_qs).items():
-                    model_list.append({'sec': {'time': {'case_log':sim_info_dic['status_log'], 'runt': sec_str}, 'case':{'casename':sim.case.cname(), 'gn':sim.case.gname(), 'proj_cl':sim.proj_cl, 'seed':sim.seed, 'status':sim_info_dic['status'],  'error_stage':sim_info_dic['error_stage'], 'error_info': sim_info_dic['error_info'], 'simu_cpu_time':sim.simu_cpu_time,'bc': sim_info_dic['bc']}}})
+                    model_list.append({'sec': {'time': {'case_log':sim_info_dic['status_log'], 'runt': sec_str}, 'case':{'casename':sim.case.cname(), 'vn':sim.case.vname(), 'proj_cl':sim.proj_cl, 'seed':sim.seed, 'status':sim_info_dic['status'],  'error_stage':sim_info_dic['error_stage'], 'error_info': sim_info_dic['error_info'], 'simu_cpu_time':sim.simu_cpu_time,'bc': sim_info_dic['bc']}}})
     return  model_list
 
 
@@ -171,7 +171,7 @@ def gen_sim_dic(sim_obj_qs):
     for sim_obj in sim_obj_qs:
         sim_dic[sim_obj] = {
             'cn': sim_obj.case.cname(),
-            'gn': sim_obj.group.gname()}
+            'vn': sim_obj.simv.vname()}
         if (sim_obj.simu_status == 'passed' and
             sim_obj.elab_status == 'passed' and
             sim_obj.tb_ana_status == 'passed' and
@@ -227,7 +227,7 @@ def query_insert_case(request):
         User.objects.update_or_create(name=case_dic['user_name'])
         Proj.objects.update_or_create(name=case_dic['proj_name'])
         Module.objects.update_or_create(name=case_dic['module_name'])
-        Group.objects.update_or_create(name=case_dic['group_name'])
+        Simv.objects.update_or_create(name=case_dic['simv_name'])
         Case.objects.update_or_create(name=case_dic['case_name'])
         Sim.objects.create(
             pub_date=pytz.timezone(settings.TIME_ZONE).localize(
@@ -249,7 +249,7 @@ def query_insert_case(request):
             simu_cpu_time=case_dic['simu_cpu_time'],
             simu_time=case_dic['simu_time'],
             case=Case.objects.get(name=case_dic['case_name']),
-            group=Group.objects.get(name=case_dic['group_name']),
+            simv=Simv.objects.get(name=case_dic['simv_name']),
             module=Module.objects.get(name=case_dic['module_name']),
             proj=Proj.objects.get(name=case_dic['proj_name']),
             user=User.objects.get(name=case_dic['user_name']))
@@ -317,7 +317,7 @@ def get_case(request):
     tend = request.GET.get('tend')
     sim_obj_qs = Sim.objects.filter(user__name=user).filter(proj__name=proj).filter(module__name=module+'___'+proj).filter(pub_date__range=date_range(tstart,tend))
     if sim_obj_qs.count()==0:
-        model_dic['data']=[{"sec":{'time':{'case_log':'None', 'runt': 'None'}, 'case':{'casename':'None' ,'gn':'None', 'proj_cl':'None', 'seed':'None', 'status':'None', 'error_stage': 'None','error_info':'None', 'simu_cpu_time':'None','bc':0}}}]
+        model_dic['data']=[{"sec":{'time':{'case_log':'None', 'runt': 'None'}, 'case':{'casename':'None' ,'vn':'None', 'proj_cl':'None', 'seed':'None', 'status':'None', 'error_stage': 'None','error_info':'None', 'simu_cpu_time':'None','bc':0}}}]
     else:
         model_dic['data'] = gen_wrap_dic(sim_obj_qs,  sec_flg=True)
     return HttpResponse(json.dumps(model_dic),content_type='application/json')

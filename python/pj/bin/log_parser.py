@@ -13,25 +13,25 @@ import datetime as dt
 
 ### classes
 class LogParser(object):
-    def __init__(self, LOG, ced, cfg_dic, ngs_tup):
+    def __init__(self, LOG, ced, cfg_dic, cvs_tup):
         self.LOG = LOG if LOG else pcom.gen_logger()
         self.ced = ced
         self.cfg_dic = cfg_dic
-        self.name, self.group, self.seed = ngs_tup
+        self.case, self.simv, self.seed = cvs_tup
         pass_str = r''
         cp_str = '|'.join(pcom.rd_cfg(
-            cfg_dic['case'], self.name, 'pass_string'))
+            cfg_dic['case'], self.case, 'pass_string'))
         fp_str = pass_str+'|'+cp_str if cp_str else pass_str
         self.p_pat = re.compile(fp_str)
         fail_str = (r'\b[Ee]rror\b|\bERROR\b|\*E\b|'
                     r'\bUVM_(ERROR|FATAL)\s*:\s*[1-9]\d*')
         cf_str = '|'.join(pcom.rd_cfg(
-            cfg_dic['case'], self.name, 'fail_string'))
+            cfg_dic['case'], self.case, 'fail_string'))
         ff_str = fail_str+'|'+cf_str if cf_str else fail_str
         self.f_pat = re.compile(ff_str)
         ignore_str = r'^$'
         ci_str = '|'.join(pcom.rd_cfg(
-            cfg_dic['case'], self.name, 'ignore_string'))
+            cfg_dic['case'], self.case, 'ignore_string'))
         fi_str = ignore_str+'|'+ci_str if ci_str else ignore_str
         self.i_pat = re.compile(fi_str)
         finish_str = r'\$finish at simulation time\s+(\d+)'
@@ -41,13 +41,13 @@ class LogParser(object):
         uvm_str = r'\+UVM_TESTNAME=(\w+)\s'
         self.uvm_pat = re.compile(uvm_str)
         self.dut_ana_log = os.path.join(
-            ced['GROUP_DIR'], self.group, 'dut_ana.log')
+            ced['SIMV_DIR'], self.simv, 'dut_ana.log')
         self.tb_ana_log = os.path.join(
-            ced['GROUP_DIR'], self.group, 'tb_ana.log')
+            ced['SIMV_DIR'], self.simv, 'tb_ana.log')
         self.elab_log = os.path.join(
-            ced['GROUP_DIR'], self.group, 'elab.log')
+            ced['SIMV_DIR'], self.simv, 'elab.log')
         self.simu_log = os.path.join(
-            ced['MODULE_OUTPUT'], self.name, self.seed, self.seed+'.log')
+            ced['MODULE_OUTPUT'], self.case, self.seed, self.seed+'.log')
         self.dut_ana_error_lst = []
         self.tb_ana_error_lst = []
         self.elab_error_lst = []
@@ -57,13 +57,13 @@ class LogParser(object):
             stdout=subprocess.PIPE).stdout.decode()
         proj_ver = re.search(r'---\n(r\d+)\s|\s', proj_ini_ver).group(1)
         module_name = self.ced['MODULE']+'___'+self.ced['PROJ_NAME']
-        group_name = self.group+'___'+module_name
-        case_name = self.name+'___'+group_name
+        simv_name = self.simv+'___'+module_name
+        case_name = self.case+'___'+simv_name
         self.case_dic = {'pub_date': dt.datetime.timestamp(self.ced['TIME']),
                          'case_name': case_name,
-                         'c_name': self.name,
-                         'group_name': group_name,
-                         'g_name': self.group,
+                         'c_name': self.case,
+                         'simv_name': simv_name,
+                         'v_name': self.simv,
                          'module_name': module_name,
                          'm_name': self.ced['MODULE'],
                          'proj_name': self.ced['PROJ_NAME'],
@@ -75,7 +75,7 @@ class LogParser(object):
                          'simu_error': 'NA',
                          'simu_cpu_time': 'NA',
                          'simu_time': 'NA'}
-        self.group_dic = {'dut_ana_log': self.dut_ana_log,
+        self.simv_dic = {'dut_ana_log': self.dut_ana_log,
                           'dut_ana_status': 'NA',
                           'dut_ana_error': 'NA',
                           'tb_ana_log': self.tb_ana_log,
@@ -97,13 +97,13 @@ class LogParser(object):
                 elif m.search(self.f_pat):
                     self.dut_ana_error_lst.append(line)
         if self.dut_ana_error_lst:
-            self.group_dic['dut_ana_status'] = 'failed'
-            self.group_dic['dut_ana_error'] = os.linesep.join(
+            self.simv_dic['dut_ana_status'] = 'failed'
+            self.simv_dic['dut_ana_error'] = os.linesep.join(
                 self.dut_ana_error_lst)[-1000:]
         else:
-            self.group_dic['dut_ana_status'] = 'passed'
-        self.LOG.debug("parsing group {0} analysis log file {1} done"
-                       "".format(self.group, self.dut_ana_log))
+            self.simv_dic['dut_ana_status'] = 'passed'
+        self.LOG.debug("parsing simv {0} analysis log file {1} done"
+                       "".format(self.simv, self.dut_ana_log))
     def parse_tb_ana_log(self):
         if not os.path.isfile(self.tb_ana_log):
             return
@@ -116,13 +116,13 @@ class LogParser(object):
                 elif m.search(self.f_pat):
                     self.tb_ana_error_lst.append(line)
         if self.tb_ana_error_lst:
-            self.group_dic['tb_ana_status'] = 'failed'
-            self.group_dic['tb_ana_error'] = os.linesep.join(
+            self.simv_dic['tb_ana_status'] = 'failed'
+            self.simv_dic['tb_ana_error'] = os.linesep.join(
                 self.tb_ana_error_lst)[-1000:]
         else:
-            self.group_dic['tb_ana_status'] = 'passed'
-        self.LOG.debug("parsing group {0} analysis log file {1} done"
-                       "".format(self.group, self.tb_ana_log))
+            self.simv_dic['tb_ana_status'] = 'passed'
+        self.LOG.debug("parsing simv {0} analysis log file {1} done"
+                       "".format(self.simv, self.tb_ana_log))
     def parse_elab_log(self):
         if not os.path.isfile(self.elab_log):
             return
@@ -137,17 +137,17 @@ class LogParser(object):
                     self.elab_error_lst.append(line)
                 elif m.match(self.ct_pat):
                     fin_flg = True
-                    self.group_dic['comp_cpu_time'] = m.group(1)
+                    self.simv_dic['comp_cpu_time'] = m.group(1)
         if self.elab_error_lst:
-            self.group_dic['elab_status'] = 'failed'
-            self.group_dic['elab_error'] = os.linesep.join(
+            self.simv_dic['elab_status'] = 'failed'
+            self.simv_dic['elab_error'] = os.linesep.join(
                 self.elab_error_lst)[-1000:]
         elif not fin_flg:
-            self.group_dic['elab_status'] = 'pending'
+            self.simv_dic['elab_status'] = 'pending'
         else:
-            self.group_dic['elab_status'] = 'passed'
-        self.LOG.debug("parsing group {0} elaboration log file {1} done"
-                       "".format(self.group, self.elab_log))
+            self.simv_dic['elab_status'] = 'passed'
+        self.LOG.debug("parsing simv {0} elaboration log file {1} done"
+                       "".format(self.simv, self.elab_log))
     def parse_simu_log(self):
         if not os.path.isfile(self.simu_log):
             return
@@ -184,25 +184,25 @@ class LogParser(object):
         else:
             self.case_dic['simu_status'] = 'unknown'
         self.LOG.debug("parsing case {0} simulation log file {1} done"
-                       "".format(self.name, self.simu_log))
+                       "".format(self.case, self.simu_log))
     def parse_log(self):
-        group_log_json = os.path.join(
-            self.ced['GROUP_DIR'], self.group, 'group_log.json')
+        simv_log_json = os.path.join(
+            self.ced['SIMV_DIR'], self.simv, 'simv_log.json')
         ralog_mt = os.path.getmtime(self.dut_ana_log)
         talog_mt = os.path.getmtime(self.tb_ana_log)
         elog_mt = os.path.getmtime(self.elab_log)
-        if os.path.isfile(group_log_json) and os.path.getmtime(
-                group_log_json) > max(ralog_mt, talog_mt, elog_mt):
-            with open(group_log_json) as jf:
-                self.group_dic = json.load(jf)
+        if os.path.isfile(simv_log_json) and os.path.getmtime(
+                simv_log_json) > max(ralog_mt, talog_mt, elog_mt):
+            with open(simv_log_json) as jf:
+                self.simv_dic = json.load(jf)
         else:
             self.parse_dut_ana_log()
             self.parse_tb_ana_log()
             self.parse_elab_log()
-            with open(group_log_json, 'w') as jf:
-                json.dump(self.group_dic, jf)
+            with open(simv_log_json, 'w') as jf:
+                json.dump(self.simv_dic, jf)
         self.parse_simu_log()
-        self.case_dic.update(self.group_dic)
+        self.case_dic.update(self.simv_dic)
         query_url = 'http://172.51.13.205:8000/regr/db_query/query_insert_case/'
         requests.post(query_url, json=self.case_dic)
         return self.case_dic

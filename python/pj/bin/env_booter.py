@@ -35,10 +35,11 @@ def find_module_dir(ced, cfg_dic, module):
 
 ### classes
 class EnvBooter(object):
-    def __init__(self, LOG, sim_module='', x86_ins_flg=False):
+    def __init__(self, LOG, sim_module='', x86_ins_flg=False, x86_ins_num=21):
         self.LOG = LOG if LOG else pcom.gen_logger()
         self.sim_module = sim_module
         self.x86_ins_flg = x86_ins_flg
+        self.x86_ins_num = x86_ins_num
         os.environ['PROJ_ROOT'] = find_proj_root(os.getcwd())
         os.environ['MODULE'] = sim_module
         self.ced = {'MODULE': sim_module, 'TIME': dt.datetime.now(),
@@ -55,7 +56,8 @@ class EnvBooter(object):
         for cg_name in pcom.rd_cfg(
                 self.cfg_dic['proj'], 'x86_ins', 'case_group'):
             case_gen_inst = case_gen.CaseGen(
-                self.ced['MODULE'], cg_name, path=self.ced['MODULE_CONFIG'])
+                self.ced['MODULE'], cg_name, self.x86_ins_num,
+                self.ced['MODULE_CONFIG'])
             case_gen_inst.gen_case()
     def boot_env(self):
         proj_cfg = os.path.expandvars('$PROJ_ROOT/share/cmn/config/proj.cfg')
@@ -76,10 +78,10 @@ class EnvBooter(object):
             self.ced[env_key] = os.path.expandvars(env_value)
         if self.x86_ins_flg:
             self.gen_x86_case_cfg()
-        group_cfg = self.ced['MODULE_CONFIG']+os.sep+'group.cfg'
-        if not os.path.isfile(group_cfg):
-            raise Exception("group config file {0} is NA".format(case_cfg))
-        self.cfg_dic['group'] = pcom.gen_cfg([group_cfg])
+        simv_cfg = self.ced['MODULE_CONFIG']+os.sep+'simv.cfg'
+        if not os.path.isfile(simv_cfg):
+            raise Exception("simv config file {0} is NA".format(case_cfg))
+        self.cfg_dic['simv'] = pcom.gen_cfg([simv_cfg])
         case_cfg = self.ced['MODULE_CONFIG']+os.sep+'case.cfg'
         if not os.path.isfile(case_cfg):
             raise Exception("case config file {0} is NA".format(case_cfg))
@@ -90,10 +92,10 @@ class EnvBooter(object):
             case_cfg_lst.append(cfg_file)
         case_cfg_lst.reverse()
         self.cfg_dic['case'] = pcom.gen_cfg(case_cfg_lst)
-        group_proj_env = copy.copy(self.cfg_dic['proj']['env_group'])
+        simv_proj_env = copy.copy(self.cfg_dic['proj']['env_simv'])
         case_proj_env = copy.copy(self.cfg_dic['proj']['env_case'])
-        group_proj_env.update(self.cfg_dic['group']['DEFAULT'])
+        simv_proj_env.update(self.cfg_dic['simv']['DEFAULT'])
         case_proj_env.update(self.cfg_dic['case']['DEFAULT'])
-        self.cfg_dic['group']['DEFAULT'] = group_proj_env
+        self.cfg_dic['simv']['DEFAULT'] = simv_proj_env
         self.cfg_dic['case']['DEFAULT'] = case_proj_env
         return (self.ced, self.cfg_dic)

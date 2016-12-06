@@ -31,7 +31,7 @@ def gen_args_top():
     run_parser = subparsers.add_parser('run', help=h_str)
     h_str = ("input simulation module")
     run_parser.add_argument('-m', dest='run_module', default='', help=h_str)
-    h_str = ("toggle to elaborate all case groups")
+    h_str = ("toggle to elaborate all case simvs")
     run_parser.add_argument('-comp', dest='run_comp', default=False,
                             action='store_true', help=h_str)
     h_str = ("toggle to compile c code for module")
@@ -82,6 +82,9 @@ def gen_args_top():
     h_str = ("toggle to perform x86 instruction generation before")
     run_parser.add_argument('-x86_ins', dest='run_x86_ins', default=False,
                             action='store_true', help=h_str)
+    h_str = ("input x86 instruction generation number")
+    run_parser.add_argument('-x86_ins_num', dest='run_x86_ins_num', type=int,
+                            default=21, help=h_str)
     run_parser.set_defaults(func=main_run)
 
     h_str = ("sub cmd about kicking off regression")
@@ -97,8 +100,8 @@ def gen_args_top():
     h_str = ("toggle to collect coverage during regression")
     regr_parser.add_argument('-cov', dest='regr_cov', default=False,
                             action='store_true', help=h_str)
-    h_str = ("toggle to show web report after regression")
-    regr_parser.add_argument('-rpt', dest='regr_rpt', default=False,
+    h_str = ("toggle to kick off failed mode for regression")
+    regr_parser.add_argument('-fm', dest='regr_failed_mode', default=False,
                             action='store_true', help=h_str)
     h_str = ("toggle to dump data for FPGA")
     regr_parser.add_argument('-fpga', dest='regr_fpga', default=False,
@@ -262,6 +265,7 @@ def main_run(args):
                   args.run_fpga,
                   args.run_fresh,
                   args.run_x86_ins,
+                  args.run_x86_ins_num,
                   args.run_seed,
                   args.run_ana_opts,
                   args.run_elab_opts,
@@ -279,7 +283,7 @@ def main_regr(args):
                     args.regr_type_lst,
                     args.regr_rt,
                     args.regr_cov,
-                    args.regr_rpt,
+                    args.regr_failed_mode,
                     args.regr_fpga)
         regr.regression()
         LOG.info("running regression of {0} from {1} module done".format(
@@ -342,7 +346,7 @@ def main_vplan(args):
 def main_reg(args):
     if args.reg_module and args.reg_gen:
         ced, cfg_dic = env_booter.EnvBooter(LOG, args.reg_module).proj_env()
-        tb_top_lst = pcom.rd_cfg(cfg_dic['group'], 'DEFAULT', 'tb_top')
+        tb_top_lst = pcom.rd_cfg(cfg_dic['simv'], 'DEFAULT', 'tb_top')
         tb_top = tb_top_lst[0] if tb_top_lst else 'test_top'
         reg_str_lst = []
         for reg_file in pcom.find_iter(ced['MODULE_REG'], '*.ralf'):
@@ -411,7 +415,7 @@ def main_gen(args):
             "pj doc to make it work:{2}{7}{2}".format(
                 args.gen_module, module_path, os.linesep,
                 module_path+os.sep+'config'+os.sep+'case.cfg',
-                module_path+os.sep+'config'+os.sep+'group.cfg',
+                module_path+os.sep+'config'+os.sep+'simv.cfg',
                 module_path+os.sep+'flist'+os.sep+'rtl.flist',
                 module_path+os.sep+'flist'+os.sep+'tb.flist',
                 module_path+os.sep+'flist'+os.sep+'bfm.flist'))
@@ -494,6 +498,7 @@ class Run(object):
                  run_fpga,
                  run_fresh,
                  run_x86_ins,
+                 run_x86_ins_num,
                  run_seed,
                  run_ana_opts,
                  run_elab_opts,
@@ -516,6 +521,7 @@ class Run(object):
         self.run_fpga = run_fpga
         self.run_fresh = run_fresh
         self.run_x86_ins = run_x86_ins
+        self.run_x86_ins_num = run_x86_ins_num
         self.run_seed = run_seed
         self.run_cc_opts = run_cc_opts
         self.ow_dic = {'ae': {}, 'su': {}}
@@ -554,22 +560,28 @@ class Run(object):
         if run_fpga:
             self.ow_dic['ae']['fpga'] = 'on'
         self.ced, self.cfg_dic = env_booter.EnvBooter(
-            LOG, self.run_module, self.run_x86_ins).proj_env()
+            LOG, self.run_module, self.run_x86_ins,
+            self.run_x86_ins_num).proj_env()
     def simulation(self):
-        mk_dir, mk_file, cgs_dic, _ = makefile_gen.MakefileGen(
+        mk_dir, mk_file, cvs_dic, _ = makefile_gen.MakefileGen(
             LOG, self.ced, self.cfg_dic, self.ow_dic, self.run_case_lst,
             self.run_cc_opts, regr_flg=False, fresh_flg=self.run_fresh,
             x86_ins_flg=self.run_x86_ins,
             all_case_flg=self.run_all).gen_makefile()
         tar_str = ''
         if self.run_list:
-            tar_str += 'list_all '
+            str_lst = ["all cases of module {0}".format(self.ced['MODULE'])]
+            str_lst.append('*'*30)
+            str_lst += list(cvs_dic)
+            str_lst.append('*'*30)
+            LOG.info(os.linesep.join(str_lst))
+            return None
         if self.run_comp:
             tar_str += 'compile_all '
         if self.run_cc:
             tar_str += 'compile_c'
         if self.run_all:
-            self.run_case_lst = list(cgs_dic)
+            self.run_case_lst = list(cvs_dic)
         if self.run_case_lst:
             for run_case in self.run_case_lst:
                 tar_str += 'run_simv_{0} '.format(run_case)
@@ -586,20 +598,26 @@ class Run(object):
         except KeyboardInterrupt:
             proc.communicate()
         if self.run_case_lst:
-            rpt_rows = [['Case Name', 'Case Group', 'SVN CL', 'Seed', 'Status',
+            rpt_rows = [['Case Name', 'Case Simv', 'SVN CL', 'Seed', 'Status',
                          'Error Stage', 'CPU Time']]
             if self.run_fpga:
                 fsg = fpga_signals_gen.FPGASignalsGen(self.ced)
                 fsg.gen_h_lst()
             for run_case in self.run_case_lst:
-                for seed in cgs_dic[run_case][1:]:
-                    cgs_tup = (run_case, cgs_dic[run_case][0], seed)
+                if self.run_x86_ins:
+                    for temp_file in pcom.find_iter(
+                            self.ced['MODULE_TB'], '*{0}*'.format(run_case)):
+                        os.remove(temp_file)
+                        LOG.info("cleaning x86_ins generation temp file {0}"
+                                 "".format(temp_file))
+                for seed in cvs_dic[run_case][1:]:
+                    cvs_tup = (run_case, cvs_dic[run_case][0], seed)
                     case_dic = update_status(log_parser.LogParser(
-                        LOG, self.ced, self.cfg_dic, cgs_tup).parse_log())
+                        LOG, self.ced, self.cfg_dic, cvs_tup).parse_log())
                     if self.run_fpga:
-                        fsg.gen_fpga_signals(cgs_tup)
+                        fsg.gen_fpga_signals(cvs_tup)
                     rpt_rows.append([case_dic['c_name'],
-                                     case_dic['g_name'],
+                                     case_dic['v_name'],
                                      case_dic['proj_cl'],
                                      case_dic['seed'],
                                      case_dic['status'],
@@ -616,11 +634,11 @@ class Regr(object):
                  regr_type_lst,
                  regr_rt,
                  regr_cov,
-                 regr_rpt,
+                 regr_failed_mode,
                  regr_fpga):
         self.regr_module_lst = regr_module_lst
         self.regr_type_lst = regr_type_lst if regr_type_lst else ['sanity']
-        self.regr_rpt = regr_rpt
+        self.regr_failed_mode = regr_failed_mode
         self.regr_fpga = regr_fpga
         self.ow_dic = {'ae': {}, 'su': {}}
         if regr_rt:
@@ -630,76 +648,87 @@ class Regr(object):
             self.ow_dic['su']['cov'] = 'on'
         if regr_fpga:
             self.ow_dic['ae']['fpga'] = 'on'
+        self.rpt_rows = [['Case Name', 'Case Simv', 'SVN CL', 'Seed', 'Status',
+                          'Error Stage', 'CPU Time']]
+        self.rpt_dic_lst = []
+    def sim_and_parse(self, ced, cfg_dic, cvs_tup, mk_str, fsg):
+        case, simv, seed = cvs_tup
+        subprocess.run(mk_str+'run_simv_{0}__{1}'.format(case, seed),
+                       shell=True, check=True, stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE)
+        case_dic = update_status(log_parser.LogParser(
+            LOG, ced, cfg_dic, cvs_tup).parse_log())
+        if self.regr_fpga:
+            fsg.gen_fpga_signals(cvs_tup)
+        log_str = (
+            "Case Name: {1}{0}Seed: {2}{0}Status: {3}{0}Error Stage: {4}"
+            "".format(os.linesep+' '*16, case_dic['c_name'], case_dic['seed'],
+                      case_dic['status'], case_dic['estage']))
+        if case_dic['status'] == 'passed':
+            LOG.info(log_str)
+        else:
+            LOG.error(log_str)
+        self.rpt_rows.append(
+            [case_dic['c_name'], case_dic['v_name'], case_dic['proj_cl'],
+             case_dic['seed'], case_dic['status'], case_dic['estage'],
+             case_dic['simu_cpu_time']+'s'])
+        self.rpt_dic_lst.append(
+            {'case': case_dic['c_name'], 'seed': case_dic['seed'],
+             'status': case_dic['status']})
     def regression(self):
         for regr_module in self.regr_module_lst:
             ced, cfg_dic = env_booter.EnvBooter(LOG, regr_module).proj_env()
-            subprocess.run('cd ${PROJ_ROOT} && svn up', shell=True, check=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            LOG.info("updating svn to latest version done")
-            mk_dir, mk_file, _, regr_dic = makefile_gen.MakefileGen(
-                LOG, ced, cfg_dic, self.ow_dic, regr_flg=True).gen_makefile()
-            mk_str = 'cd {0} && make -f {1} '.format(mk_dir, mk_file)
-            rpt_rows = [['Case Name', 'Case Group', 'SVN CL', 'Seed', 'Status',
-                         'Error Stage', 'CPU Time']]
-            rpt_dic_lst = []
             if self.regr_fpga:
                 fsg = fpga_signals_gen.FPGASignalsGen(ced)
                 fsg.gen_h_lst()
-            for regr_type in self.regr_type_lst:
-                LOG.info("{0} regression is running @{1}".format(
-                    regr_type, ced['TIME']))
-                regr_type = regr_type.lower()
-                for name, group, seed in regr_dic.get(regr_type, []):
-                    subprocess.run(
-                        mk_str+'run_simv_{0}__{1}'.format(name, seed),
-                        shell=True, check=True, stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE)
-                    ngs_tup = (name, group, seed)
-                    case_dic = update_status(log_parser.LogParser(
-                        LOG, ced, cfg_dic, ngs_tup).parse_log())
-                    if self.regr_fpga:
-                        fsg.gen_fpga_signals(ngs_tup)
-                    log_str = ("Case Name: {1}{0}Seed: {2}{0}Status: {3}"
-                               "{0}Error Stage: {4}".format(
-                                   os.linesep+'                ',
-                                   case_dic['c_name'],
-                                   case_dic['seed'],
-                                   case_dic['status'],
-                                   case_dic['estage']))
-                    if case_dic['status'] == 'passed':
-                        LOG.info(log_str)
-                    else:
-                        LOG.error(log_str)
-                    rpt_rows.append([case_dic['c_name'],
-                                     case_dic['g_name'],
-                                     case_dic['proj_cl'],
-                                     case_dic['seed'],
-                                     case_dic['status'],
-                                     case_dic['estage'],
-                                     case_dic['simu_cpu_time']+'s'])
-                    rpt_dic_lst.append({'name': case_dic['c_name'],
-                                        'seed': case_dic['seed'],
-                                        'status': case_dic['status']})
-            if self.regr_rpt:
-                rpt_str = (
-                    'firefox platform:8000/regr/{0}/{1}/{2}/{3} &'.format(
-                        ced['USER_NAME'], dt.datetime.strftime(
-                            ced['TIME'], '%Y_%m_%d'), ced['PROJ_NAME'],
-                        ced['MODULE']))
-                subprocess.run(rpt_str, shell=True)
             else:
-                table = texttable.Texttable()
-                table.set_cols_width([30,7,7,7,7,7,7])
-                table.add_rows(rpt_rows)
-                regr_table = table.draw()
-                LOG.info("regression report table:"+os.linesep+regr_table)
-                regr_rpt_file = ced['MODULE_OUTPUT']+os.sep+'regr_rpt'
-                with open(regr_rpt_file, 'w') as rf:
-                    rf.write(regr_table)
-                regr_rpt_jf = ced['MODULE_OUTPUT']+os.sep+'regr_status.json'
-                with open(regr_rpt_jf, 'w')  as jf:
-                    json.dump(rpt_dic_lst, jf)
-                LOG.info("regression report file {0}".format(regr_rpt_file))
+                fsg = None
+            regr_rpt_file = ced['MODULE_OUTPUT']+os.sep+'regr_rpt'
+            regr_rpt_jf = ced['MODULE_OUTPUT']+os.sep+'regr_status.json'
+            if self.regr_failed_mode:
+                if not os.path.isfile(regr_rpt_jf):
+                    raise Exception(
+                        "regression report json file {0} is NA, and it is not "
+                        "enough to kick off failed mode".format(regr_rpt_jf))
+                mk_dir = ced['MODULE_OUTPUT']
+                mk_file = mk_dir+os.sep+'Makefile'
+                if not os.path.isfile(mk_file):
+                    raise Exception(
+                        "case make file {0} is NA, and it is not enough to "
+                        "kick off failed mode".format(mk_file))
+                mk_str = 'cd {0} && make -f {1} '.format(mk_dir, mk_file)
+                with open(regr_rpt_jf) as jf:
+                    regr_json = json.load(jf)
+                for cs_dic in regr_json:
+                    if cs_dic.get('status', '') != 'passed':
+                        self.sim_and_parse(ced, cfg_dic, (
+                            cs_dic.get('case', ''), cs_dic.get('simv', ''),
+                            cs_dic.get('seed', '')), mk_str, fsg)
+            else:
+                subprocess.run(
+                    'cd ${PROJ_ROOT} && svn up', shell=True, check=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                LOG.info("updating svn to latest version done")
+                mk_dir, mk_file, _, regr_dic = makefile_gen.MakefileGen(
+                    LOG, ced, cfg_dic, self.ow_dic,
+                    regr_flg=True).gen_makefile()
+                mk_str = 'cd {0} && make -f {1} '.format(mk_dir, mk_file)
+                for regr_type in self.regr_type_lst:
+                    LOG.info("{0} regression is running @{1}".format(
+                        regr_type, ced['TIME']))
+                    regr_type = regr_type.lower()
+                    for cvs_tup in regr_dic.get(regr_type, []):
+                        self.sim_and_parse(ced, cfg_dic, cvs_tup, mk_str, fsg)
+            table = texttable.Texttable()
+            table.set_cols_width([30,7,7,7,7,7,7])
+            table.add_rows(self.rpt_rows)
+            regr_table = table.draw()
+            LOG.info("regression report table:"+os.linesep+regr_table)
+            with open(regr_rpt_file, 'w') as rf:
+                rf.write(regr_table)
+            with open(regr_rpt_jf, 'w')  as jf:
+                json.dump(self.rpt_dic_lst, jf)
+            LOG.info("regression report file {0}".format(regr_rpt_file))
 
 ##### main
 def main():

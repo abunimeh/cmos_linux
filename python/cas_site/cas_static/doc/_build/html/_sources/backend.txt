@@ -16,35 +16,28 @@ Web Framework
 ----------------------------------------
 在linux eda和windows虚拟机通过访问 http://172.51.13.205:8000 打开平台的index
 
-index页面如下图所示：
+    .. figure:: images/INDEX.png
+                
+                index页面
 
-    .. image:: images/INDEX.png
+    .. figure:: images/user_list.png
+                
+                进入regression report web app，会显示一个索引控件与一个所有kick off过pj的用户列表，利用索引控件可以自动选择与过滤想要查询的信息，日期范围默认查询从今天开始向前一天的信息，用户默认选择jenkins，因为jenkins kick off的regression算是sign off的标准
 
-进入regression report web app，会显示一个所有kick off regression的用户列表：
+    .. figure:: images/proj_list.png
+                
+                只选中user之后查询会显示projects passing rate信息，列出这个用户所有的projects以及相应的passing rate，上下两栏分别显示以天为单位和以次为单位的projects的passing rate
 
-    .. image:: images/user_list.png
+    .. figure:: images/module_list.png
+                
+                只选中user与project之后查询会显示modules passing rate信息，列出这个用户该project所有的modules以及相应的passing rate
 
-点击想要查看report的用户，会显示一个日期入口列表，上半部分列出的是该日期merge到一起的regression report，下半部分列出的是每次的regression report：
+    .. figure:: images/case_list.png
+                
+                user、project与module都选中之后查询会显示case详细信息列表，列出该module已经被kick off的case以及case的status
 
-    .. image:: images/date_list.png
-
-点击想要查看的merged report或者single report，会显示一个项目入口列表，列出该report所有的projects以及这个用户在这个report里面的project的passing rate：
-
-    .. image:: images/proj_list.png
-
-点击想要查看的project，会显示模块的入口列表，列出该project所有的modules以及module的passing rate：
-
-    .. image:: images/module_list.png
-
-继续点击想要查看的module，会显示case的状态列表，列出该module已经被kick off的case以及case的status：
-
-    .. image:: images/case_list.png
-
-点击case的status链接，将会指出相关的log路径。因为我们目前的workspace没有nas支持，eda之间的log不同步，后面在nas支持开启之后，会通过这个链接直接显示log内容：
-
-    .. image:: images/log_list.png
-
+利用这些组合以及日期选择可以灵活的查看想要的passing rate与case状态信息，方便所有人的统计与查看。
 
 开发阶段说明
 ----------------------------------------
-backend目前还在开发初期阶段，regression report只是一个初期试用版，因此该手册也会根据backend的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 **yigy@cpu.com.cn**
+该web app目前发布的v3.0版是一个稳定的版本，日后不会有太大的功能改动，欢迎大家试用，如有任何问题及建议，请联系平台组 **yigy@cpu.com.cn**

@@ -367,7 +367,7 @@ optional arguments:
 </ul>
 </li>
 </ul>
-<p>（*）group.cfg与case.cfg中如果配置了同样的功能，cmd中相同功能的参数可以去掉，都存在的情况下cmd args的优先级高</p>
+<p>（*）simv.cfg与case.cfg中如果配置了同样的功能，cmd中相同功能的参数可以去掉，都存在的情况下cmd args的优先级高</p>
 <p>根据*标注的特点，我们可以将绝大部分的cmd args放到cfg里面来配置，cmd会被简化成统一的样式 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span></code> 根据平台的这个特性，这里会有两种主要的工作方式：</p>
 <ul class="simple">
 <li>cfg based<ul>
@@ -417,10 +417,6 @@ optional arguments:
 </li>
 <li>跑带coverage的regression：<ul>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-cov</span></code></li>
-</ul>
-</li>
-<li><strong>跑完regression自动显示web report：</strong><ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rpt</span></code></li>
 </ul>
 </li>
 <li>regression支持fpga相应的signal data生成：<ul>
@@ -568,10 +564,10 @@ optional arguments:
 │   ├── __cov__               # coverage相关文件
 │   │   ├── cm                # coverage数据
 │   │   └── merge             # coverage merge后的数据以及生成的report
-│   ├── __group__             # analysis+elaboration相关文件
-│   │   ├── DEFAULT           # DEFAULT group compilation相关文件，包括生成的simv
-│   │   ├── group1            # group1 group compilation相关文件，包括生成的simv
-│   │   └── group2
+│   ├── __simv__             # analysis+elaboration相关文件
+│   │   ├── DEFAULT           # DEFAULT simv compilation相关文件，包括生成的simv
+│   │   ├── simv1            # simv1 simv compilation相关文件，包括生成的simv
+│   │   └── simv2
 │   └── module_sanity_test    # module_sanity_test case相关文件
 │       ├── 1                 # 以seed命令的目录，在该seed下simulation相关文件
 │       ├── 119974
@@ -625,7 +621,7 @@ optional arguments:
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9.
     </div>
   </body>
 </html>

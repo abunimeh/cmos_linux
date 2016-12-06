@@ -26,10 +26,10 @@ class FPGASignalsGen(object):
                             '$fwrite') and 'handle1' in line and '%b' in line:
                         self.h1_lst.append(
                             re.search(r',(\w+)\s*\)\s*;', line).group(1))
-    def gen_fpga_signals(self, ngs_tup):
-        name, group, seed = ngs_tup
+    def gen_fpga_signals(self, cvs_tup):
+        case, simv, seed = cvs_tup
         fs_file = os.path.join(
-            self.ced['MODULE_OUTPUT'], name, seed, 'fpga_signals')
+            self.ced['MODULE_OUTPUT'], case, seed, 'fpga_signals')
         with open(fs_file, 'w') as f:
             f.write('handle0 (input):'+os.linesep+'    ')
             f.write((os.linesep+'    ').join(self.h0_lst))

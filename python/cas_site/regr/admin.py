@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import User, Proj, Module, Group, Case, Sim
+from .models import User, Proj, Module, Simv, Case, Sim
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ['name']
@@ -19,7 +19,7 @@ class ModuleAdmin(admin.ModelAdmin):
     list_filter = ['name']
     search_fields = ['name']
 
-class GroupAdmin(admin.ModelAdmin):
+class SimvAdmin(admin.ModelAdmin):
     list_display = ['name']
     list_filter = ['name']
     search_fields = ['name']
@@ -37,6 +37,6 @@ class SimAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Proj, ProjAdmin)
 admin.site.register(Module, ModuleAdmin)
-admin.site.register(Group, GroupAdmin)
+admin.site.register(Simv, SimvAdmin)
 admin.site.register(Case, CaseAdmin)
 admin.site.register(Sim, SimAdmin)

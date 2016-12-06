@@ -60,13 +60,13 @@
 <li><a class="reference internal" href="#proj-module">[proj_module]</a></li>
 <li><a class="reference internal" href="#regression-regression-opts">[regression], [regression_opts]</a></li>
 <li><a class="reference internal" href="#vplan-sheets-vplan-column-width">[vplan_sheets], [vplan_column_width]</a></li>
-<li><a class="reference internal" href="#env-group">[env_group]</a></li>
+<li><a class="reference internal" href="#env-simv">[env_simv]</a></li>
 <li><a class="reference internal" href="#env-case">[env_case]</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#group-cfg">group.cfg配置文件</a><ul>
+<li><a class="reference internal" href="#simv-cfg">simv.cfg配置文件</a><ul>
 <li><a class="reference internal" href="#default">[DEFAULT]</a></li>
-<li><a class="reference internal" href="#group-name">[GROUP_NAME]</a></li>
+<li><a class="reference internal" href="#simv-name">[SIMV_NAME]</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#case-cfg">case.cfg配置文件</a><ul>
@@ -120,21 +120,21 @@
 <li>PROJ_ROOT/share/cmn/config/proj.cfg<ul>
 <li>项目唯一</li>
 <li>配置文件覆盖优先级低</li>
-<li>设置了runtime环境变量、回归配置参数以及group配置文件与case配置文件的默认参数</li>
+<li>设置了runtime环境变量、回归配置参数以及simv配置文件与case配置文件的默认参数</li>
 </ul>
 </li>
-<li>PROJ_MODULE/config/group.cfg<ul>
+<li>PROJ_MODULE/config/simv.cfg<ul>
 <li>模块唯一</li>
 <li>配置文件覆盖优先级高</li>
-<li>设置了模块所有的group以及每个group的特性</li>
-<li>group是基于analysis与elaboration阶段的概念，以vcs为例，每个group生成自己的simv，提供给simulation使用</li>
+<li>设置了模块所有的simv以及每个simv的特性</li>
+<li>simv是基于analysis与elaboration阶段结束的产物，提供给simulation使用</li>
 </ul>
 </li>
 <li>PROJ_MODULE/config/case.cfg<ul>
 <li>模块唯一</li>
 <li>配置文件覆盖优先级高</li>
 <li>里面设置了模块所有的case以及每个case的特性</li>
-<li>case是基于simulation阶段的概念，每个case只能使用一个simv进行simulation，所以每个case对应一个group进行simulation</li>
+<li>case是基于simulation阶段的概念，每个case只能使用一个simv进行simulation，所以每个case对应一个simv进行simulation</li>
 <li>同级目录下的case_*.cfg也会被pj拿到并解析，但是DEFAULT section仍然是case.cfg的DEFAULT</li>
 </ul>
 </li>
@@ -189,9 +189,9 @@
 <h3>[vplan_sheets], [vplan_column_width]<a class="headerlink" href="#vplan-sheets-vplan-column-width" title="Permalink to this headline">¶</a></h3>
 <p>vplan是由验证相关人员维护的一套用于表征验证进度与验证完备性的文档，作为sign off的标准之一存在，目前是以excel表格的方式存放。这两个section是控制中心自行开发的vplan的格式，分别控制vplan内部的sheets的表格头名称与宽度，不可随意更改</p>
 </div>
-<div class="section" id="env-group">
-<h3>[env_group]<a class="headerlink" href="#env-group" title="Permalink to this headline">¶</a></h3>
-<p>env_group section用来提供所有group.cfg中可能用到的全部option的默认值，由于proj.cfg的优先级低于group.cfg的优先级，因此group.cfg中出现的相同option的值会覆盖这个section中的默认值</p>
+<div class="section" id="env-simv">
+<h3>[env_simv]<a class="headerlink" href="#env-simv" title="Permalink to this headline">¶</a></h3>
+<p>env_simv section用来提供所有simv.cfg中可能用到的全部option的默认值，由于proj.cfg的优先级低于simv.cfg的优先级，因此simv.cfg中出现的相同option的值会覆盖这个section中的默认值</p>
 <ul class="simple">
 <li>sub_modules<ul>
 <li>用来指定该module下的子module，格式是MODULE:TYPE，其中MODULE为模块名，TYPE为模块类型，比如rtl、bfm等</li>
@@ -215,7 +215,7 @@
 </li>
 <li>file__FILENAME<ul>
 <li>开放型option</li>
-<li>会在group analysis &amp; elaboration目录下成名为FILENAME、内容为对应option value的文件</li>
+<li>会在simv analysis &amp; elaboration目录下成名为FILENAME、内容为对应option value的文件</li>
 <li>阶段执行前生成，以便analysis与elaboration过程使用</li>
 </ul>
 </li>
@@ -230,7 +230,7 @@
 </ul>
 </li>
 <li>uvm, cov, wave, gui, prof, fpga<ul>
-<li>analysis和elaboration阶段的主要管控开关，管控每个group的行为</li>
+<li>analysis和elaboration阶段的主要管控开关，管控每个simv的行为</li>
 <li>分别是uvm方法学环境参数开关、覆盖率收集参数开关、dump波形开关、设置断点单步执行开关、收集效率分析报告开关</li>
 </ul>
 </li>
@@ -266,7 +266,7 @@
 </li>
 <li><p class="first">file__FILENAME</p>
 <ul class="simple">
-<li>与env_group section中的类似</li>
+<li>与env_simv section中的类似</li>
 <li>开放型option</li>
 <li>会在case simulation目录下先生成名为FILENAME、内容为对应option value的文件</li>
 <li>阶段执行前生成，以便simulation过程使用</li>
@@ -375,59 +375,59 @@
 </ul>
 </div>
 </div>
-<div class="section" id="group-cfg">
-<h2>group.cfg配置文件<a class="headerlink" href="#group-cfg" title="Permalink to this headline">¶</a></h2>
-<p>每个module只有一份的配置文件，用来配置模块级别在analyasis与elaboration阶段的特性，里面记录了该module的全部group，每个section就是一个group，每个group都有自己一套独立的analysis与elaboration结果，module owner负责修改</p>
+<div class="section" id="simv-cfg">
+<h2>simv.cfg配置文件<a class="headerlink" href="#simv-cfg" title="Permalink to this headline">¶</a></h2>
+<p>每个module只有一份的配置文件，用来配置模块级别在analyasis与elaboration阶段的特性，里面记录了该module的全部simv，每个section就是一个simv，每个simv都有自己一套独立的analysis与elaboration结果，module owner负责修改</p>
 <div class="section" id="default">
 <h3>[DEFAULT]<a class="headerlink" href="#default" title="Permalink to this headline">¶</a></h3>
 <p>无论在cfg文件中是否写出来，每个cfg文件都会有一个DEFAULT section，该section的作用是提供所有其它section的默认值</p>
-<p>group所有的option的默认值在proj.cfg的env_group section里面都已经提供，但是proj.cfg是整个project层面的默认值，不允许module owner修改，所以DEFAULT这个section的目的就在于提供给module owner一个module层面的可以异于project层面的默认值</p>
+<p>simv所有的option的默认值在proj.cfg的env_simv section里面都已经提供，但是proj.cfg是整个project层面的默认值，不允许module owner修改，所以DEFAULT这个section的目的就在于提供给module owner一个module层面的可以异于project层面的默认值</p>
 </div>
-<div class="section" id="group-name">
-<h3>[GROUP_NAME]<a class="headerlink" href="#group-name" title="Permalink to this headline">¶</a></h3>
-<p>除了DEFAULT section之外，其他每个section就是一个group，用户可以自己定义group name，可以在这个group section下面定制该group个性化的options</p>
-<p>group section, DEFAULT section, proj.cfg env_group section这三个section中可选的option是一致的，proj.cfg env_group section是一个全集，提供所有option的默认值，它们的优先级是group section &gt; DEFAULT section &gt; proj.cfg env_group section</p>
-<p>以下面一个group.cfg为例来说明用法：</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># this config is used for group level, 2nd entry (analysis and elaboration stage)</span>
+<div class="section" id="simv-name">
+<h3>[SIMV_NAME]<a class="headerlink" href="#simv-name" title="Permalink to this headline">¶</a></h3>
+<p>除了DEFAULT section之外，其他每个section就是一个simv，用户可以自己定义simv name，可以在这个simv section下面定制该simv个性化的options</p>
+<p>simv section, DEFAULT section, proj.cfg env_simv section这三个section中可选的option是一致的，proj.cfg env_simv section是一个全集，提供所有option的默认值，它们的优先级是simv section &gt; DEFAULT section &gt; proj.cfg env_simv section</p>
+<p>以下面一个simv.cfg为例来说明用法：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># this config is used for simv level, 2nd entry (analysis and elaboration stage)</span>
 <span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>
-<span class="c1">### group default pre/post cmd in analysis and elaboration</span>
+<span class="c1">### simv default pre/post cmd in analysis and elaboration</span>
 <span class="n">pre_cmd</span> <span class="o">=</span>
 <span class="n">post_cmd</span> <span class="o">=</span>
 
-<span class="c1">### group default TB top</span>
+<span class="c1">### simv default TB top</span>
 <span class="n">tb_top</span> <span class="o">=</span> <span class="n">module_tb</span>
 
-<span class="c1">### group default flow control switches</span>
+<span class="c1">### simv default flow control switches</span>
 <span class="n">uvm</span> <span class="o">=</span> <span class="n">on</span>
 <span class="n">cov</span> <span class="o">=</span> <span class="n">off</span>
 <span class="n">wave</span> <span class="o">=</span> <span class="n">off</span>
 <span class="n">gui</span> <span class="o">=</span> <span class="n">off</span>
 <span class="n">prof</span> <span class="o">=</span> <span class="n">off</span>
 
-<span class="c1">### group default analysis and elaboration options</span>
+<span class="c1">### simv default analysis and elaboration options</span>
 <span class="n">custom_ana_opts</span> <span class="o">=</span>
 <span class="n">custom_elab_opts</span> <span class="o">=</span>
 
-<span class="p">[</span><span class="n">cov_group</span><span class="p">]</span>
+<span class="p">[</span><span class="n">cov_simv</span><span class="p">]</span>
 <span class="n">cov</span> <span class="o">=</span> <span class="n">on</span>
 
-<span class="p">[</span><span class="n">dump_group_module</span><span class="p">]</span>
+<span class="p">[</span><span class="n">dump_simv</span><span class="p">]</span>
 <span class="n">wave</span> <span class="o">=</span> <span class="n">on</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>DEFAULT section可以列出感兴趣的管控全部groups的options，options全集在proj.cfg文件的env_group section中</li>
-<li>该模块的tb_top叫module_tb，异于默认的test_top，同时所有的group在elaboration阶段都用module_tb，所以需要在DEFAULT section修改</li>
+<li>DEFAULT section可以列出感兴趣的管控全部simvs的options，options全集在proj.cfg文件的env_simv section中</li>
+<li>该模块的tb_top叫module_tb，异于默认的test_top，同时所有的simv在elaboration阶段都用module_tb，所以需要在DEFAULT section修改</li>
 <li>analysis与elaboration两个阶段的管控开关列在这里，只是给自己一个提示，方便修改，上面都是proj.cfg的默认值</li>
 <li>custom_ana_opts与custom_elab_opts也是为了方便修改列在这里</li>
-<li>该模块一共有三个group：DEFAULT, cov_group, dump_group，所以该模块会有三套编译结果</li>
-<li>cov_group里cov设置为on，虽然DEFAULT是off，但是因为优先级的原因cov_group里面cov = on，没有列出来的option与DEFAULT section一致，DEFAULT section里没有列出来的option与proj.cfg env_group section一致</li>
+<li>该模块一共有三个simv：DEFAULT, cov_simv, dump_simv，所以该模块会有三套编译结果</li>
+<li>cov_simv里cov设置为on，虽然DEFAULT是off，但是因为优先级的原因cov_simv里面cov = on，没有列出来的option与DEFAULT section一致，DEFAULT section里没有列出来的option与proj.cfg env_simv section一致</li>
 </ul>
 </div>
 </div>
 <div class="section" id="case-cfg">
 <h2>case.cfg配置文件<a class="headerlink" href="#case-cfg" title="Permalink to this headline">¶</a></h2>
-<p>每个module只有一份的配置文件，用来配置模块级别在simulation阶段的特性，里面记录了该module的全部case，除了DEFAULT以外，每个section就是一个group，每个group都有自己一套独立的simulation结果，module owner负责修改</p>
+<p>每个module只有一份的配置文件，用来配置模块级别在simulation阶段的特性，里面记录了该module的全部case，除了DEFAULT以外，每个section就是一个simv，每个simv都有自己一套独立的simulation结果，module owner负责修改</p>
 <div class="section" id="id4">
 <h3>[DEFAULT]<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>无论在cfg文件中是否写出来，每个cfg文件都会有一个DEFAULT section，该section的作用是提供所有其它section的默认值</p>
@@ -470,12 +470,12 @@
 <span class="n">regression_type</span> <span class="o">=</span> <span class="n">sanity</span>
 <span class="p">[</span><span class="n">module__direct_test</span><span class="p">]</span>
 <span class="n">regression_type</span> <span class="o">=</span> <span class="n">nightly</span><span class="p">,</span> <span class="n">weekly</span>
-<span class="n">group</span> <span class="o">=</span> <span class="n">dump_group_module</span>
+<span class="n">simv</span> <span class="o">=</span> <span class="n">dump_simv</span>
 <span class="n">wave</span> <span class="o">=</span> <span class="n">on</span>
 <span class="n">wave_glitch</span> <span class="o">=</span> <span class="n">on</span>
 <span class="p">[</span><span class="n">module__random_test</span><span class="p">]</span>
 <span class="n">regression_type</span> <span class="o">=</span> <span class="n">nightly</span><span class="p">,</span> <span class="n">weekly</span>
-<span class="n">group</span> <span class="o">=</span> <span class="n">cov_group</span>
+<span class="n">simv</span> <span class="o">=</span> <span class="n">cov_simv</span>
 <span class="n">random_times</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="p">[</span><span class="n">module__random_test2</span><span class="p">]</span>
 <span class="n">regression_type</span> <span class="o">=</span> <span class="n">weekly</span>
@@ -488,18 +488,18 @@
 <li>该模块一共有4个case：module__sanity_test, module__direct_test, module__random_test, module__random_test2</li>
 <li>module__sanity_test<ul>
 <li>regression类型是sanity</li>
-<li>没有指定group就属于DEFAULT group，会使用DEFAULT group生成的simv进行simulation</li>
+<li>没有指定simv就属于DEFAULT simv，会使用DEFAULT simv进行simulation</li>
 </ul>
 </li>
 <li>module__direct_test<ul>
 <li>regression类型既是nightly，又是weekly</li>
-<li>属于group.cfg的dump_group_module，使用dump_group_module生成的simv进行simulation</li>
+<li>属于simv.cfg的dump_simv，使用dump_simv生成的simv进行simulation</li>
 <li>该case会dump波形，并且dump的波形会打开glitch</li>
 </ul>
 </li>
 <li>module_random_test<ul>
 <li>regression类型既是nightly，又是weekly</li>
-<li>属于group.cfg的cov_group，使用cov_group生成的simv进行simulation</li>
+<li>属于simv.cfg的cov_simv，使用cov_simv生成的simv进行simulation</li>
 <li>kick off 10次random的simulation，每次都使用不同的random seed</li>
 </ul>
 </li>
@@ -513,7 +513,7 @@
 </div>
 <div class="section" id="runner-pj">
 <h2>利用平台runner(pj)工作<a class="headerlink" href="#runner-pj" title="Permalink to this headline">¶</a></h2>
-<p>project owner配置好proj.cfg，module owner配置好group.cfg和case.cfg之后，来利用pj开始工作吧，具体说明请参考 <a class="reference internal" href="runner.html#runner"><span class="std std-ref">runner(pj)使用手册</span></a></p>
+<p>project owner配置好proj.cfg，module owner配置好simv.cfg和case.cfg之后，来利用pj开始工作吧，具体说明请参考 <a class="reference internal" href="runner.html#runner"><span class="std std-ref">runner(pj)使用手册</span></a></p>
 </div>
 </div>
 
@@ -543,7 +543,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9.
     </div>
   </body>
 </html>

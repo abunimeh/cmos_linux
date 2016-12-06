@@ -33,11 +33,11 @@ class Module(models.Model):
     def pname(self):
         return self.name.split('___')[1]
 
-class Group(models.Model):
+class Simv(models.Model):
     name = models.CharField(max_length=200, unique=True)
     def __str__(self):
         return self.name
-    def gname(self):
+    def vname(self):
         return self.name.split('___')[0]
     def mname(self):
         return self.name.split('___')[1]
@@ -52,7 +52,7 @@ class Case(models.Model):
         return self.name
     def cname(self):
         return self.name.split('___')[0]
-    def gname(self):
+    def vname(self):
         return self.name.split('___')[1]
     def mname(self):
         return self.name.split('___')[2]
@@ -64,7 +64,7 @@ class Sim(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     proj = models.ForeignKey(Proj, on_delete=models.CASCADE)
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    simv = models.ForeignKey(Simv, on_delete=models.CASCADE)
     case = models.ForeignKey(Case, on_delete=models.CASCADE)
     proj_cl = models.CharField(max_length=20)
     seed = models.CharField(max_length=20)

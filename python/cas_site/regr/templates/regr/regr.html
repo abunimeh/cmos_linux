@@ -261,7 +261,7 @@ Regression Info
           else {
             $('#show_all').empty();
             var proj_day = new Array();
-            proj_day.push('<div id="show_tab2" style="margin-top:20px;"><table id="tab2" class="display"><thead><tr><th>Case Name</th><th>Case Group</th><th>SVN CL</th><th>Seed</th><th>Status</th><th>Error Stage</th><th>Error Info</th><th>CPU Time</th><th>Run Time</th></tr></thead> <tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div>');
+            proj_day.push('<div id="show_tab2" style="margin-top:20px;"><table id="tab2" class="display"><thead><tr><th>Case Name</th><th>Case Simv</th><th>SVN CL</th><th>Seed</th><th>Status</th><th>Error Stage</th><th>Error Info</th><th>CPU Time</th><th>Run Time</th></tr></thead> <tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div>');
             document.getElementById("show_all").innerHTML = proj_day.join('');
              $('#tab2').DataTable( {      
               "deferRender": true,
@@ -281,7 +281,7 @@ Regression Info
               },   
               "columns": [
                   { "data": "sec.case.casename" },
-                  { "data": "sec.case.gn" },
+                  { "data": "sec.case.vn" },
                   { "data": "sec.case.proj_cl" },
                   { "data": "sec.case.seed" },
                   { "data": "sec.case",
