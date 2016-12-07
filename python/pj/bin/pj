@@ -103,6 +103,15 @@ def gen_args_top():
     h_str = ("toggle to kick off failed mode for regression")
     regr_parser.add_argument('-fm', dest='regr_failed_mode', default=False,
                             action='store_true', help=h_str)
+    h_str = ("toggle to perform x86 instruction generation before")
+    regr_parser.add_argument('-x86_ins', dest='regr_x86_ins', default=False,
+                            action='store_true', help=h_str)
+    h_str = ("input x86 instruction generation numnber")
+    regr_parser.add_argument('-x86_ins_num', dest='regr_x86_ins_num', type=int,
+                             default=21, help=h_str)
+    h_str = ("toggle to compilation from fresh")
+    regr_parser.add_argument('-fresh', dest='regr_fresh', default=False,
+                            action='store_true', help=h_str)
     h_str = ("toggle to dump data for FPGA")
     regr_parser.add_argument('-fpga', dest='regr_fpga', default=False,
                             action='store_true', help=h_str)
@@ -284,6 +293,9 @@ def main_regr(args):
                     args.regr_rt,
                     args.regr_cov,
                     args.regr_failed_mode,
+                    args.regr_x86_ins,
+                    args.regr_x86_ins_num,
+                    args.regr_fresh,
                     args.regr_fpga)
         regr.regression()
         LOG.info("running regression of {0} from {1} module done".format(
@@ -604,12 +616,6 @@ class Run(object):
                 fsg = fpga_signals_gen.FPGASignalsGen(self.ced)
                 fsg.gen_h_lst()
             for run_case in self.run_case_lst:
-                if self.run_x86_ins:
-                    for temp_file in pcom.find_iter(
-                            self.ced['MODULE_TB'], '*{0}*'.format(run_case)):
-                        os.remove(temp_file)
-                        LOG.info("cleaning x86_ins generation temp file {0}"
-                                 "".format(temp_file))
                 for seed in cvs_dic[run_case][1:]:
                     cvs_tup = (run_case, cvs_dic[run_case][0], seed)
                     case_dic = update_status(log_parser.LogParser(
@@ -635,10 +641,16 @@ class Regr(object):
                  regr_rt,
                  regr_cov,
                  regr_failed_mode,
+                 regr_x86_ins,
+                 regr_x86_ins_num,
+                 regr_fresh,
                  regr_fpga):
         self.regr_module_lst = regr_module_lst
         self.regr_type_lst = regr_type_lst if regr_type_lst else ['sanity']
         self.regr_failed_mode = regr_failed_mode
+        self.regr_x86_ins = regr_x86_ins
+        self.regr_x86_ins_num = regr_x86_ins_num
+        self.regr_fresh = regr_fresh
         self.regr_fpga = regr_fpga
         self.ow_dic = {'ae': {}, 'su': {}}
         if regr_rt:
@@ -677,7 +689,9 @@ class Regr(object):
              'status': case_dic['status']})
     def regression(self):
         for regr_module in self.regr_module_lst:
-            ced, cfg_dic = env_booter.EnvBooter(LOG, regr_module).proj_env()
+            ced, cfg_dic = env_booter.EnvBooter(
+                LOG, regr_module, self.regr_x86_ins,
+                self.regr_x86_ins_num).proj_env()
             if self.regr_fpga:
                 fsg = fpga_signals_gen.FPGASignalsGen(ced)
                 fsg.gen_h_lst()
@@ -710,8 +724,9 @@ class Regr(object):
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 LOG.info("updating svn to latest version done")
                 mk_dir, mk_file, _, regr_dic = makefile_gen.MakefileGen(
-                    LOG, ced, cfg_dic, self.ow_dic,
-                    regr_flg=True).gen_makefile()
+                    LOG, ced, cfg_dic, self.ow_dic, regr_flg=True,
+                    fresh_flg=self.regr_fresh,
+                    x86_ins_flg=self.regr_x86_ins).gen_makefile()
                 mk_str = 'cd {0} && make -f {1} '.format(mk_dir, mk_file)
                 for regr_type in self.regr_type_lst:
                     LOG.info("{0} regression is running @{1}".format(

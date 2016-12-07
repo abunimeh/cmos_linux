@@ -267,57 +267,45 @@ class UserList(ListView):
         context['user_list'] = self.user_list
         return context
 
-def get_proj(request):
+def get_model(request):
     model_dic = collections.OrderedDict()
-    user = request.GET.get('user')
-    tstart = request.GET.get('tstart')
-    tend = request.GET.get('tend')
-    time_flag = request.GET.get('tflag')
-    if time_flag == 'day':
-        sim_obj_qs = Sim.objects.filter(user__name=user).filter(pub_date__range=date_range(tstart,tend))
-        if sim_obj_qs.count()==0:
-            model_dic['data']= [{'day': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
-        else:
-            model_dic['data'] = gen_wrap_dic(sim_obj_qs, 'proj', day_flg= True)
-    elif time_flag == 'sec':
-        sim_obj_qs = Sim.objects.filter(user__name=user).filter(pub_date__range=date_range(tstart,tend))
-        if sim_obj_qs.count()==0:
-            model_dic['data']= [{'sec': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
-        else:
-            model_dic['data'] = gen_wrap_dic(sim_obj_qs, 'proj')
-    return HttpResponse(json.dumps(model_dic),content_type='application/json')
-
-def get_module(request):
-    model_dic = collections.OrderedDict()
-    user = request.GET.get('user')
-    proj = request.GET.get('proj')
-    tstart = request.GET.get('tstart')
-    tend = request.GET.get('tend')
-    time_flag = request.GET.get('tflag')
-    if time_flag == 'day':
-        sim_obj_qs = Sim.objects.filter(user__name=user).filter(proj__name=proj).filter(pub_date__range=date_range(tstart,tend))
-        if sim_obj_qs.count()==0:
-            model_dic['data']= [{'day': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
-        else:
-            model_dic['data']= gen_wrap_dic(sim_obj_qs, 'module', day_flg= True)
-    elif time_flag == 'sec':
-        sim_obj_qs = Sim.objects.filter(user__name=user).filter(proj__name=proj).filter(pub_date__range=date_range(tstart,tend))
-        if sim_obj_qs.count()==0:
-            model_dic['data']= [{'sec': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
-        else:
-            model_dic['data'] = gen_wrap_dic(sim_obj_qs, 'module')
-    return HttpResponse(json.dumps(model_dic),content_type='application/json')
-
-def get_case(request):
-    model_dic = collections.OrderedDict()
+    model = request.GET.get('model')
     user = request.GET.get('user')
     proj = request.GET.get('proj')
     module = request.GET.get('module')
     tstart = request.GET.get('tstart')
     tend = request.GET.get('tend')
-    sim_obj_qs = Sim.objects.filter(user__name=user).filter(proj__name=proj).filter(module__name=module+'___'+proj).filter(pub_date__range=date_range(tstart,tend))
-    if sim_obj_qs.count()==0:
-        model_dic['data']=[{"sec":{'time':{'case_log':'None', 'runt': 'None'}, 'case':{'casename':'None' ,'vn':'None', 'proj_cl':'None', 'seed':'None', 'status':'None', 'error_stage': 'None','error_info':'None', 'simu_cpu_time':'None','bc':0}}}]
-    else:
-        model_dic['data'] = gen_wrap_dic(sim_obj_qs,  sec_flg=True)
+    time_flag = request.GET.get('tflag')
+    if model == 'proj':
+        if time_flag == 'day':
+            sim_obj_qs = Sim.objects.filter(user__name=user).filter(pub_date__range=date_range(tstart,tend))
+            if sim_obj_qs.count()==0:
+                model_dic['data']= [{'day': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
+            else:
+                model_dic['data'] = gen_wrap_dic(sim_obj_qs, 'proj', day_flg= True)
+        elif time_flag == 'sec':
+            sim_obj_qs = Sim.objects.filter(user__name=user).filter(pub_date__range=date_range(tstart,tend))
+            if sim_obj_qs.count()==0:
+                model_dic['data']= [{'sec': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
+            else:
+                model_dic['data'] = gen_wrap_dic(sim_obj_qs, 'proj')
+    elif model == 'module':
+        if time_flag == 'day':
+            sim_obj_qs = Sim.objects.filter(user__name=user).filter(proj__name=proj).filter(pub_date__range=date_range(tstart,tend))
+            if sim_obj_qs.count()==0:
+                model_dic['data']= [{'day': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
+            else:
+                model_dic['data']= gen_wrap_dic(sim_obj_qs, 'module', day_flg= True)
+        elif time_flag == 'sec':
+            sim_obj_qs = Sim.objects.filter(user__name=user).filter(proj__name=proj).filter(pub_date__range=date_range(tstart,tend))
+            if sim_obj_qs.count()==0:
+                model_dic['data']= [{'sec': {'time': {'model': 'None', 'runt': 'None'}, 'model_list':['None','None','None','None'] , 'items': {'pn': 0, 'tn': 0, 'pr': 0, 'bc': '#fff' }}}]
+            else:
+                model_dic['data'] = gen_wrap_dic(sim_obj_qs, 'module')
+    elif model == 'case':
+        sim_obj_qs = Sim.objects.filter(user__name=user).filter(proj__name=proj).filter(module__name=module+'___'+proj).filter(pub_date__range=date_range(tstart,tend))
+        if sim_obj_qs.count()==0:
+            model_dic['data']=[{"sec":{'time':{'case_log':'None', 'runt': 'None'}, 'case':{'casename':'None' ,'vn':'None', 'proj_cl':'None', 'seed':'None', 'status':'None', 'error_stage': 'None','error_info':'None', 'simu_cpu_time':'None','bc':0}}}]
+        else:
+            model_dic['data'] = gen_wrap_dic(sim_obj_qs,  sec_flg=True)
     return HttpResponse(json.dumps(model_dic),content_type='application/json')

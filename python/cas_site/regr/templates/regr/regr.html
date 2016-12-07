@@ -7,8 +7,8 @@ Regression Info
 {% endblock %}
 
 {% block content %}
-<div id="container" class="clearfix" >
-  <div class="content" style="height:875px; width: 1200px">
+<div id="container" class="clearfix" style="width: 1300px;">
+  <div class="content" style="height:auto; width: 1200px; margin: 0px auto;">
     <fieldset id="items_list">
       <p>
         <span>Teams:</span> 
@@ -27,7 +27,7 @@ Regression Info
         <input  class="tsearch" type="button" name="search" value="Search">
       </p>
     </fieldset>
-    <hr style="clear: both;margin-top: 20px; margin-left: -59px; height: 2px; width: 1180px;">
+    <hr style="clear: both;height: 2px; width: 1200px; background: rgba(33, 7, 7, 0.19) none repeat scroll 0% 0%;">
     <div id="show_all">
       <div id="show_tab1">  
         <table id="tab1" class="display">
@@ -86,7 +86,7 @@ Regression Info
       minDate:"2014-01-01 00:00:00",
     })
     $('#tab1').DataTable({
-      "scrollY": "340px",
+      "scrollY": "350px",
       "deferRender": true,
       "order":[[0,"asc"]],
       "lengthChange": false,
@@ -127,10 +127,10 @@ Regression Info
               "bPaginate": true, //翻页功能
               "searching": false,
               "order":[[5,'desc']],
-              "scrollY": "200px",//dt高度
+              "scrollY": "250px",//dt高度
               ajax: {
-                url:"{% url 'regr:get_proj' %}",
-                data: {'user':user, 'tstart':tstart, 'tend':tend, 'tflag':'day'} 
+                url:"{% url 'regr:get_model' %}",
+                data: {'model':'proj','user':user, 'proj':'None', 'module':'None', 'tstart':tstart, 'tend':tend, 'tflag':'day'} 
               },   
               "columns": [
               { "data": "day.model_list.0" },
@@ -159,10 +159,10 @@ Regression Info
               "bPaginate": true, //翻页功能
               "searching": false,
               "order":[[5,"desc"]],
-              "scrollY": "340px",//dt高度
+              "scrollY": "350px",//dt高度
               ajax: {
-                url:"{% url 'regr:get_proj'%}",
-                data: {'user':user, 'tstart':tstart, 'tend':tend, 'tflag':'sec'} 
+                url:"{% url 'regr:get_model'%}",
+                data: {'model':'proj','user':user, 'proj':'None', 'module':'None', 'tstart':tstart, 'tend':tend, 'tflag':'sec'} 
               },   
               "columns": [
               { "data": "sec.model_list.0" },
@@ -202,10 +202,10 @@ Regression Info
               "bPaginate": true, //翻页功能
               "searching": false,
               "order":[[4,'desc']],
-              "scrollY": "200px",//dt高度
+              "scrollY": "250px",//dt高度
               ajax: {
-                  url:"{% url 'regr:get_module' %}",
-                  data: {'user':user, 'proj':proj, 'tstart':tstart, 'tend':tend, 'tflag':'day'} 
+                  url:"{% url 'regr:get_model' %}",
+                  data: {'model':'module','user':user, 'proj':proj, 'module':'None', 'tstart':tstart, 'tend':tend, 'tflag':'day'} 
               },   
               "columns": [
               { "data": "day.model_list.0" },
@@ -233,10 +233,10 @@ Regression Info
               "bPaginate": true, //翻页功能
               "searching": false,
               "order":[[4,"desc"]],
-              "scrollY": "340px",//dt高度
+              "scrollY": "350px",//dt高度
               ajax: {
-                url:"{% url 'regr:get_module'%}",
-                data: {'user':user, 'proj':proj, 'tstart':tstart, 'tend':tend, 'tflag':'sec'} 
+                url:"{% url 'regr:get_model'%}",
+                data: {'model':'module','user':user, 'proj':proj, 'module':'None', 'tstart':tstart, 'tend':tend, 'tflag':'sec'} 
               },   
               "columns": [
               { "data": "sec.model_list.0" },
@@ -274,10 +274,10 @@ Regression Info
               "bPaginate": true, //翻页功能
               "searching": false,
               "order":[[8,"desc"]],
-              "scrollY": "520px",//dt高度
+              "scrollY": "545px",//dt高度
               ajax: {
-                  url:"{% url 'regr:get_case'  %}",
-                  data: {'user':user, 'proj':proj, 'module':module, 'tstart':tstart, 'tend':tend} 
+                  url:"{% url 'regr:get_model'  %}",
+                  data: {'model':'case','user':user, 'proj':proj, 'module':module, 'tstart':tstart, 'tend':tend} 
               },   
               "columns": [
                   { "data": "sec.case.casename" },

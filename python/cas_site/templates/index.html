@@ -8,25 +8,16 @@ INDEX
 
 <!-- start content -->
 {% block content %}
-  <div id="container" class="clearfix">
-    <div class="content">
+  <div id="container" class="clearfix" style="padding-top: 182px;">
+    <div class="content" style="margin-top: 0px;">
       <div id="slideshow">
         <div id="slider">
-          <div class="oneByOne_item"> <div><img src="{% static 'images/slideshow/map-usa.png' %}" class="item_1_1" alt="" /></div>
-            <h3 class="text_1_1">Pj Tool</h3>
-            <p class="text_1_2 large">Pj tool can make your works easy and convenience---<a href="/static/doc/_build/html/runner.html">learn more</a></p>
-          </div>
-          <div class="oneByOne_item"> <div><img src="{% static 'images/slideshow/map-ger.png' %}" class="item_1_2" alt="" /></div>
-            <h3 class="text_1_1">Document Platform</h3>
-            <p class="text_1_2 large"> This app describes our platform in detail---<a href="/static/doc/_build/html/index.html">learn more</a></p>
-          </div>
+          <h3 class="text_1_1">Platform Document</h3>
+          <p class="text_1_2 large"> This app describes our platform in detail---<a href="/static/doc/_build/html/index.html">learn more</a></p>
         </div>
         <!-- end slider -->
       </div>
       <!-- end slideshow -->
-      <!-- start slideshow navigation -->
-      <div id="cyclenav" class="alignright"></div>
-      <!-- end slideshow navigation -->
       <div id="quote" class="clear">
         <div class="coda-slider-wrapper">
           <div class="coda-slider preload" id="coda-slider-1">
@@ -53,19 +44,6 @@ INDEX
 
 
 {% block js %}
-
-<script type="text/javascript">
-$(function() {
-    $('#slider').cycle({
-        fx: 'scrollLeft',
-        timeout:5000,
-        speed:400,
-        pager:  '#cyclenav'
-    });
-
-    
-}); 
-</script>
 
 {% endblock%}
 

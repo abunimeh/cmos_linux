@@ -1,13 +1,14 @@
 .header-content .ddsmoothmenu{
-font: bold 20px Verdana black;
+font: bold 21px Verdana black;
 background: #fff; /*background of menu bar (default state)*/
 width: auto;
-margin: 10px 0px 0px 550px;
+margin: 14px 0px 0px 550px;
 }
 
 .ddsmoothmenu ul{
 z-index:100;
-margin: 0;
+line-height: 30px;
+margin-left:  125px;
 padding: 0;
 list-style-type: none;
 }
@@ -30,7 +31,7 @@ padding: 8px 10px;
 /*border-right: 1px solid #778;*/
 color: #2d2b2b;
 text-decoration: none;
-padding: 0px 30px 0px 20px;
+padding: 0px 20px 0px 20px;
 }
 
 * html .ddsmoothmenu ul li a{ /*IE6 hack to get sub menu links to behave correctly*/
