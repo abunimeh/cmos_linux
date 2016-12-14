@@ -21,7 +21,7 @@ blender, cinelerra-cv, subtitleeditor, audacity, puddletag
 ttf-arphic, unifont, adobe-source-han-sans-cn-fonts
 ibus, ibus-sunpinyin
 ** python
-beautifulsoup4, diff-match-patch, Django, djangorestframework, httpie, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, jupyter, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, cython, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, sympy, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, XlsxWriter, astropy, texttable, nested-dict
+beautifulsoup4, diff-match-patch, Django, djangorestframework, httpie, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, jupyter, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, cython, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, sympy, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, XlsxWriter, astropy, texttable, nested-dict, gitpython
 ** emacs
 ascii-art-to-unicode, auctex, gnugo, paredit
 ** web static
@@ -121,6 +121,17 @@ git pull origin
 git push origin master
 git status
 git remote show origin
+
+sudo adduser git
+sudo git init --bare /srv/firefly.git
+sudo chown -R git:git /srv/firefly.git
+su git
+vim ~/.ssh/authorized_keys
+
+ssh-keygen
+cat ~/.ssh/id_rsa.pub
+
+git clone git@<server>:/srv/firefly.git
 
 * cleartool
 cleartool ci \!:1 \!:2 `cleartool lsco -cview -me -short -r`
