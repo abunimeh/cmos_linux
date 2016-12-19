@@ -123,8 +123,8 @@ git status
 git remote show origin
 
 sudo adduser git
-sudo git init --bare /srv/firefly.git
-sudo chown -R git:git /srv/firefly.git
+sudo git init --bare /srv/ff_git.git
+sudo chown -R git:git /srv/ff_git.git
 which git-shell
 vim /etc/passwd
 git:x:1003:1003:,,,:/home/git:/usr/bin/git-shell
@@ -133,7 +133,7 @@ sudo vim ~/.ssh/authorized_keys
 ssh-keygen
 cat ~/.ssh/id_rsa.pub
 
-git clone git@<server>:/srv/firefly.git
+git clone git@<server>:/srv/ff_git.git
 
 * cleartool
 cleartool ci \!:1 \!:2 `cleartool lsco -cview -me -short -r`
