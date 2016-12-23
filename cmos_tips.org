@@ -298,7 +298,8 @@ grant all privileges on database <db> to <user>;
 \l
 \d
 \q
-pg_dumpall -U admin -p <port> > <db_dump>
+pg_dumpall -U admin -p <port> -f <db_dump>
+psql -U admin -f <db_dump> postgres
 ** cfg
 pg_data/pg_hba.conf:
     local all all md5
