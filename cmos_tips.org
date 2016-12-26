@@ -68,18 +68,19 @@ methods include ftp, ssh, rlogin, telnet
 emacs --batch <file> --eval "(setq make-backup-files nil)" -f verilog-pretty-expr -f save-buffer
 
 * python
+** pre compilation
 python -m compileall <file/dir>
-
+** install modules
 python setup.py install --prefix=<local_dir>
 pip install --install-option="--prefix=<local_dir>" --no-index --find-links <tar_dir> <pkg_or_tar>
-
+** tips
 os.makedirs(<dir>, exist_ok=True)
 shutil.rmtree(<dir>, ignore_errors=True)
 pool.starmap_async(<func>, zip(<iter>), itertools.repeat(<flg>))
 any(<iter>)
 <dic>.get(<key>, <default_value>)
 subprocess.run(<sys_cmd>, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE, check=True).stdout.decode('utf-8').strip()
-
+** postgresql SQL
 with psycopg2.connect(None, '<database>', '<user>', '<passwd>', '<host>', '<port>') as conn:
     with conn.cursor() as c:
         c.execute(<SQL>)
@@ -90,18 +91,60 @@ c.execute(<SQL>)
 conn.commit()
 c.close()
 conn.close()
-
+** read and overwrite file
 with open(<file>, 'r+') as f:
      f_cont = f.read()
      f.seek(0)
      f.truncate()
      f.write(<new_cont>)
-
+** profiling timeit
 start_time = timeit.default_timer()
 <statements>
 end_time = timeit.default_timer()
 print(end_time-start_time)
-
+** profiling cProfile django
+import cProfile, pstats
+pr = cProfile.Profile()
+pr.enable()
+<statements>
+pr.disable()
+with open('prof.log', 'w') as f:
+    ps = pstats.Stats(pr, stream=f).sort_stats(1)
+    ps.print_stats()
+** profiling cProfile python
+python -m cProfile [-o output_file] myscript.py
+python shell:
+    import pstats
+    p = pstats.Stats('output_file')
+    p.strip_dirs().sort_stats(2).print_stats()
+** profiling line_profiler django
+def do_line_profiler(view=None, extra_view=None):
+    import line_profiler
+    def wrapper(view):
+        def wrapped(*args, **kwargs):
+            prof = line_profiler.LineProfiler()
+            prof.add_function(view)
+            if extra_view:
+                [prof.add_function(v) for v in extra_view]
+            with prof:
+                resp = view(*args, **kwargs)
+            prof.print_stats()
+            return resp
+        return wrapped
+    if view:
+        return wrapper(view)
+    return wrapper
+@do_line_profiler
+def my_view(request):
+    pass
+** profiling line_profiler python
+kernprof -l myscript.py
+myscript.py:
+    @profile
+    def my_func():
+        pass
+python -m line_profiler myscript.py.lprof
+** pip config
 ~/.pip/pip.conf:
 [global]
 index-url = https://pypi.tuna.tsinghua.edu.cn/simple
