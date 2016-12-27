@@ -33,69 +33,66 @@ def find_module_dir(ced, cfg_dic, module):
         raise Exception("module {0} is NA; the possible module is {1}{2}"
                         "".format(module, os.linesep, tree_str))
 
-### classes
-class EnvBooter(object):
-    def __init__(self, LOG, sim_module='', x86_ins_flg=False, x86_ins_num=21):
-        self.LOG = LOG if LOG else pcom.gen_logger()
-        self.sim_module = sim_module
-        self.x86_ins_flg = x86_ins_flg
-        self.x86_ins_num = x86_ins_num
-        os.environ['PROJ_ROOT'] = find_proj_root(os.getcwd())
-        os.environ['MODULE'] = sim_module
-        self.ced = {'MODULE': sim_module, 'TIME': dt.datetime.now(),
-                    'PROJ_ROOT': os.environ['PROJ_ROOT'],
-                    'USER_NAME': os.environ['USER']}
-        self.cfg_dic = {}
-    def gen_x86_case_cfg(self):
-        scr_xi_dir = self.ced['CMN_SCRIPTS']+os.sep+'X86_INS'
+def boot_env():
+    os.environ['PROJ_ROOT'] = find_proj_root(os.getcwd())
+    ced = {'PROJ_ROOT': os.environ['PROJ_ROOT'],
+           'TIME': dt.datetime.now(),
+           'USER_NAME': os.environ['USER']}
+    proj_cfg = os.path.expandvars('$PROJ_ROOT/share/cmn/config/proj.cfg')
+    if not os.path.isfile(proj_cfg):
+        raise Exception("proj config file {0} is NA".format(proj_cfg))
+    cfg_dic = {'proj': pcom.gen_cfg([proj_cfg])}
+    for env_key, env_value in cfg_dic['proj']['boot_env'].items():
+        os.environ[env_key] = os.path.expandvars(env_value)
+        ced[env_key] = os.path.expandvars(env_value)
+    return (ced, cfg_dic)
+
+def module_env(LOG, sim_module, x86_ins_flg=False,
+               x86_ins_num=None, x86_ins_groups=None):
+    LOG = LOG if LOG else pcom.gen_logger()
+    ced, cfg_dic = boot_env()
+    os.environ['MODULE'] = sim_module
+    ced['MODULE'] = sim_module
+    module_dir = find_module_dir(ced, cfg_dic, sim_module)
+    os.environ['PROJ_MODULE'] = module_dir
+    ced['PROJ_MODULE'] = module_dir
+    for env_key, env_value in cfg_dic['proj']['module_env'].items():
+        os.environ[env_key] = os.path.expandvars(env_value)
+        ced[env_key] = os.path.expandvars(env_value)
+    if x86_ins_flg:
+        x86_ins_num = (int(
+            pcom.rd_cfg(cfg_dic['proj'], 'x86_ins', 'default_ins_num')[0]) if
+                       x86_ins_num == None else x86_ins_num)
+        x86_ins_groups = (
+            pcom.rd_cfg(cfg_dic['proj'], 'x86_ins', 'case_group') if
+            x86_ins_groups == None else x86_ins_groups)
+        scr_xi_dir = ced['CMN_SCRIPTS']+os.sep+'X86_INS'
         case_gen_file = scr_xi_dir+os.sep+'case_gen.py'
         if not os.path.isfile(case_gen_file):
             raise Exception("case_gen.py file {0} is NA".format(case_gen_file))
         os.sys.path.append(scr_xi_dir)
         import case_gen
-        for cg_name in pcom.rd_cfg(
-                self.cfg_dic['proj'], 'x86_ins', 'case_group'):
+        for cg_name in x86_ins_groups:
             case_gen_inst = case_gen.CaseGen(
-                self.ced['MODULE'], cg_name, self.x86_ins_num,
-                self.ced['MODULE_CONFIG'])
+                ced['MODULE'], cg_name, x86_ins_num, ced['MODULE_CONFIG'])
             case_gen_inst.gen_case()
-    def boot_env(self):
-        proj_cfg = os.path.expandvars('$PROJ_ROOT/share/cmn/config/proj.cfg')
-        if not os.path.isfile(proj_cfg):
-            raise Exception("proj config file {0} is NA".format(proj_cfg))
-        self.cfg_dic['proj'] = pcom.gen_cfg([proj_cfg])
-        for env_key, env_value in self.cfg_dic['proj']['boot_env'].items():
-            os.environ[env_key] = os.path.expandvars(env_value)
-            self.ced[env_key] = os.path.expandvars(env_value)
-        return (self.ced, self.cfg_dic)
-    def proj_env(self):
-        self.boot_env()
-        module_dir = find_module_dir(self.ced, self.cfg_dic, self.sim_module)
-        os.environ['PROJ_MODULE'] = module_dir
-        self.ced['PROJ_MODULE'] = module_dir
-        for env_key, env_value in self.cfg_dic['proj']['proj_env'].items():
-            os.environ[env_key] = os.path.expandvars(env_value)
-            self.ced[env_key] = os.path.expandvars(env_value)
-        if self.x86_ins_flg:
-            self.gen_x86_case_cfg()
-        simv_cfg = self.ced['MODULE_CONFIG']+os.sep+'simv.cfg'
-        if not os.path.isfile(simv_cfg):
-            raise Exception("simv config file {0} is NA".format(case_cfg))
-        self.cfg_dic['simv'] = pcom.gen_cfg([simv_cfg])
-        case_cfg = self.ced['MODULE_CONFIG']+os.sep+'case.cfg'
-        if not os.path.isfile(case_cfg):
-            raise Exception("case config file {0} is NA".format(case_cfg))
-        case_cfg_lst = [case_cfg]
-        for cfg_file in pcom.find_iter(
-                self.ced['MODULE_CONFIG'], 'case_*.cfg'):
-            self.LOG.info("more case config file {0}".format(cfg_file))
-            case_cfg_lst.append(cfg_file)
-        case_cfg_lst.reverse()
-        self.cfg_dic['case'] = pcom.gen_cfg(case_cfg_lst)
-        simv_proj_env = copy.copy(self.cfg_dic['proj']['env_simv'])
-        case_proj_env = copy.copy(self.cfg_dic['proj']['env_case'])
-        simv_proj_env.update(self.cfg_dic['simv']['DEFAULT'])
-        case_proj_env.update(self.cfg_dic['case']['DEFAULT'])
-        self.cfg_dic['simv']['DEFAULT'] = simv_proj_env
-        self.cfg_dic['case']['DEFAULT'] = case_proj_env
-        return (self.ced, self.cfg_dic)
+    simv_cfg = ced['MODULE_CONFIG']+os.sep+'simv.cfg'
+    if not os.path.isfile(simv_cfg):
+        raise Exception("simv config file {0} is NA".format(case_cfg))
+    cfg_dic['simv'] = pcom.gen_cfg([simv_cfg])
+    case_cfg = ced['MODULE_CONFIG']+os.sep+'case.cfg'
+    if not os.path.isfile(case_cfg):
+        raise Exception("case config file {0} is NA".format(case_cfg))
+    case_cfg_lst = [case_cfg]
+    for cfg_file in pcom.find_iter(ced['MODULE_CONFIG'], 'case_*.cfg'):
+        LOG.info("more case config file {0}".format(cfg_file))
+        case_cfg_lst.append(cfg_file)
+    case_cfg_lst.reverse()
+    cfg_dic['case'] = pcom.gen_cfg(case_cfg_lst)
+    simv_module_env = copy.copy(cfg_dic['proj']['env_simv'])
+    case_module_env = copy.copy(cfg_dic['proj']['env_case'])
+    simv_module_env.update(cfg_dic['simv']['DEFAULT'])
+    case_module_env.update(cfg_dic['case']['DEFAULT'])
+    cfg_dic['simv']['DEFAULT'] = simv_module_env
+    cfg_dic['case']['DEFAULT'] = case_module_env
+    return (ced, cfg_dic)

@@ -11,6 +11,7 @@ import multiprocessing.pool
 import logging
 import configparser
 import psutil
+import subprocess
 
 ##### functions
 def gen_logger(con_level=logging.INFO, file_log=False):
@@ -81,6 +82,12 @@ def pkill(proc_pid):
     for sub_proc in proc.children(recursive=True):
         sub_proc.kill()
     proc.kill()
+
+def gen_svn_ver(path):
+    svn_log_str = subprocess.run(
+        'svn log {0} --limit 1'.format(path), shell=True, check=True,
+        stdout=subprocess.PIPE).stdout.decode()
+    return re.search(r'---\n(r\d+)\s|\s', svn_log_str).group(1)
 
 ##### classes
 class NoDaemonProcess(mp.Process):

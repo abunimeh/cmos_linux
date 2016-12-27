@@ -17,7 +17,8 @@
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,7 +26,6 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="Verification Platform 1.0 documentation" href="index.html" />
     <link rel="next" title="runner(pj)使用手册" href="runner.html" />
     <link rel="prev" title="初识验证平台" href="vp_intro.html" /> 
   </head>
@@ -56,10 +56,12 @@
 <li><a class="reference internal" href="#id2">三种配置文件</a></li>
 <li><a class="reference internal" href="#id3">配置文件格式</a></li>
 <li><a class="reference internal" href="#proj-cfg">proj.cfg配置文件</a><ul>
-<li><a class="reference internal" href="#boot-env-proj-env">[boot_env], [proj_env]</a></li>
-<li><a class="reference internal" href="#proj-module">[proj_module]</a></li>
-<li><a class="reference internal" href="#regression-regression-opts">[regression], [regression_opts]</a></li>
+<li><a class="reference internal" href="#boot-env-module-env">[boot_env], [module_env]</a></li>
+<li><a class="reference internal" href="#proj">[proj]</a></li>
+<li><a class="reference internal" href="#regression-simv-regression-case-regression-opts">[regression_simv], [regression_case], [regression_opts]</a></li>
 <li><a class="reference internal" href="#vplan-sheets-vplan-column-width">[vplan_sheets], [vplan_column_width]</a></li>
+<li><a class="reference internal" href="#x86-ins">[x86_ins]</a></li>
+<li><a class="reference internal" href="#leda">[leda]</a></li>
 <li><a class="reference internal" href="#env-simv">[env_simv]</a></li>
 <li><a class="reference internal" href="#env-case">[env_case]</a></li>
 </ul>
@@ -88,7 +90,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/config.txt"
+      <li><a href="_sources/config.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -167,27 +169,43 @@
 <div class="section" id="proj-cfg">
 <h2>proj.cfg配置文件<a class="headerlink" href="#proj-cfg" title="Permalink to this headline">¶</a></h2>
 <p>每个project只有一份的配置文件，用来配置项目级别的特性，只建议project owner修改，不建议module owner修改</p>
-<div class="section" id="boot-env-proj-env">
-<h3>[boot_env], [proj_env]<a class="headerlink" href="#boot-env-proj-env" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="boot-env-module-env">
+<h3>[boot_env], [module_env]<a class="headerlink" href="#boot-env-module-env" title="Permalink to this headline">¶</a></h3>
 <p>这两个section是平台用到的runtime环境变量，这样设置的目的是防止env污染，这两个section中设置的环境变量只有在pj运行过程中有效，pj运行前后都无效</p>
 </div>
-<div class="section" id="proj-module">
-<h3>[proj_module]<a class="headerlink" href="#proj-module" title="Permalink to this headline">¶</a></h3>
-<p>proj_module section用来配置与module有关参数</p>
+<div class="section" id="proj">
+<h3>[proj]<a class="headerlink" href="#proj" title="Permalink to this headline">¶</a></h3>
+<p>proj section用来配置与proj顶层有关参数</p>
 <ul class="simple">
 <li>tree_ignore<ul>
 <li>用来配置tree命令的ignore目录，在pj提示所有可用module的时候过滤掉不需要显示的目录信息</li>
 </ul>
 </li>
+<li>rtl_top<ul>
+<li>用来指定chip顶层的module名字</li>
+</ul>
+</li>
+<li>c_opts<ul>
+<li>用来指定默认的c compilter使用的编译参数</li>
+</ul>
+</li>
 </ul>
 </div>
-<div class="section" id="regression-regression-opts">
-<h3>[regression], [regression_opts]<a class="headerlink" href="#regression-regression-opts" title="Permalink to this headline">¶</a></h3>
-<p>当kick off regression的时候，regression option负责统一管控 <strong>覆盖</strong> 所有默认的相同option的值，regression_opts option负责统一管控 <strong>添加</strong> 所有默认的相同option的值</p>
+<div class="section" id="regression-simv-regression-case-regression-opts">
+<h3>[regression_simv], [regression_case], [regression_opts]<a class="headerlink" href="#regression-simv-regression-case-regression-opts" title="Permalink to this headline">¶</a></h3>
+<p>当kick off regression的时候，regression option负责统一管控 <strong>覆盖</strong> 所有默认的相同option的值，regression_opts option负责统一管控 <strong>添加</strong> 所有默认的相同option的值, regression_simv与regression_case负责compilation与simulation阶段的在regression模式下全局开关</p>
 </div>
 <div class="section" id="vplan-sheets-vplan-column-width">
 <h3>[vplan_sheets], [vplan_column_width]<a class="headerlink" href="#vplan-sheets-vplan-column-width" title="Permalink to this headline">¶</a></h3>
 <p>vplan是由验证相关人员维护的一套用于表征验证进度与验证完备性的文档，作为sign off的标准之一存在，目前是以excel表格的方式存放。这两个section是控制中心自行开发的vplan的格式，分别控制vplan内部的sheets的表格头名称与宽度，不可随意更改</p>
+</div>
+<div class="section" id="x86-ins">
+<h3>[x86_ins]<a class="headerlink" href="#x86-ins" title="Permalink to this headline">¶</a></h3>
+<p>用来配置集成到pj的x86指令集相关参数</p>
+</div>
+<div class="section" id="leda">
+<h3>[leda]<a class="headerlink" href="#leda" title="Permalink to this headline">¶</a></h3>
+<p>用来配置leda flow的相关参数</p>
 </div>
 <div class="section" id="env-simv">
 <h3>[env_simv]<a class="headerlink" href="#env-simv" title="Permalink to this headline">¶</a></h3>
@@ -208,9 +226,9 @@
 <li>-f FILE指定任意其它filelist</li>
 </ul>
 </li>
-<li>vhdl_tool, ana_tool, elab_tool, dbg_tool<ul>
-<li>用来指定需要做vhdl analysis, verilog analysis, elaboration, 查看波形debug的tool名称</li>
-<li>默认值是vhdlan, vlogan, vcs, verdi</li>
+<li>vhdl_tool, ana_tool, elab_tool<ul>
+<li>用来指定需要做vhdl analysis, verilog analysis, elaboration</li>
+<li>默认值是vhdlan, vlogan, vcs</li>
 </ul>
 </li>
 <li>file__FILENAME<ul>
@@ -241,6 +259,16 @@
 </li>
 <li>custom_ana_opts, custom_elab_opts<ul>
 <li>用户自定义添加的analysis阶段与elaboration阶段tool的options</li>
+</ul>
+</li>
+<li>vt_TOOLNAME_dut_ana_opts, vt_TOOLNAME_tb_ana_opts, at_TOOLNAME_dut_ana_opts, at_TOOLNAME_tb_ana_opts, et_TOOLNAME_elab_opts<ul>
+<li>用来指定相应的阶段工具的相应参数</li>
+<li>第一个_前的vt表示vhdl_tool、at表示ana_tool、et表示elab_tool</li>
+<li>第一个_后的名称表示相应的工具名称</li>
+</ul>
+</li>
+<li>verdi_opts<ul>
+<li>用来指定verdi的相应参数</li>
 </ul>
 </li>
 <li>cov_elab_opts, wave_elab_opts, gui_elab_opts, prof_elab_opts, fpga_ana_opts<ul>
@@ -303,9 +331,9 @@
 <li>用户自定义添加simulation阶段tool的options</li>
 </ul>
 </li>
-<li><p class="first">uvm_simu_opts, cov_simu_opts, wave_glitch_simu_opts, gui_simu_opts, prof_mem_simu_opts, prof_time_simu_opts</p>
+<li><p class="first">uvm_simu_opts, cov_simu_opts, wave_WAVEFORMAT_simu_opts, wave_WAVEFORMAT_glitch_simu_opts, gui_simu_opts, prof_mem_simu_opts, prof_time_simu_opts</p>
 <ul class="simple">
-<li>分别受uvm, cov, wave, wave_mem, wave_glitch, gui, prof_mem, prof_time开关控制的tool options</li>
+<li>分别受uvm, cov, wave, wave_glitch, gui, prof_mem, prof_time开关控制的tool options</li>
 <li>当开关是on的时候会添加到相应阶段的tool options中</li>
 </ul>
 </li>
@@ -543,7 +571,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>

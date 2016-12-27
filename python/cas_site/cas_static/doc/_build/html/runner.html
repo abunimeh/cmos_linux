@@ -17,7 +17,8 @@
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,7 +26,6 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="Verification Platform 1.0 documentation" href="index.html" />
     <link rel="next" title="backend构架介绍" href="backend.html" />
     <link rel="prev" title="配置文件使用手册" href="config.html" /> 
   </head>
@@ -58,7 +58,6 @@
 <li><a class="reference internal" href="#id2">查看pj子命令</a></li>
 <li><a class="reference internal" href="#id3">pj子命令参数详细说明</a><ul>
 <li><a class="reference internal" href="#run">子命令run</a></li>
-<li><a class="reference internal" href="#regr">子命令regr</a></li>
 <li><a class="reference internal" href="#cov">子命令cov</a></li>
 <li><a class="reference internal" href="#vplan">子命令vplan</a></li>
 <li><a class="reference internal" href="#reg">子命令reg</a></li>
@@ -86,7 +85,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/runner.txt"
+      <li><a href="_sources/runner.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -234,35 +233,34 @@ Global options:
 <div class="section" id="id2">
 <h2>查看pj子命令<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令：</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ pj -h
-usage: pj [-h] [-l LOG] {run,regr,cov,vplan,reg,doc,clean,gen} ...
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">pj</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LOG</span><span class="p">]</span> <span class="p">{</span><span class="n">run</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">vplan</span><span class="p">,</span><span class="n">reg</span><span class="p">,</span><span class="n">doc</span><span class="p">,</span><span class="n">clean</span><span class="p">,</span><span class="n">gen</span><span class="p">,</span><span class="n">leda</span><span class="p">}</span> <span class="o">...</span>
 
-positional arguments:
-  {run,regr,cov,vplan,reg,doc,clean,gen}
-    run                 sub cmd about running simulation
-    regr                sub cmd about kicking off regression
-    cov                 sub cmd about merging and analyzing coverage
-    vplan               sub cmd about processing vplan
-    reg                 sub cmd about generating auto reg
-    doc                 sub cmd about generating natural docs
-    clean               sub cmd about cleaning output
-    gen                 sub cmd about generating environments
+<span class="n">positional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="p">{</span><span class="n">run</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">vplan</span><span class="p">,</span><span class="n">reg</span><span class="p">,</span><span class="n">doc</span><span class="p">,</span><span class="n">clean</span><span class="p">,</span><span class="n">gen</span><span class="p">,</span><span class="n">leda</span><span class="p">}</span>
+    <span class="n">run</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">running</span> <span class="n">simulation</span> <span class="ow">and</span> <span class="n">regression</span>
+    <span class="n">cov</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">merging</span> <span class="ow">and</span> <span class="n">analyzing</span> <span class="n">coverage</span>
+    <span class="n">vplan</span>               <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">processing</span> <span class="n">vplan</span>
+    <span class="n">reg</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">generating</span> <span class="n">auto</span> <span class="n">reg</span>
+    <span class="n">doc</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">generating</span> <span class="n">natural</span> <span class="n">docs</span>
+    <span class="n">clean</span>               <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">cleaning</span> <span class="n">output</span>
+    <span class="n">gen</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">generating</span> <span class="n">environments</span>
+    <span class="n">leda</span>                <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">leda</span> <span class="n">flow</span>
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -l LOG                input log name &lt;MUST come first&gt;
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">-</span><span class="n">l</span> <span class="n">LOG</span>                <span class="nb">input</span> <span class="n">log</span> <span class="n">name</span> <span class="o">&lt;</span><span class="n">MUST</span> <span class="n">come</span> <span class="n">first</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>目前pj的全部子命令有：</p>
 <ul class="simple">
-<li>run：负责simulation相关的所有操作，包括verdi</li>
-<li>regr：负责regression相关</li>
+<li>run：负责simulation和regression相关，包括verdi</li>
 <li>cov：负责coverage相关</li>
 <li>vplan：负责vplan相关</li>
 <li>reg：负责autoreg相关</li>
 <li>doc：负责NaturalDocs相关</li>
 <li>clean：负责clean output以及中间文件相关</li>
 <li>gen：负责模板生成相关</li>
+<li>leda：负责leda flow相关</li>
 </ul>
 </div>
 <div class="section" id="id3">
@@ -294,6 +292,10 @@ optional arguments:
 </li>
 <li>跑多个case：<ul>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE1</span> <span class="pre">CASE2</span> <span class="pre">...</span></code></li>
+</ul>
+</li>
+<li>只做c code compilation，不做rtl compilation：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-cc</span></code></li>
 </ul>
 </li>
 <li>只compilation(analysis+elaboration)，不simulation：<ul>
@@ -353,17 +355,34 @@ optional arguments:
 <li>自定义tools options（*）：<ul>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-A</span> <span class="pre">ANA_OPTS</span></code></li>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-E</span> <span class="pre">ELAB_OPTS</span></code></li>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-E</span> <span class="pre">SIMU_OPTS</span></code></li>
-<li>在analysis, elaboration, simulation三个阶段添加用户自己需要的simulation tools的options</li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-S</span> <span class="pre">SIMU_OPTS</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-CC</span> <span class="pre">CC_OPTS</span></code></li>
+<li>分别在analysis, elaboration, simulation, c compilation几个阶段添加用户自己需要的tools的options</li>
 </ul>
 </li>
-<li>从头执行compilation与simulation的动作<ul>
+<li>从头执行compilation与simulation的动作：<ul>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-fresh</span></code></li>
 <li>忽略之前compilation的结果，从头执行compilation阶段</li>
 </ul>
 </li>
 <li>生成fpga组相应的signal data数据（*）：<ul>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-fpga</span></code></li>
+</ul>
+</li>
+<li>指定regression类型kick off regression：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-t</span> <span class="pre">REGR_TYPE1</span> <span class="pre">REGR_TYPE2</span></code></li>
+<li>regression模式下verbose信息不会打印在stdout上</li>
+</ul>
+</li>
+<li>不执行上一次simulation passed cases：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE1</span> <span class="pre">CASE2</span> <span class="pre">-fm</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-t</span> <span class="pre">REGR_TYPE1</span> <span class="pre">REGR_TYPE2</span> <span class="pre">-fm</span></code></li>
+</ul>
+</li>
+<li>打开x86指令自动生成开关，配置相关参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-x86_ins</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-x86_ins_num</span> <span class="pre">48</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-x86_ins_groups</span> <span class="pre">ins_32_smoke_d0</span></code></li>
 </ul>
 </li>
 </ul>
@@ -386,45 +405,7 @@ optional arguments:
 </li>
 </ul>
 <p>大家可以根据自己的喜好来选择不同的工作方式，也可以各取所需，结合它们的特点混合使用</p>
-</div>
-<div class="section" id="regr">
-<h3>子命令regr<a class="headerlink" href="#regr" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>查看子命令regr的全部参数：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-h</span></code></li>
-</ul>
-</li>
-<li>跑一个module的一种类型的regression：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-t</span> <span class="pre">REGR_TYPE</span></code></li>
-</ul>
-</li>
-<li>跑多个module的多种类型的regression：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE1</span> <span class="pre">MODULE2</span> <span class="pre">...</span> <span class="pre">-t</span> <span class="pre">REGR_TYPE1</span> <span class="pre">REGR_TYPE2</span> <span class="pre">...</span></code></li>
-</ul>
-</li>
-<li>默认的regression type是sanity，跑一个module的sanity可以简化为：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
-</ul>
-</li>
-<li>跑一个module全部case的regression：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-t</span> <span class="pre">all</span></code></li>
-<li>all是一种内置的regression type，不需要用户配置</li>
-</ul>
-</li>
-<li>跑指定随机次数的regression：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rt</span> <span class="pre">TIMES</span></code></li>
-</ul>
-</li>
-<li>跑带coverage的regression：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-cov</span></code></li>
-</ul>
-</li>
-<li>regression支持fpga相应的signal data生成：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">regr</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-fpga</span></code></li>
-</ul>
-</li>
-</ul>
-<p>默认regression结束会在stdout上显示regression report table，并在output下生成regr_rpt文件。完整的包括所有人，所有历史的report可以访问 <a class="reference external" href="http://172.51.13.205:8000/regr">http://172.51.13.205:8000/regr</a> ，关于该report平台、platform server以及平台数据库请参考 <a class="reference internal" href="backend.html#backend"><span class="std std-ref">backend构架介绍</span></a></p>
+<p>默认regression结束会在stdout上显示regression report table，并在output下生成rpt文件。完整的包括所有人，所有历史的report可以访问 <a class="reference external" href="http://172.51.13.205:8000/regr">http://172.51.13.205:8000/regr</a> ，关于该report平台、platform server以及平台数据库请参考 <a class="reference internal" href="backend.html#backend"><span class="std std-ref">backend构架介绍</span></a></p>
 </div>
 <div class="section" id="cov">
 <h3>子命令cov<a class="headerlink" href="#cov" title="Permalink to this headline">¶</a></h3>
@@ -437,13 +418,13 @@ optional arguments:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-merge</span></code></li>
 </ul>
 </li>
-<li>利用verdi打开一个模块merge好的coverage：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-verdi</span></code></li>
+<li>生成coverage report：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rpt</span></code></li>
 <li>会默认load vdb waiver PROJ_MODULE/config/*.el</li>
 </ul>
 </li>
-<li>生成coverage report：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-rpt</span></code></li>
+<li>利用verdi打开一个模块merge好的coverage：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cov</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-verdi</span></code></li>
 <li>会默认load vdb waiver PROJ_MODULE/config/*.el</li>
 </ul>
 </li>
@@ -500,25 +481,42 @@ optional arguments:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-h</span></code></li>
 </ul>
 </li>
-<li>clean一个module的output：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
-<li>包括analysis、elaboration、simulation阶段的所有生成的文件以及所有case，请谨慎操作</li>
-</ul>
-</li>
-<li>clean一个case的simulation output：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-c</span> <span class="pre">CASE</span></code></li>
+<li>clean一个module的output下特定case：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-c</span> <span class="pre">CASE1</span> <span class="pre">CASE2</span></code></li>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-c</span> <span class="pre">CASE</span></code> （case命名满足隐式规则情况下）</li>
 <li>包括这个case的所有seed目录</li>
 </ul>
 </li>
-<li>clean多个case的simulation output：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-c</span> <span class="pre">CASE1</span> <span class="pre">CASE2</span> <span class="pre">...</span></code></li>
+<li>clean一个module的output下全部case：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-case</span></code></li>
 <li>包括多个case的所有seed目录</li>
 </ul>
 </li>
 <li>clean一个module的coverage：<ul>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-cov</span></code></li>
 <li>包括merge的结果以及coverage reports</li>
+</ul>
+</li>
+<li>clean一个module的output：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-output</span></code></li>
+<li>包括analysis、elaboration、simulation阶段的所有生成的文件以及所有case，请谨慎操作</li>
+</ul>
+</li>
+<li>clean一个module的tb，并彻底revert到当前版本（主要用于清理x86指令集生成大量tests以及seqs）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-tb</span></code></li>
+</ul>
+</li>
+<li>clean一个module的config，并彻底revert到当前版本（主要用于清理x86指令集生成大量cfgs）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-config</span></code></li>
+</ul>
+</li>
+<li>clean一个module的output, tb, config，并彻底revert相关目录到当前版本：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-output</span> <span class="pre">-tb</span> <span class="pre">-config</span></code></li>
+</ul>
+</li>
+<li>clean leda flow相关中间文件：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-leda</span></code></li>
+<li>只保留leda.tcl以及makefile</li>
 </ul>
 </li>
 </ul>
@@ -564,9 +562,9 @@ optional arguments:
 │   ├── __cov__               # coverage相关文件
 │   │   ├── cm                # coverage数据
 │   │   └── merge             # coverage merge后的数据以及生成的report
-│   ├── __simv__             # analysis+elaboration相关文件
+│   ├── __simv__              # analysis+elaboration相关文件
 │   │   ├── DEFAULT           # DEFAULT simv compilation相关文件，包括生成的simv
-│   │   ├── simv1            # simv1 simv compilation相关文件，包括生成的simv
+│   │   ├── simv1             # simv1 simv compilation相关文件，包括生成的simv
 │   │   └── simv2
 │   └── module_sanity_test    # module_sanity_test case相关文件
 │       ├── 1                 # 以seed命令的目录，在该seed下simulation相关文件
@@ -621,7 +619,7 @@ optional arguments:
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>

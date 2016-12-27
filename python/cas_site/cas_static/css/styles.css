@@ -50,7 +50,7 @@ a:link,a:visited{text-decoration:none}
 
 /* =Main Content
 --------------------------------------------------------------------------------------------------------*/
-#container { padding:225px 10px 45px 10px; width:1200px; margin:0 auto; z-index:1; position:relative; }
+#container_st { padding:225px 10px 45px 10px; width:1200px; margin:0 auto; z-index:1; position:relative; }
 .col1-2 { width:460px; padding:0 20px 0 0; float:left; }
 .col1-3 { width:300px; padding:0 20px 0 0; float:left; }
 .col2-3 { width:620px; padding:0 20px 0 0; float:left; }
@@ -140,8 +140,6 @@ ul.list, ul.check, ul.normal { padding:3px 0 2px 0; }
 ----------------------------------------o----------------------------------------------------------------*/
 .domab {height: 50px;}
 .domab label {float:right; font-size:15px; font-style:blique;} 
-.wt100 label .dsearch {width: 172px; height: 22px;border-radius: 6px;margin-right: 5px;}
-.wt100 label #tsearch {border-radius: 6px;background: rgb(198, 192, 192);}
 .domab #button {float:left; height: 30px; border: 2px solid rgb(245, 244, 244); font-size: 16px; border-radius: 6px;} 
 .domab #label_list {float:left; position:relative; z-index:9999;height:3%; margin-left: 34px;}
 .domab #label_list .showul {list-style:none;display:none; position:absolute; left:80px; top:30px; background-color: #fff; border:1px solid #ccc; width:200px;}
@@ -157,7 +155,6 @@ ul.list, ul.check, ul.normal { padding:3px 0 2px 0; }
 .domab1 {height: 50px;}
 .domab1 label {float:right; font-size:15px; font-style:blique;} 
 .wt1001 label .dsearch1 {width: 172px; height: 22px;border-radius: 6px;margin-right: 5px;}
-.wt1001 label #tsearch1 {border-radius: 6px;background: rgb(198, 192, 192);}
 .domab1 #button {float:left; height: 30px; border: 2px solid rgb(245, 244, 244); font-size: 16px; border-radius: 6px;} 
 .domab1 #label_list {float:left; position:relative; z-index:9999;height:3%; margin-left: 34px;}
 .domab1 #label_list .showul {list-style:none;display:none; position:absolute; left:80px; top:30px; background-color: #fff; border:1px solid #ccc; width:200px;}
@@ -168,13 +165,14 @@ ul.list, ul.check, ul.normal { padding:3px 0 2px 0; }
 /* End Datatable
 --------------------------------------------------------------------------------------------------------*/
 
-#container .content > #items_list {}
+#container_st .content > #items_list {}
 .datainp{ width:150px; height:30px; border:1px #ccc solid;border-radius: 3px;}
 .datep{ margin-bottom:40px;}
-#container .content #items_list span {font-size: 18px; margin-right: 3px;}
-#container .content #items_list select {height: 26px; margin-right: 9px; border-radius: 2px;}
-#container .content #items_list #module {margin-right: 25px;}
-#container .content #items_list .tsearch {margin-left: 10px; border-radius: 4px; height: 28px; width: 67px; background: lightgrey;}
+#container_st .content #items_list span {font-size: 18px; margin-right: 3px;}
+#container_st .content #items_list select {height: 26px; margin-right: 9px; border-radius: 2px;}
+#container_st .content #items_list #module {margin-right: 25px;}
+#container_st .content #items_list .tsearch {margin-left: 10px; border-radius: 4px; height: 28px; width: 67px; background: lightgrey;}
+.csearch,.psearch ,.close{margin-left: 4px; border-radius: 2px; height: 27px; width: 76px; background: lightgrey;}
 
 
 

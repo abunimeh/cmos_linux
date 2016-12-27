@@ -8,7 +8,6 @@ import openpyxl
 from openpyxl.styles import Alignment, PatternFill
 import os
 import re
-from urllib import request
 import datetime as dt
 import requests
 import collections

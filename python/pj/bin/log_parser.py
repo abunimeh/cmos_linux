@@ -6,7 +6,6 @@
 import pcom
 import os
 import re
-import subprocess
 import json
 import requests
 import datetime as dt
@@ -52,10 +51,7 @@ class LogParser(object):
         self.tb_ana_error_lst = []
         self.elab_error_lst = []
         self.simu_error_lst = []
-        proj_ini_ver = subprocess.run(
-            'svn log ${PROJ_ROOT} --limit 1', shell=True, check=True,
-            stdout=subprocess.PIPE).stdout.decode()
-        proj_ver = re.search(r'---\n(r\d+)\s|\s', proj_ini_ver).group(1)
+        proj_ver = pcom.gen_svn_ver(ced['PROJ_ROOT'])
         module_name = self.ced['MODULE']+'___'+self.ced['PROJ_NAME']
         simv_name = self.simv+'___'+module_name
         case_name = self.case+'___'+simv_name
@@ -183,6 +179,11 @@ class LogParser(object):
             self.case_dic['simu_status'] = 'passed'
         else:
             self.case_dic['simu_status'] = 'unknown'
+        pass_flg_file = os.path.dirname(self.simu_log)+os.sep+'case_passed'
+        if self.case_dic['simu_status'] == 'passed':
+            open(pass_flg_file, 'w').close()
+        elif os.path.isfile(pass_flg_file):
+            os.remove(pass_flg_file)
         self.LOG.debug("parsing case {0} simulation log file {1} done"
                        "".format(self.case, self.simu_log))
     def parse_log(self):
@@ -203,6 +204,7 @@ class LogParser(object):
                 json.dump(self.simv_dic, jf)
         self.parse_simu_log()
         self.case_dic.update(self.simv_dic)
-        query_url = 'http://172.51.13.205:8000/regr/db_query/query_insert_case/'
+        query_url = ('http://172.51.13.205:8000/'
+                     'regr/db_query/query_insert_case/')
         requests.post(query_url, json=self.case_dic)
         return self.case_dic
