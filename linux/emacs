@@ -18,6 +18,7 @@
      (output-html "xdg-open"))))
  '(auto-image-file-mode t)
  '(column-number-mode t)
+ '(custom-enabled-themes (quote (adwaita)))
  '(desktop-save-mode t)
  '(display-time-mode t)
  '(doc-view-continuous t)
