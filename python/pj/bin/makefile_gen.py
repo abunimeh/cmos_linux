@@ -40,7 +40,7 @@ class MakefileGen(object):
         return pcom.rd_cfg(self.cfg_dic[cfg_key], sec, opt)
     def chk_simv_cfg(self, vn):
         vn_cfg = self.cfg_dic['simv'][vn]
-        vg_dir = self.ced['SIMV_DIR']+os.sep+vn
+        vg_dir = self.ced['OUTPUT_SIMV']+os.sep+vn
         simv_cfg_json = vg_dir+os.sep+'simv_cfg.json'
         os.makedirs(vg_dir, exist_ok=True)
         ojson = {}
@@ -69,7 +69,7 @@ class MakefileGen(object):
             smf_lst.append(sm_flist)
         return smf_lst
     def chk_simv_flist(self, vn, f_tup, tb_flg=False):
-        gf_dir = self.ced['SIMV_DIR']+os.sep+vn
+        gf_dir = self.ced['OUTPUT_SIMV']+os.sep+vn
         fn_str = 'simv_tbfl.pcl' if tb_flg else 'simv_dutfl.pcl'
         simv_flist_pcl = gf_dir+os.sep+fn_str
         os.makedirs(gf_dir, exist_ok=True)
@@ -143,10 +143,10 @@ class MakefileGen(object):
         simv_dic['pre_cmd_lst'] = self.rd_cfg('simv', vn, 'pre_cmd')
         simv_dic['post_cmd_lst'] = self.rd_cfg('simv', vn, 'post_cmd')
         simv_dic['file_dic'] = {}
-        for sec_name, sec_cont in self.cfg_dic['simv'][vn].items():
-            if not sec_name.startswith('file__'):
+        for opt_name, opt_cont in self.cfg_dic['simv'][vn].items():
+            if not opt_name.startswith('file__'):
                 continue
-            simv_dic['file_dic'][sec_name[6:]] = sec_cont.replace(
+            simv_dic['file_dic'][opt_name[6:]] = opt_cont.replace(
                 '$', '$$').replace('\\', '').split(os.linesep)
         return simv_dic
     def gen_case_dic(self, cn):
@@ -197,10 +197,10 @@ class MakefileGen(object):
         case_dic['pre_cmd_lst'] = self.rd_cfg('case', cn, 'pre_cmd')
         case_dic['post_cmd_lst'] = self.rd_cfg('case', cn, 'post_cmd')
         case_dic['file_dic'] = {}
-        for sec_name, sec_cont in self.cfg_dic['case'][cn].items():
-            if not sec_name.startswith('file__'):
+        for opt_name, opt_cont in self.cfg_dic['case'][cn].items():
+            if not opt_name.startswith('file__'):
                 continue
-            case_dic['file_dic'][sec_name[6:]] = sec_cont.replace(
+            case_dic['file_dic'][opt_name[6:]] = opt_cont.replace(
                 '$', '$$').replace('\\', '').split(os.linesep)
         case_dic['regr_type_lst'] = self.rd_cfg('case', cn, 'regression_type')
         case_dic['regr_type_lst'].append('all')
@@ -248,7 +248,7 @@ class MakefileGen(object):
             cc] if os.path.isdir(self.ced['MODULE_C']) else []
         template = self.templateEnv.get_template('simv_makefile')
         template_out = template.render(ms_dic)
-        ms_dir = self.ced['SIMV_DIR']+os.sep+simv_dic['name']
+        ms_dir = self.ced['OUTPUT_SIMV']+os.sep+simv_dic['name']
         os.makedirs(ms_dir, exist_ok=True)
         self.LOG.info("simv dir {0} is generated".format(ms_dir))
         ms_file = 'simv_makefile'

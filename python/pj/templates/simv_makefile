@@ -13,11 +13,11 @@ cd_guard = @cd ${@D}
 MAKEFLAGS += --silent
 
 ### simv targets
-${SIMV_DIR}/{{simv_dic.name}}/dut.flist: \
+${OUTPUT_SIMV}/{{simv_dic.name}}/dut.flist: \
 {%-for dut_file in simv_dic.dut_file_lst%}
 {{dut_file}} \
 {%-endfor%}
-${SIMV_DIR}/{{simv_dic.name}}/simv_dutfl.pcl
+${OUTPUT_SIMV}/{{simv_dic.name}}/simv_dutfl.pcl
 	${dir_guard}
 {%-if not simv_dic.dut_file_lst%}
 	@echo > $@
@@ -33,14 +33,14 @@ ${SIMV_DIR}/{{simv_dic.name}}/simv_dutfl.pcl
 	@echo {{dut_dir}} >> $@
 {%-endfor%}
 
-${SIMV_DIR}/{{simv_dic.name}}/tb.flist: \
+${OUTPUT_SIMV}/{{simv_dic.name}}/tb.flist: \
 {%-for tb_file in simv_dic.tb_file_lst%}
 {{tb_file}} \
 {%-endfor%}
 {%-for tb_file in simv_dic.tb_dep_file_lst%}
 {{tb_file}} \
 {%-endfor%}
-${SIMV_DIR}/{{simv_dic.name}}/simv_tbfl.pcl
+${OUTPUT_SIMV}/{{simv_dic.name}}/simv_tbfl.pcl
 	${dir_guard}
 {%-if not simv_dic.tb_file_lst%}
 	@echo > $@
@@ -56,10 +56,10 @@ ${SIMV_DIR}/{{simv_dic.name}}/simv_tbfl.pcl
 	@echo {{tb_dir}} >> $@
 {%-endfor%}
 
-${SIMV_DIR}/{{simv_dic.name}}/.dut_ana: \
-${SIMV_DIR}/{{simv_dic.name}}/dut.flist \
-${SIMV_DIR}/{{simv_dic.name}}/simv_cfg.json \
-${CMN_CONFIG}/proj.cfg
+${OUTPUT_SIMV}/{{simv_dic.name}}/.dut_ana: \
+${OUTPUT_SIMV}/{{simv_dic.name}}/dut.flist \
+${OUTPUT_SIMV}/{{simv_dic.name}}/simv_cfg.json \
+${SHARE_CONFIG}/proj.cfg
 	${cd_guard} && \
 	{{simv_dic.ana_tool}} \
 	{{simv_dic.da_opts}} \
@@ -67,13 +67,13 @@ ${CMN_CONFIG}/proj.cfg
 	{{simv_dic.ca_opts}} \
 {%-endif%}
 	-f $< \
-	-l ${SIMV_DIR}/{{simv_dic.name}}/dut_ana.log && \
+	-l ${OUTPUT_SIMV}/{{simv_dic.name}}/dut_ana.log && \
 	touch $@
 
-${SIMV_DIR}/{{simv_dic.name}}/.tb_ana: \
-${SIMV_DIR}/{{simv_dic.name}}/tb.flist \
-${SIMV_DIR}/{{simv_dic.name}}/simv_cfg.json \
-${CMN_CONFIG}/proj.cfg
+${OUTPUT_SIMV}/{{simv_dic.name}}/.tb_ana: \
+${OUTPUT_SIMV}/{{simv_dic.name}}/tb.flist \
+${OUTPUT_SIMV}/{{simv_dic.name}}/simv_cfg.json \
+${SHARE_CONFIG}/proj.cfg
 	${cd_guard} && \
 	{{simv_dic.ana_tool}} \
 	{{simv_dic.ta_opts}} \
@@ -81,13 +81,13 @@ ${CMN_CONFIG}/proj.cfg
 	{{simv_dic.ca_opts}} \
 {%-endif%}
 	-f $< \
-	-l ${SIMV_DIR}/{{simv_dic.name}}/tb_ana.log && \
+	-l ${OUTPUT_SIMV}/{{simv_dic.name}}/tb_ana.log && \
 	touch $@
 
 {%for file_name, file_line_lst in simv_dic.file_dic|dictsort%}
-${SIMV_DIR}/{{simv_dic.name}}/{{file_name}}: \
-${SIMV_DIR}/{{simv_dic.name}}/simv_cfg.json \
-${CMN_CONFIG}/proj.cfg
+${OUTPUT_SIMV}/{{simv_dic.name}}/{{file_name}}: \
+${OUTPUT_SIMV}/{{simv_dic.name}}/simv_cfg.json \
+${SHARE_CONFIG}/proj.cfg
 	${dir_guard}
 {%-for file_line in file_line_lst%}
 {%-if loop.first%}
@@ -98,12 +98,12 @@ ${CMN_CONFIG}/proj.cfg
 {%-endfor%}
 {%endfor%}
 
-${SIMV_DIR}/{{simv_dic.name}}/simv: \
+${OUTPUT_SIMV}/{{simv_dic.name}}/simv: \
 {%-for file_name, file_cont in simv_dic.file_dic|dictsort%}
-${SIMV_DIR}/{{simv_dic.name}}/{{file_name}} \
+${OUTPUT_SIMV}/{{simv_dic.name}}/{{file_name}} \
 {%-endfor%}
-${SIMV_DIR}/{{simv_dic.name}}/.dut_ana \
-${SIMV_DIR}/{{simv_dic.name}}/.tb_ana
+${OUTPUT_SIMV}/{{simv_dic.name}}/.dut_ana \
+${OUTPUT_SIMV}/{{simv_dic.name}}/.tb_ana
 {%-if c_lst%}
 	@cd ${MODULE_OUTPUT} && make -f Makefile compile_c
 {%-endif%}
@@ -118,9 +118,9 @@ ${SIMV_DIR}/{{simv_dic.name}}/.tb_ana
 {%-endif%}
 	-top {{simv_dic.tb_top}} \
 {%-if c_lst%}
-	-LDFLAGS -L${CLIB_DIR} -l${MODULE} \
+	-LDFLAGS -L${OUTPUT_CLIB} -l${MODULE} \
 {%-endif%}
-	-l ${SIMV_DIR}/{{simv_dic.name}}/elab.log \
+	-l ${OUTPUT_SIMV}/{{simv_dic.name}}/elab.log \
 	-o $@
 {%-for post_cmd in simv_dic.post_cmd_lst-%}
 	{{' '}}&& \
@@ -128,6 +128,6 @@ ${SIMV_DIR}/{{simv_dic.name}}/.tb_ana
 {%-endfor%}
 
 .PHONY: verdi_{{simv_dic.name}}
-verdi_{{simv_dic.name}}: ${SIMV_DIR}/{{simv_dic.name}}/.dut_ana
-	cd ${SIMV_DIR}/{{simv_dic.name}} && \
+verdi_{{simv_dic.name}}: ${OUTPUT_SIMV}/{{simv_dic.name}}/.dut_ana
+	cd ${OUTPUT_SIMV}/{{simv_dic.name}} && \
 	verdi {{simv_dic.w_opts}} -simflow -lib work -nologo &

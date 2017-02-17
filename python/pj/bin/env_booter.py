@@ -38,7 +38,7 @@ def boot_env():
     ced = {'PROJ_ROOT': os.environ['PROJ_ROOT'],
            'TIME': dt.datetime.now(),
            'USER_NAME': os.environ['USER']}
-    proj_cfg = os.path.expandvars('$PROJ_ROOT/share/cmn/config/proj.cfg')
+    proj_cfg = os.path.expandvars('$PROJ_ROOT/share/config/proj.cfg')
     if not os.path.isfile(proj_cfg):
         raise Exception("proj config file {0} is NA".format(proj_cfg))
     cfg_dic = {'proj': pcom.gen_cfg([proj_cfg])}
@@ -66,7 +66,7 @@ def module_env(LOG, sim_module, x86_ins_flg=False,
         x86_ins_groups = (
             pcom.rd_cfg(cfg_dic['proj'], 'x86_ins', 'case_group') if
             x86_ins_groups == None else x86_ins_groups)
-        scr_xi_dir = ced['CMN_SCRIPTS']+os.sep+'X86_INS'
+        scr_xi_dir = ced['SHARE_SCRIPTS']+os.sep+'X86_INS'
         case_gen_file = scr_xi_dir+os.sep+'case_gen.py'
         if not os.path.isfile(case_gen_file):
             raise Exception("case_gen.py file {0} is NA".format(case_gen_file))

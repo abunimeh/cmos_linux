@@ -13,20 +13,20 @@ cd_guard = @cd ${@D}
 MAKEFLAGS += --silent
 
 ### simv targets
-.PHONY: ${SIMV_DIR}/{{case_dic.simv}}/simv
-${SIMV_DIR}/{{case_dic.simv}}/simv:
+.PHONY: ${OUTPUT_SIMV}/{{case_dic.simv}}/simv
+${OUTPUT_SIMV}/{{case_dic.simv}}/simv:
 	${cd_guard} && make -f simv_makefile $@
 
 ### case targets
 .PHONY: run_simv_{{case_dic.name}}__{{case_dic.seed}}
 run_simv_{{case_dic.name}}__{{case_dic.seed}}: \
-${SIMV_DIR}/{{case_dic.simv}}/simv \
+${OUTPUT_SIMV}/{{case_dic.simv}}/simv \
 {%-for file_name, file_cont in case_dic.file_dic|dictsort%}
 ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{file_name}} \
 {%-endfor%}
 ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl
 {%-if c_lst%}
-	export LD_LIBRARY_PATH=${CLIB_DIR}:${LD_LIBRARY_PATH} && \
+	export LD_LIBRARY_PATH=${OUTPUT_CLIB}:${LD_LIBRARY_PATH} && \
 {%-endif%}
 {%-for pre_cmd in case_dic.pre_cmd_lst%}
 	{{pre_cmd}} && \
@@ -75,7 +75,7 @@ ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{file_name}}:
 {%endfor%}
 
 .PHONY: verdi_{{case_dic.name}}__{{case_dic.seed}}
-verdi_{{case_dic.name}}__{{case_dic.seed}}: ${SIMV_DIR}/{{case_dic.simv}}/simv
+verdi_{{case_dic.name}}__{{case_dic.seed}}: ${OUTPUT_SIMV}/{{case_dic.simv}}/simv
 	mkdir -p ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}} && \
 	cd ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}} && \
 	verdi {{case_dic.w_opts}} -simflow -simBin $< \

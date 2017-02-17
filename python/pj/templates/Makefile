@@ -9,19 +9,19 @@ cd_guard = @cd ${@D}
 ### c targets
 {%-if c_lst%}
 {%-for c in c_lst%}
-${CLIB_DIR}/{{c}}.o: ${MODULE_C}/{{c}}.c
+${OUTPUT_CLIB}/{{c}}.o: ${MODULE_C}/{{c}}.c
 	${dir_guard}
 	${cd_guard} && gcc {{c_opts}} -I${VCS_HOME}/include -c $<
 {%-endfor%}
-${CLIB_DIR}/uvm_dpi.o: ${UVM_HOME}/src/dpi/uvm_dpi.cc
+${OUTPUT_CLIB}/uvm_dpi.o: ${UVM_HOME}/src/dpi/uvm_dpi.cc
 	${dir_guard}
 	${cd_guard} && g++ {{c_opts}} -I${VCS_HOME}/include -c $<
-${CLIB_DIR}/lib${MODULE}.so: \
+${OUTPUT_CLIB}/lib${MODULE}.so: \
 {%-for c in c_lst%}
-${CLIB_DIR}/{{c}}.o \
+${OUTPUT_CLIB}/{{c}}.o \
 {%-endfor%}
-${CLIB_DIR}/uvm_dpi.o
+${OUTPUT_CLIB}/uvm_dpi.o
 	${dir_guard}
 	${cd_guard} && gcc -shared -o $@ $^
-compile_c: ${CLIB_DIR}/lib${MODULE}.so
+compile_c: ${OUTPUT_CLIB}/lib${MODULE}.so
 {%-endif%}

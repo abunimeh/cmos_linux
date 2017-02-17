@@ -12,25 +12,25 @@ import datetime as dt
 
 ### classes
 class LogParser(object):
-    def __init__(self, LOG, ced, cfg_dic, cvs_tup):
+    def __init__(self, LOG, ced, cfg_dic, cvsr_tup):
         self.LOG = LOG if LOG else pcom.gen_logger()
         self.ced = ced
         self.cfg_dic = cfg_dic
-        self.case, self.simv, self.seed = cvs_tup
+        self.case, self.simv, self.seed, self.regr_type_lst = cvsr_tup
         pass_str = r''
-        cp_str = '|'.join(pcom.rd_cfg(
-            cfg_dic['case'], self.case, 'pass_string'))
+        cp_str = '|'.join([re.escape(cc) for cc in pcom.rd_cfg(
+            cfg_dic['case'], self.case, 'pass_string')])
         fp_str = pass_str+'|'+cp_str if cp_str else pass_str
         self.p_pat = re.compile(fp_str)
         fail_str = (r'\b[Ee]rror\b|\bERROR\b|\*E\b|'
                     r'\bUVM_(ERROR|FATAL)\s*:\s*[1-9]\d*')
-        cf_str = '|'.join(pcom.rd_cfg(
-            cfg_dic['case'], self.case, 'fail_string'))
+        cf_str = '|'.join([re.escape(cc) for cc in pcom.rd_cfg(
+            cfg_dic['case'], self.case, 'fail_string')])
         ff_str = fail_str+'|'+cf_str if cf_str else fail_str
         self.f_pat = re.compile(ff_str)
         ignore_str = r'^$'
-        ci_str = '|'.join(pcom.rd_cfg(
-            cfg_dic['case'], self.case, 'ignore_string'))
+        ci_str = '|'.join([re.escape(cc) for cc in pcom.rd_cfg(
+            cfg_dic['case'], self.case, 'ignore_string')])
         fi_str = ignore_str+'|'+ci_str if ci_str else ignore_str
         self.i_pat = re.compile(fi_str)
         finish_str = r'\$finish at simulation time\s+(\d+)'
@@ -40,11 +40,11 @@ class LogParser(object):
         uvm_str = r'\+UVM_TESTNAME=(\w+)\s'
         self.uvm_pat = re.compile(uvm_str)
         self.dut_ana_log = os.path.join(
-            ced['SIMV_DIR'], self.simv, 'dut_ana.log')
+            ced['OUTPUT_SIMV'], self.simv, 'dut_ana.log')
         self.tb_ana_log = os.path.join(
-            ced['SIMV_DIR'], self.simv, 'tb_ana.log')
+            ced['OUTPUT_SIMV'], self.simv, 'tb_ana.log')
         self.elab_log = os.path.join(
-            ced['SIMV_DIR'], self.simv, 'elab.log')
+            ced['OUTPUT_SIMV'], self.simv, 'elab.log')
         self.simu_log = os.path.join(
             ced['MODULE_OUTPUT'], self.case, self.seed, self.seed+'.log')
         self.dut_ana_error_lst = []
@@ -56,6 +56,7 @@ class LogParser(object):
         simv_name = self.simv+'___'+module_name
         case_name = self.case+'___'+simv_name
         self.case_dic = {'pub_date': dt.datetime.timestamp(self.ced['TIME']),
+                         'end_date': dt.datetime.timestamp(dt.datetime.now()),
                          'case_name': case_name,
                          'c_name': self.case,
                          'simv_name': simv_name,
@@ -70,17 +71,18 @@ class LogParser(object):
                          'simu_status': 'NA',
                          'simu_error': 'NA',
                          'simu_cpu_time': 'NA',
-                         'simu_time': 'NA'}
+                         'simu_time': 'NA',
+                         'regr_types': self.regr_type_lst}
         self.simv_dic = {'dut_ana_log': self.dut_ana_log,
-                          'dut_ana_status': 'NA',
-                          'dut_ana_error': 'NA',
-                          'tb_ana_log': self.tb_ana_log,
-                          'tb_ana_status': 'NA',
-                          'tb_ana_error': 'NA',
-                          'elab_log': self.elab_log,
-                          'elab_status': 'NA',
-                          'elab_error': 'NA',
-                          'comp_cpu_time': 'NA'}
+                         'dut_ana_status': 'NA',
+                         'dut_ana_error': 'NA',
+                         'tb_ana_log': self.tb_ana_log,
+                         'tb_ana_status': 'NA',
+                         'tb_ana_error': 'NA',
+                         'elab_log': self.elab_log,
+                         'elab_status': 'NA',
+                         'elab_error': 'NA',
+                         'comp_cpu_time': 'NA'}
     def parse_dut_ana_log(self):
         if not os.path.isfile(self.dut_ana_log):
             return
@@ -188,7 +190,7 @@ class LogParser(object):
                        "".format(self.case, self.simu_log))
     def parse_log(self):
         simv_log_json = os.path.join(
-            self.ced['SIMV_DIR'], self.simv, 'simv_log.json')
+            self.ced['OUTPUT_SIMV'], self.simv, 'simv_log.json')
         ralog_mt = os.path.getmtime(self.dut_ana_log)
         talog_mt = os.path.getmtime(self.tb_ana_log)
         elog_mt = os.path.getmtime(self.elab_log)

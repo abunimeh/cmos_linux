@@ -19,6 +19,7 @@ import shutil
 import datetime as dt
 import texttable
 import json
+import re
 
 ##### functions
 def gen_args_top():
@@ -29,6 +30,7 @@ def gen_args_top():
 
     h_str = ("sub cmd about running simulation and regression")
     run_parser = subparsers.add_parser('run', help=h_str)
+    run_gg_group = run_parser.add_mutually_exclusive_group()
     h_str = ("input run module")
     run_parser.add_argument('-m', dest='run_module', default='', help=h_str)
     h_str = ("toggle to elaborate all case simvs")
@@ -94,6 +96,16 @@ def gen_args_top():
     h_str = ("input x86 instruction generation groups")
     run_parser.add_argument('-x86_ins_groups', dest='run_x86_ins_groups',
                             default=None, nargs='+', help=h_str)
+    run_gg_group.add_argument('-leda_gen_log', dest='run_leda_gen_log', default=False,
+                               action='store_true', help=h_str)
+    h_str = ("input black box flist files")
+    run_parser.add_argument('-leda_bbf', dest='run_leda_bb_flist', default=[],
+                             nargs='+', help=h_str)
+    h_str = ("input base rtl top module")
+    run_parser.add_argument('-leda_top', dest='run_leda_top', default='', help=h_str)
+    h_str = ("toggle to kick off leda gui")
+    run_gg_group.add_argument('-leda_gui', dest='run_leda_gui', default=False,
+                             action='store_true', help=h_str)
     run_parser.set_defaults(func=main_run)
 
     h_str = ("sub cmd about merging and analyzing coverage")
@@ -138,6 +150,9 @@ def gen_args_top():
     doc_parser = subparsers.add_parser('doc', help=h_str)
     h_str = ("input doc module")
     doc_parser.add_argument('-m', dest='doc_module', default='',
+                            help=h_str)
+    h_str = ("input doc path")
+    doc_parser.add_argument('-p', dest='doc_path', default='',
                             help=h_str)
     h_str = ("toggle to generate natural docs")
     doc_parser.add_argument('-gen', dest='doc_gen', default=False,
@@ -216,6 +231,97 @@ def rmtree(path_lst):
     else:
         LOG.info("canceled")
 
+def run_leda(cmd_dic):
+    if not shutil.which('leda'):
+        raise Exception("leda is not available")
+    ced, cfg_dic = env_booter.boot_env()
+    leda_dir = cmd_dic['leda_dir'] if cmd_dic['leda_dir'] else ced['FLOW_LEDA']
+    os.makedirs(leda_dir, exist_ok=True)
+    log_dir_lst = pcom.rd_cfg(cfg_dic['proj'], 'leda', 'log_directory_name')
+    log_file_lst = pcom.rd_cfg(cfg_dic['proj'], 'leda', 'log_file_name')
+    error_str = '|'.join([re.escape(cc) for cc in pcom.rd_cfg(
+        cfg_dic['proj'], 'leda', 'error_string')])
+    str_pat = re.compile(error_str)
+    log_dir = log_dir_lst[0] if log_dir_lst else 'leda-logs'
+    log_file = log_file_lst[0] if log_file_lst else 'leda.log'
+    leda_log_dir = leda_dir+os.sep+log_dir
+    leda_log = leda_log_dir+os.sep+log_file
+    err_log = leda_log_dir+os.sep+'leda_error.log'
+    wl_file = leda_dir+os.sep+'leda_on_off_warning.log'
+    if not cmd_dic['leda_dir'] and cmd_dic['leda_flist_lst']:
+        flist_file = leda_dir+os.sep+'leda.flist'
+        for leda_flist in cmd_dic['leda_flist_lst']:
+            if not os.path.isfile(leda_flist):
+                raise Exception(
+                    "base flist file {0} is NA".format(leda_flist))
+        df_tup = filelst_gen.FilelstGen(
+            LOG).gen_file_lst(cmd_dic['leda_flist_lst'])
+        dir_lst, verilog_lst, vhdl_lst = df_tup
+        with open(flist_file, 'w') as lf:
+            for lf_line in verilog_lst+vhdl_lst:
+                lf.write(lf_line+os.linesep)
+            for ld_line in dir_lst:
+                lf.write(ld_line+os.linesep)
+    else:
+        flist_file = cmd_dic['leda_flist']
+    if cmd_dic['gen_log'] and flist_file:
+        with open(flist_file) as f, open(wl_file, 'w') as wf:
+            for line in f:
+                line = line.strip()
+                if line.startswith('+incdir'):
+                    continue
+                if not os.path.isfile(line):
+                    raise Exception(
+                        "rtl file {0} is NA".format(line))
+                with open(line, errors='replace') as vf:
+                    vf_con = vf.read()
+                if 'leda off' in vf_con:
+                    wline = "leda off in file {0}".format(line)
+                    LOG.warning(wline)
+                    wf.write(wline)
+                if 'leda on' in vf_con:
+                    wline = "leda on in file {0}".format(line)
+                    LOG.warning(wline)
+                    wf.write(wline)
+        bb_str = ''
+        if cmd_dic['bb_flist_lst']:
+            bb_con = ''
+            for leda_bb_flist in cmd_dic['bb_flist_lst']:
+                if not os.path.isfile(leda_bb_flist):
+                    raise Exception(
+                        "black box flist file {0} is NA".format(leda_bb_flist))
+                with open(leda_bb_flist) as bf:
+                    bb_con += bf.read()+os.linesep
+            bb_flist_file = leda_dir+os.sep+'leda_bb.flist'
+            with open(bb_flist_file, 'w') as lbf:
+                lbf.write(bb_con)
+            bb_str = '-bbox_file {0} '.format(bb_flist_file)
+        leda_opts = ' '.join(pcom.rd_cfg(cfg_dic['proj'], 'leda', 'opts'))
+        top_str = cmd_dic['leda_top'] if cmd_dic['leda_top'] else pcom.rd_cfg(
+            cfg_dic['proj'], 'proj', 'rtl_top')[0]
+        leda_str = 'cd {0} && leda {1} -config {2} -f {3} {4} -top {5}'.format(
+            leda_dir, leda_opts, leda_dir+os.sep+'leda.tcl',
+            flist_file, bb_str, top_str)
+        with open(leda_dir+os.sep+'leda_cmd', 'w') as lcf:
+            lcf.write(leda_str+os.linesep)
+        subprocess.run(leda_str, shell=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        leda_error_flg = False
+        with open(leda_log, errors='replace') as f, open(err_log, 'w') as elf:
+            for line in f:
+                line = line.strip()
+                m = pcom.REOpter(line)
+                if m.search(str_pat):
+                    elf.write(line+os.linesep)
+                    leda_error_flg = True
+        if leda_error_flg:
+            LOG.warning("ERRORs raised in the process of leda")
+    elif cmd_dic['leda_gui']:
+        leda_str = 'cd {0} && leda +gui -config {1} -l {2}'.format(
+            leda_dir, leda_dir+os.sep+'leda.tcl',
+            leda_log)
+        subprocess.run(leda_str, shell=True)
+
 def main_run(args):
     if args.run_module or args.run_case_lst or args.regr_type_lst:
         run = Run(args.run_module,
@@ -241,7 +347,11 @@ def main_run(args):
                   args.run_ana_opts,
                   args.run_elab_opts,
                   args.run_simu_opts,
-                  args.run_cc_opts)
+                  args.run_cc_opts,
+                  args.run_leda_gen_log,
+                  args.run_leda_bb_flist,
+                  args.run_leda_top,
+                  args.run_leda_gui)
         run.run()
         LOG.info("running module {0} done".format(
             args.run_module))
@@ -254,14 +364,14 @@ def main_cov(args):
         ef_str = ''
         for ef in pcom.find_iter(ced['MODULE_CONFIG'], '*.el'):
             ef_str += '-elfile {0} '.format(ef)
-        cov_merge_vdb = ced['COV_MERGE_DIR']+os.sep+ced['MODULE']+'_merge.vdb'
+        cov_merge_vdb = ced['COV_MERGE']+os.sep+ced['MODULE']+'_merge.vdb'
         cd_str = 'cd {0} && '.format(os.path.dirname(cov_merge_vdb))
         cov_str = ''
         if args.cov_merge:
-            vdb_lst = list(pcom.find_iter(ced['COV_CM_DIR'], '*.vdb', True))
+            vdb_lst = list(pcom.find_iter(ced['COV_CM'], '*.vdb', True))
             if not vdb_lst:
                 raise Exception("no coverage data found")
-            merge_lst_file = ced['COV_MERGE_DIR']+os.sep+'merge_lst'
+            merge_lst_file = ced['COV_MERGE']+os.sep+'merge_lst'
             os.makedirs(os.path.dirname(merge_lst_file), exist_ok=True)
             with open(merge_lst_file, 'w') as mf:
                 for vdb_dir in vdb_lst:
@@ -272,7 +382,7 @@ def main_cov(args):
                        ''.format(cd_str, merge_lst_file,
                                  os.path.basename(cov_merge_vdb), ef_str))
             subprocess.run(cov_str, shell=True, check=True)
-            for cc_dir in pcom.find_iter(ced['COV_CM_DIR'], 'testdata', True):
+            for cc_dir in pcom.find_iter(ced['COV_CM'], 'testdata', True):
                 shutil.rmtree(cc_dir, ignore_errors=True)
         if args.cov_rpt:
             if not os.path.isdir(cov_merge_vdb):
@@ -316,11 +426,21 @@ def main_reg(args):
         raise Exception("missing main arguments")
 
 def main_doc(args):
+    if not shutil.which('NaturalDocs'):
+        raise Exception("NaturalDocs is not available")
     if args.doc_module and args.doc_gen:
         ced, cfg_dic = env_booter.module_env(LOG, args.doc_module)
         os.makedirs(ced['MODULE_DOC'], exist_ok=True)
         doc_str = ('NaturalDocs -i ${PROJ_MODULE} -o HTML ${MODULE_DOC} '
                    '-p ${MODULE_DOC}')
+        subprocess.run(doc_str, shell=True)
+    elif args.doc_path and args.doc_gen:
+        if not os.path.isdir(args.doc_path):
+            raise Exception("doc path {0} is NA".format(args.doc_path))
+        doc_dir = args.doc_path+os.sep+'doc'
+        os.makedirs(doc_dir, exist_ok=True)
+        doc_str = 'NaturalDocs -i {0} -o HTML {1} -p {1}'.format(
+            args.doc_path, doc_dir)
         subprocess.run(doc_str, shell=True)
     else:
         raise Exception("missing main arguments")
@@ -349,7 +469,7 @@ def main_clean(args):
                         base_case_dir.endswith('__')):
                     clean_lst.append(case_dir)
         if args.clean_cov:
-            clean_lst.append(ced['COV_DIR'])
+            clean_lst.append(ced['OUTPUT_COV'])
         if args.clean_output:
             clean_lst.append(ced['MODULE_OUTPUT'])
         if args.clean_tb:
@@ -382,10 +502,10 @@ def main_clean(args):
                        "--> yes or no? ".format(os.linesep))
         if rm_rsp.strip() in ('yes', 'y'):
             ced, cfg_dic = env_booter.boot_env()
-            for dir_name in pcom.find_iter(ced['PROJ_LEDA'], '*', True):
+            for dir_name in pcom.find_iter(ced['FLOW_LEDA'], '*', True):
                 shutil.rmtree(dir_name, ignore_errors=True)
             for file_name in pcom.find_iter(
-                    ced['SHARE_LEDA'], 'leda*', i_str='leda.tcl'):
+                    ced['FLOW_LEDA'], 'leda*', i_str='leda.tcl'):
                 os.remove(file_name)
         else:
              LOG.info("canceled")
@@ -419,60 +539,15 @@ def main_gen(args):
         raise Exception("missing main arguments")
 
 def main_leda(args):
-    if args.leda_gen_log and args.leda_flist_lst:
-        for leda_flist in args.leda_flist_lst:
-            if not os.path.isfile(leda_flist):
-                raise Exception(
-                    "base flist file {0} is NA".format(leda_flist))
-        ced, cfg_dic = env_booter.boot_env()
-        os.makedirs(ced['PROJ_LEDA'], exist_ok=True)
-        df_tup = filelst_gen.FilelstGen(LOG).gen_file_lst(args.leda_flist_lst)
-        dir_lst, verilog_lst, vhdl_lst = df_tup
-        flist_file = ced['PROJ_LEDA']+os.sep+'leda.flist'
-        wl_file = ced['PROJ_LEDA']+os.sep+'leda_on_off_warning.log'
-        with open(flist_file, 'w') as lf, open(wl_file, 'w') as wf:
-            for lf_line in verilog_lst+vhdl_lst:
-                lf.write(lf_line+os.linesep)
-                with open(lf_line, errors='replace') as vf:
-                    vf_con = vf.read()
-                if 'leda off' in vf_con:
-                    wline = "leda off in file {0}".format(lf_line)
-                    LOG.warning(wline)
-                    wf.write(wline)
-                if 'leda on' in vf_con:
-                    wline = "leda on in file {0}".format(lf_line)
-                    LOG.warning(wline)
-                    wf.write(wline)
-            for ld_line in dir_lst:
-                lf.write(ld_line+os.linesep)
-        bb_str = ''
-        if args.leda_bb_flist_lst:
-            bb_con = ''
-            for leda_bb_flist in args.leda_bb_flist_lst:
-                if not os.path.isfile(leda_bb_flist):
-                    raise Exception(
-                        "black box flist file {0} is NA".format(leda_bb_flist))
-                with open(leda_bb_flist) as bf:
-                    bb_con += bf.read()+os.linesep
-            bb_flist_file = ced['PROJ_LEDA']+os.sep+'leda_bb.flist'
-            with open(bb_flist_file, 'w') as lbf:
-                lbf.write(bb_con)
-            bb_str = '-bbox_file {0} '.format(bb_flist_file)
-        leda_opts = ' '.join(pcom.rd_cfg(cfg_dic['proj'], 'leda', 'opts'))
-        top_str = args.leda_top if args.leda_top else pcom.rd_cfg(
-            cfg_dic['proj'], 'proj', 'rtl_top')[0]
-        leda_str = 'cd {0} && leda {1} -config {2} -f {3} {4} -top {5}'.format(
-            ced['PROJ_LEDA'], leda_opts, ced['PROJ_LEDA']+os.sep+'leda.tcl',
-            flist_file, bb_str, top_str)
-        with open(ced['PROJ_LEDA']+os.sep+'leda_cmd', 'w') as lcf:
-            lcf.write(leda_str+os.linesep)
-        subprocess.run(leda_str, shell=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    elif args.leda_gui:
-        leda_str = 'cd {0} && leda +gui -config {1} -l {2}'.format(
-            ced['PROJ_LEDA'], ced['PROJ_LEDA']+os.sep+'leda.tcl',
-            ced['PROJ_LEDA']+os.sep+'leda-logs'+os.sep+'leda.log')
-        subprocess.run(leda_str, shell=True)
+    if args.leda_gen_log and args.leda_flist_lst or args.leda_gui:
+        cmd_dic = {'leda_dir': '',
+                   'gen_log': args.leda_gen_log,
+                   'leda_flist_lst': args.leda_flist_lst,
+                   'leda_flist': '',
+                   'leda_top': args.leda_top,
+                   'leda_gui': args.leda_gui,
+                   'bb_flist_lst': args.leda_bb_flist_lst}
+        run_leda(cmd_dic)
     else:
         raise Exception("missing main arguments")
 
@@ -501,7 +576,11 @@ class Run(object):
                  run_ana_opts,
                  run_elab_opts,
                  run_simu_opts,
-                 run_cc_opts):
+                 run_cc_opts,
+                 run_leda_gen_log,
+                 run_leda_bb_flist,
+                 run_leda_top,
+                 run_leda_gui):
         self.run_module = run_module
         self.run_case_lst = [cc.split('.')[0] for cc in run_case_lst if cc]
         self.regr_type_lst = regr_type_lst
@@ -525,6 +604,10 @@ class Run(object):
         self.run_x86_ins = run_x86_ins
         self.run_seed = run_seed
         self.run_cc_opts = run_cc_opts
+        self.run_leda_gen_log = run_leda_gen_log
+        self.run_leda_bb_flist = run_leda_bb_flist
+        self.run_leda_top = run_leda_top
+        self.run_leda_gui = run_leda_gui
         self.ow_dic = {'ae': {}, 'su': {}}
         if run_seed:
             self.ow_dic['su']['seed'] = run_seed.strip()
@@ -591,7 +674,7 @@ class Run(object):
             case_dic['einfo'] = case_dic['dut_ana_error']
         return case_dic
     def gen_x86_ins(self):
-        scr_xi_dir = self.ced['CMN_SCRIPTS']+os.sep+'X86_INS'
+        scr_xi_dir = self.ced['SHARE_SCRIPTS']+os.sep+'X86_INS'
         ins_gen_file = scr_xi_dir+os.sep+'ins_gen.py'
         if not os.path.isfile(ins_gen_file):
             raise Exception("ins_gen.py file {0} is NA".format(ins_gen_file))
@@ -647,17 +730,26 @@ class Run(object):
             ms_dir, ms_file = mg.gen_simv_makefile(simv_dic)
             ms_tar = ''
             if self.run_comp:
-                ms_tar += self.ced['SIMV_DIR']+os.sep+simv+os.sep+'simv '
+                ms_tar += self.ced['OUTPUT_SIMV']+os.sep+simv+os.sep+'simv '
             if self.run_verdi and not self.run_case_lst:
-                verdi_tar = 'verdi_{0} '.format(simv)
-                ms_tar = (ms_tar+verdi_tar if
-                          self.run_wave != None else verdi_tar)
+                ms_tar += 'verdi_{0} '.format(simv)
             if not (ms_tar or self.run_case_lst):
-                ms_tar = self.ced['SIMV_DIR']+os.sep+simv+os.sep+'.dut_ana '
+                ms_tar = self.ced['OUTPUT_SIMV']+os.sep+simv+os.sep+'.dut_ana '
             ms_str = 'cd {0} && make -f {1} {2}'.format(
                 ms_dir, ms_file, ms_tar)
             subprocess.run(ms_str, shell=True, check=True,
                            stdout=self.std, stderr=self.std)
+            flist_file = self.ced['OUTPUT_SIMV']+os.sep+simv+os.sep+'dut.flist'
+            if self.run_leda_gen_log and os.path.isfile(
+                    flist_file) or self.run_leda_gui:
+                cmd_dic = {'leda_dir': self.ced['OUTPUT_LEDA'],
+                           'leda_flist_lst': '',
+                           'leda_flist': flist_file,
+                           'gen_log': self.run_leda_gen_log,
+                           'bb_flist_lst': self.run_leda_bb_flist,
+                           'leda_top': self.run_leda_top,
+                           'leda_gui': self.run_leda_gui}
+                run_leda(cmd_dic)
         if self.run_case_lst:
             if self.run_x86_ins:
                 x86_ins_seed_dic = self.gen_x86_ins()
@@ -687,14 +779,15 @@ class Run(object):
                             continue
                     case_dic['seed'] = seed
                     mc_dir, mc_file = mg.gen_case_makefile(case_dic)
+                    mc_tar = 'run_simv_{0}__{1} '.format(
+                        case_dic['name'], seed)
                     if self.run_verdi:
-                        tar_str = 'verdi_{0}__{1} '.format(
+                        verdi_tar = 'verdi_{0}__{1} '.format(
                             case_dic['name'], seed)
-                    else:
-                        tar_str = 'run_simv_{0}__{1} '.format(
-                            case_dic['name'], seed)
+                        mc_tar = (mc_tar+verdi_tar if
+                                  self.run_wave != None else verdi_tar)
                     mc_str = 'cd {0} && make -f {1} {2}'.format(
-                        mc_dir, mc_file, tar_str)
+                        mc_dir, mc_file, mc_tar)
                     if self.regr_flg:
                         subprocess.run(mc_str, shell=True, check=True,
                                        stdout=self.std, stderr=self.std)
@@ -705,11 +798,12 @@ class Run(object):
                         except KeyboardInterrupt:
                             proc.communicate()
                             break
-                    cvs_tup = (case, case_dic['simv'], seed)
+                    cvsr_tup = (
+                        case, case_dic['simv'], seed, self.regr_type_lst)
                     if self.run_fpga:
-                        fsg.gen_fpga_signals(cvs_tup)
+                        fsg.gen_fpga_signals(cvsr_tup)
                     case_log_dic = self.update_status(log_parser.LogParser(
-                        LOG, self.ced, self.cfg_dic, cvs_tup).parse_log())
+                        LOG, self.ced, self.cfg_dic, cvsr_tup).parse_log())
                     if self.regr_flg:
                         log_str = (
                             "Case Name: {1}{0}Seed: {2}{0}Status: "

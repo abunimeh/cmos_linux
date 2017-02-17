@@ -85,9 +85,9 @@ class VPlanProc(object):
             fill_type='gray125', end_color=self.gen_per_color(score))
     def parse_ch_report(self):
         cd_rpt_file = self.ced[
-            'COV_MERGE_DIR']+os.sep+'urgReport'+os.sep+'dashboard.txt'
+            'COV_MERGE']+os.sep+'urgReport'+os.sep+'dashboard.txt'
         ch_rpt_file = self.ced[
-            'COV_MERGE_DIR']+os.sep+'urgReport'+os.sep+'hierarchy.txt'
+            'COV_MERGE']+os.sep+'urgReport'+os.sep+'hierarchy.txt'
         if not os.path.isfile(cd_rpt_file):
             raise Exception(
                 "merged code coverage dashboard file {0} is NA".format(
@@ -122,9 +122,9 @@ class VPlanProc(object):
         return ch_score_dic
     def parse_cg_report(self):
         cg_rpt_file = self.ced[
-            'COV_MERGE_DIR']+os.sep+'urgReport'+os.sep+'groups.txt'
+            'COV_MERGE']+os.sep+'urgReport'+os.sep+'groups.txt'
         cp_rpt_file = self.ced[
-            'COV_MERGE_DIR']+os.sep+'urgReport'+os.sep+'grpinfo.txt'
+            'COV_MERGE']+os.sep+'urgReport'+os.sep+'grpinfo.txt'
         if not os.path.isfile(cg_rpt_file):
             raise Exception(
                 "merged coverage groups report file {0} is NA".format(
