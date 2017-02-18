@@ -530,10 +530,3 @@ crontab -e
 * android
 ** nexus
 sed -i 's/ro.setupwizard.network_required=true/ro.setupwizard.network_required=false/g' /system/build.prop
-** linux deploy
-source path: mirrors.ustc.edu.cn/archlinuxarm
-** razor(flo)
-rm apps after system boot once
-rm Velvet need to unset app assist default setting
-rm -rf Books/ CalendarGooglePrebuilt/ CloudPrint2/ DMAgent/ Drive/ Editors* GoogleContactsSyncAdapter/ GoogleEars/ Hangouts/ Maps/ Music2/ NewsstandStub/ PartnerBookmarksProvider/ Photos/ PlayGames/ PlusOne/ PrebuiltExchange3Google/ PrebuiltGmail/ PrebuiltKeepStub/ Videos/ YouTube/ talkback/
-rm -rf ConfigUpdater/ GCS/ GoogleBackupTransport/ GoogleContacts/ GoogleFeedback/ GoogleLoginService/ GoogleOneTimeInitializer/ GooglePartnerSetup/ GoogleServicesFramework/ Phonesky/ PrebuiltGmsCore/ SetupWizard/ Velvet/
