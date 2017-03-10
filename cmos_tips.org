@@ -433,6 +433,8 @@ manage.py createsuperuser
 manage.py makemigrations
 manage.py migrate
 manage.py collectstatic
+manage.py dumpdata <app> > data.json
+manage.py loaddata data.json
 ** django-bootstrap3
 'javascript_in_head': True,
 
