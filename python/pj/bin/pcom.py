@@ -6,8 +6,6 @@
 import os
 import re
 import fnmatch
-import multiprocessing as mp
-import multiprocessing.pool
 import logging
 import configparser
 import psutil
@@ -88,17 +86,6 @@ def gen_svn_ver(path):
         'svn log {0} --limit 1'.format(path), shell=True, check=True,
         stdout=subprocess.PIPE).stdout.decode()
     return re.search(r'---\n(r\d+)\s|\s', svn_log_str).group(1)
-
-##### classes
-class NoDaemonProcess(mp.Process):
-    def _get_daemon(self):
-        return False
-    def _set_daemon(self, value):
-        pass
-    daemon = property(_get_daemon, _set_daemon)
-
-class MyPool(mp.pool.Pool):
-    Process = NoDaemonProcess
 
 class ColoredFormatter(logging.Formatter):
     def format(self, record):
