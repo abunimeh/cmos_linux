@@ -1,2 +1,0 @@
-OPTIONS=windowtype:tty, hilite_pet, color
-OPTIONS=pickup_types:$
