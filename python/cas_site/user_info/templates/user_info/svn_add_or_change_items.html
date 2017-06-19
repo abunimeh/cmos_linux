@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Change_or_add key</title>
+    <link rel="stylesheet" href="{% static 'css/userinfo.css' %}"    type="text/css" media="screen" />
+    <script type="text/javascript" src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+</head>
+<body>
+    <div id = "userinfo">
+        <div class="userborder">
+            {% if add_flg %}
+            <h1 class="form-title">Add {{item_temp}}</h1>
+            {% else %}
+                <h1 class="form-title">Change {{item_temp}}</h1>
+            {% endif %}
+            <form class="svn-form" action="" method="POST" >
+                {% csrf_token %}
+                {{ form.non_field_errors }}                
+                <div class="form-row field-proj" style="height: 79px;margin-top: 38px;">
+                    {{ form.name.errors }}
+                    {{ form.name.label_tag }}
+                    <input type="hidden" name="_to_field" value={{pk}}>
+                    <span class="form-span proj-span">
+                        {{ form.name}}
+                    </span>                        
+                </div>
+                <div class="submit-row">
+                  <input id="edit_save" type="submit" value="Save" name="edit_save" > 
+                </div>
+            </form>
+        </div>            
+    </div>
+</body>
+<script type="text/javascript">
+    function changeSelectOpt(objSelect, optVal) {
+        for (i=0; i<objSelect.options.length;i++) {
+            var curOptObj = objSelect.options[i];
+            var curVal = curOptObj.value;
+            if(curVal == optVal) {
+                curOptObj.selected = true;
+            }
+        }
+    }
+    $(document).ready(function() {
+        $('form').submit(function(event){
+            window.opener.location.reload();
+        });
+        var opValue = $('input[name="_to_field"]')[0].value;
+        var opText = $('input[name="name"]')[0].value;
+        if (opValue) {
+            window.close();
+        }
+
+    });
+</script>
+</html>

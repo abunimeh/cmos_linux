@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load pj_app_extras %}
+
+{% block title %}
+    Data Analysis Lines
+{% endblock %}
+
+{% block content %}
+<div id="container_st" class="clearfix" style="width: 1300px; padding-bottom: 370px;">
+  <div class="content" style="height:auto; width: 1290px; margin: 0px auto;">
+    {% if plot_data %}
+        {% for ct, ct_items in plot_data.items %}
+            <div class="lines">
+                <div class="ln_prt colm_border" style="line-height: 23px;">
+                    <h1 style="font-size: 20px;">{{ct}} :</h1>
+                    <ul style="margin: 7px 58px; font-size:18px; ">
+                        <li>Sum of group count: {{ct_items.strk_cn}}</li>
+                        <li>Clock point nums of each group: <span id="intv_num">{{ct_items.intv_nums}}</span></li>
+                        <li>Clock point interval: <span id="clk_intv">{{ct_items.clk_intv}}</span></li>
+                    </ul>
+                </div>
+                <div class="ln_form colm_border" style="font-size: 16px;"> 
+                    <form action="{% url 'pj_app:mp_form_ajax_lns' %}" method="GET" id="ln_form" style="padding: 0px 104px;">
+                        <label for="st_pt">Groups: </label>
+                        <input type="text" name="st_pt" style="width: 123px;">
+                        <label style="margin: 0px 17px;">to</label>
+                        <input type="text" name="ed_pt" style="width: 123px;">
+                        <input type="text" name="id_nums" value={{ct_items.pk_lst|join:"*"}} style="display: none;">
+                        <input type="submit" name="ln_sbm" value="submit" style="float: right;">
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="ln_container colm_border" style="margin-top: 20px;">
+            <div class= "fg_left colm_border" style="margin-bottom: 5px; line-height: 28px; height: 100px;">
+                <div id="fg_selt">
+                    <label style="font-size: 18px;">X_Aaxis: </label>
+                    <select id="x_selt" style="width: 130px;" >
+                        {% for key, value in plot_data.items %}
+                            {% for x_nm , x_val in value.x_axis.items %}
+                                {% if "__x1" in x_nm %}
+                                    <option selected="selected">{{x_nm}}</option>
+                                {% else %}
+                                    <option>{{x_nm}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </select>                
+                </div>
+                <div id="fg_checkbx">
+                    <div style="float: left;">
+                        <label style="font-size: 18px;">Y_Aaxis: </label>                
+                    </div>
+                    <div id="y_lst" style="margin-left: 75px;">
+                        {% for key, value in plot_data.items %}
+                            {% for y_nm in value.y_axis%}
+                                {% if "__x1" in y_nm.name %}
+                                    <input type="checkbox" name={{y_nm.name}}>
+                                    <label for={{y_nm.name}}>{{y_nm.name}}</label>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}                    
+                    </div>
+                </div>
+            </div>
+            <div class= "fg_right">
+                <div id="ln_loading" style="text-align: center; font-size: 21px"> Loading lines, please wait...</div>    
+                <div id="#container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>    
+            </div>
+        </div>
+    {% else %}
+        <p style="font-size: 30px; text-align: center;">This case has no data!</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    String.prototype.format = function(){
+      var args = arguments;
+      return this.replace(/\{(\d+)\}/g, function(s,i) {
+          return args[i];
+      });
+    }
+
+    function gen_line_plot(data, x_text) {
+        Highcharts.chart("#container", {
+            chart: {
+                zoomType: 'x'
+            },
+            title: {
+                text: 'Mp Monitor values',
+                margin:35,
+            },
+            subtitle: {
+                text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+            },
+            xAxis: {
+                categories: data.x_axis,
+                title: {
+                    text: x_text,
+                    style: {
+                        'font-size': '20px',
+                        'color' : 'black',
+                    }
+                },
+                labels: {
+                    style: {
+                        "color": 'green',
+                    }
+                }
+            },
+            yAxis: [{
+                title: {
+                    text: "Number", 
+                    style: {
+                        'font-size': '20px',
+                        'color' : 'black',
+                    }
+                },
+            }],
+            credits: {
+                enabled:false
+            },
+            exporting:{
+                enabled:false
+            },        
+            legend: {
+                enabled: true,
+                itemStyle: {
+                    fontSize: '18px'
+                }
+            },
+            tooltip: {
+                shared: true,
+                useHTML: true,
+                headerFormat: '<strong>{0}: {point.x}</strong><table>'.format(x_text),
+                pointFormat: '<tr><td style="color: {series.color}">{series.name}:</td>' + '<td>{point.y:.f}</td></tr>',
+                foorFormat: '</table>',
+                crosshairs: [false, true],
+            },
+            series: data.y_axis
+        });
+    }
+
+    function gen_checkbox(lst) {
+        var y_str = '';
+        $.each(lst, function(index, val){
+            var chbx_str = '<input type="checkbox" name={0} />\
+            <label for={0}>{0}</label>'.format(val);
+            y_str += chbx_str;
+        });
+        return y_str;
+    }
+
+    function gen_coord(obj, x_nm) {
+        var x_axis, y_axis = new Array();
+        var x_tag = x_nm.split("__")[1];
+        $.each(obj, function(item, item_val){
+            if(item == "x_axis"){
+                $.each(item_val, function(key, val_lst){
+                    if(key.indexOf(x_nm) > -1){
+                        x_axis = val_lst;
+                    }
+                });
+            }else if(item == "y_axis"){
+                $.each(item_val, function(index, val){  
+                    if(val.name.indexOf(x_tag) > -1){
+                        y_axis.push(val);
+                    }
+                });                    
+            }            
+        });
+        return {"x_axis": x_axis, "y_axis": y_axis}
+    }
+
+    function gen_lst_interal(st, ed, max_gp) {
+        var interval;
+        if(st) {
+            if(ed) {
+                interval = ed - st + 1;
+            } else {
+                interval = max_gp -st;
+            }
+        } else {
+            if(ed){
+                interval = ed;
+            } else {
+                interval = 0;
+            }
+        }
+        interval = interval ? interval : 1;
+        return interval
+    }
+
+    function gen_interval_data(data, intv) {
+        var data_obj = new Object();
+        $.each(data, function(item, item_val){
+            if(item == "y_axis") {
+                var items_lst = new Array();
+                $.each(item_val, function(index, val){
+                    var temp_lst = new Array();
+                    val.data.forEach(function(e, i) {
+                        if(Math.round((i+1)%intv) == 0) {
+                            temp_lst.push(e);
+                        }
+                    });
+                    val.data = temp_lst;
+                    items_lst.push(val);
+                });
+                data_obj[item] =items_lst; 
+            } else if ( item == "x_axis") {
+                $.each(item_val, function(key, val){  
+                    var temp_lst = new Array();
+                    val.forEach(function(e, i) {
+                        if(Math.round((i+1)%intv) == 0) {
+                            temp_lst.push(e);
+                        }
+                    });
+                    item_val[key] = temp_lst;
+                });
+                data_obj[item] = item_val;
+            }
+        });
+        return data_obj;
+    }
+
+    function chbx_choose_plot(data, x_text) {
+        var ckbx_lst = new Array();
+        $("input:checkbox").change(function(){
+            if(this.checked){
+                ckbx_lst.push(this.name);
+            }else{
+                var index = ckbx_lst.indexOf(this.name);                
+                if(index > -1) {
+                    ckbx_lst.splice(index,1);
+                }
+            }
+            var x_val = $("#x_selt option:selected").val();
+            gen_line_plot(gen_axis_data(x_val, ckbx_lst, data), x_text);
+        });
+        ckbx_lst = [];
+    }
+
+    function select_choose_plot(data) {
+        //x_axis select choose
+        $("#x_selt").change(function(){
+            $("#y_lst").empty();
+            var y_lst = new Array();
+            var xy_obj = new Object();
+            var x_val = $("#x_selt option:selected").val();
+            var x_tag = x_val.split("__")[1];
+            $.each(data, function(item, item_val){
+                if(item == "y_axis") {
+                    var temp_lst = new Array();
+                    $.each(item_val, function(index, val){
+                        if(val.name.indexOf(x_tag) >-1){
+                            y_lst.push(val.name);
+                            temp_lst.push(val);
+                        }
+                    });
+                    xy_obj["y_axis"] = temp_lst;
+                } else if ( item == "x_axis") {
+                    $.each(item_val, function(key, val){  
+                        if(key == x_val){
+                            xy_obj["x_axis"] = val; 
+                        }
+                    });                        
+                }
+            });
+            $("#y_lst").append(gen_checkbox(y_lst));
+            gen_line_plot(xy_obj, x_val);
+            chbx_choose_plot(data, x_val);
+        });
+    }
+
+    function gen_axis_data(x_nm, y_lst, obj){
+        var x_axis; 
+        var y_axis = new Array();
+        $.each(obj, function(item, item_val){
+            if(item == "x_axis"){
+                $.each(item_val, function(key, val_lst){
+                    if(key == x_nm){
+                        x_axis = val_lst;
+                    }
+                });
+            }else if(item == "y_axis"){
+                $.each(item_val, function(index, val){  
+                    if(y_lst.indexOf(val.name) > -1){
+                        y_axis.push(val);
+                    }
+                });                    
+            }            
+        });
+        return {"x_axis": x_axis, "y_axis": y_axis}
+    }
+
+    function ajax_line_plot(obj) {
+        $(".ln_container").showLoading();
+        $.ajax({
+            data: obj.serialize(),
+            type: obj.attr('method'),
+            url: obj.attr('action'),
+            success: function(ajax_data) {
+                var x_val = $("#x_selt option:selected").val();
+                var st_pt = parseInt($("input[name='st_pt']")[0].value);
+                var ed_pt = parseInt($("input[name='ed_pt']")[0].value);
+                console.log(ajax_data);
+                var interval = gen_lst_interal(st_pt, ed_pt, ajax_data.strk_cn);
+                var intv_nums = parseInt(Math.ceil(ajax_data.intv_nums/interval));
+                var strk_cn = "{0} * ".format(interval)+ajax_data.clk_intv;
+                ajax_data = gen_interval_data(ajax_data, interval);
+                gen_line_plot(gen_coord(ajax_data, x_val), x_val);
+                $(".ln_container").hideLoading();
+                $("input:checkbox").each(function(){
+                    $(this).prop("checked", false);
+                });
+                $("#intv_num").text(intv_nums);
+                $("#clk_intv").text(strk_cn);
+                select_choose_plot(ajax_data);
+                chbx_choose_plot(ajax_data, x_val);
+            },
+            error: function() {
+                alert("loading data error, please refresh again!");
+            }
+        });
+    }
+
+    $(function () {
+        var plot_data = {{plot_data|to_js}};
+        //initiail line page
+        var max_gp, xy_data, xy_init;
+        $("input:checkbox").each(function(){
+            $(this).prop("checked", false);
+        });//remove all checkbox select
+        var x_val = $("#x_selt option:selected").val();
+        $.each(plot_data, function(case_tm, items){
+            xy_data = items;
+            max_gp = parseInt(items.strk_cn);
+            xy_init = gen_coord(xy_data, x_val);
+        });
+        gen_line_plot(xy_init, x_val);
+        $("#ln_loading").hide();
+
+        //x_axis select choose
+        select_choose_plot(xy_data);
+
+         //checkbox choose to plot
+        chbx_choose_plot(xy_data, x_val);
+
+        //query different group interval
+        $('#ln_form').on('submit', function(event) {
+            var st_pt = parseInt($("input[name='st_pt']")[0].value);
+            var ed_pt = parseInt($("input[name='ed_pt']")[0].value);
+            if (st_pt) {
+                if (ed_pt) {
+                    if ( st_pt > max_gp|| ed_pt >max_gp) {
+                        alert("please input value not more than "+ max_gp + " groups");
+                    } else {
+                        if (st_pt >= ed_pt) {
+                            var temp = st_pt;
+                            st_pt = ed_pt;
+                            ed_pt = temp;                            
+                        }
+                        ajax_line_plot($(this)); 
+                    }
+                } else {
+                    if (st_pt <= max_gp) {
+                        ajax_line_plot($(this)); 
+                    } else {
+                        alert("please input start group not more than"+ max_gp + " groups");
+                    }
+                }
+            } else {
+                if(ed_pt && st_pt != "0") {
+                    if(ed_pt <= max_gp) {
+                        ajax_line_plot($(this));                        
+                    }else {
+                        alert("please input start group not more than"+ max_gp + " groups");                        
+                    }
+
+                } else {
+                    alert("please input start group(not less than 1)!");
+                }
+            }
+            event.preventDefault();            
+        });
+    });
+</script>
+{% endblock %}

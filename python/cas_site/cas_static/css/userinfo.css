@@ -1,0 +1,189 @@
+#user-list {float: left;
+            width: 205px;
+            height: 686px;
+            border: 2px solid rgba(173, 170, 170, 0.44);
+            border-radius: 3px;
+            background:rgba(194, 194, 181, 0.93);}
+#user-list #user_img {padding: 12px 20px; 
+                      height: 180px;
+                      text-align: center;}
+#user-list #user_img img {width: auto; 
+                          height: auto; 
+                          max-height: 114px;
+                          max-width: 114px;}
+#user-list #user_img h1 {line-height: 32px;
+                         font-size: 2em;
+                         margin-top: 12px;} 
+#user-list .user_info {padding: 12px 20px;
+                       font-size: 1.1em;
+                       font-weight: bold;}
+#user-list .user_info ul li ul {line-height: 26px; 
+                                padding-left: 37px;}
+#user-list .user_info ul li img {margin-bottom: 4px; 
+                                 margin-right: 7px;}
+#user-list .user_info a:link {color: black;}
+#user-list .user_info a:visited {color: black;}
+#user-list .user_info a:active {color: red;}
+#user-list .user_info a:hover {color: rgb(12, 11, 111);}
+#userinfo {float: left; 
+           width: 882px; 
+           height: 686px;
+           margin-left: 12px; 
+           border-radius: 3px;
+           border: 2px solid rgba(173, 170, 170, 0.44);
+           background-color: rgba(188, 186, 186, 0.5);padding: 20px;}
+#userinfo #ldap_list {width: auto; 
+                      height:37px; 
+                      padding: 0px 85px;}
+#userinfo #ldap_list span {font-size: 16px; 
+                           font-weight: 600;}
+#userinfo #ldap_list select {height: 24px; 
+                             margin-left: 8px;}
+#userinfo #ldap_list input  {border-radius: 3px; 
+                             height: 25px; 
+                             float: right;line-height: 19px;}
+
+#userinfo #svn_list {width: auto; 
+                     height:44px; 
+                     padding: 0px 34px;}
+#userinfo #svn_list span {font-size: 17px; 
+                          font-weight: 600;}
+#userinfo #svn_list select {height: 26px; 
+                            margin-left: 8px; 
+                            width: 120px;
+                            margin: 0px 14px 0px 11px;}
+#userinfo #svn_list input  {border-radius: 3px; 
+                            height: 27px; 
+                            float: right; 
+                            line-height: 19px; 
+                            width: 84px; 
+                            line-height: 17px;}
+
+
+.btninfo { background-color:rgba(55, 91, 121, 0.87);}
+.btninfo:hover { color: red;
+                 background-color:rgba(55, 91, 121, 0.87);}
+
+#userinfo .userborder {width: 838px; 
+                      border: 1px solid white;
+                      border-radius: 4px; 
+                      height: 500px; 
+                      background-color: rgba(245, 245, 245, 0.45); 
+                      padding: 23px 12px 10px 12px;}
+#userinfo .userborder label {font-size: 16px;
+                             line-height: 26px;}                       
+
+#userinfo .userborder #userform {padding-left: 279px; padding-right: 137px; }
+#userinfo .userborder #userform p {display: inline; 
+                                   color: red;
+                                   font-size: 13px;
+                                   margin-left:4px; }
+#userinfo .userborder #userform #pwmodify {width: 284px;
+                                           height:265px; 
+                                           font-weight: bold; 
+                                           margin-top: 72px;
+                                           border:2px solid rgba(247, 239, 239, 0.9);
+                                           border-radius: 4px; 
+                                           background-color: darkgrey;}  
+#userinfo .userborder #userform #pwmodify #pd_form{padding: 14px;} 
+
+#userinfo #add_user { height: 27px; 
+                      width: 72px;
+                      border: 1px solid rgba(100, 90, 90, 0.79);
+                      line-height: 23px; 
+                      margin-bottom: 15px;
+                      border-radius: 4px; 
+                      background: darkgrey; }
+.svn-form input {height: 25px;}
+.svn-form a {margin-left: 7px;}
+.svn-form label {font-size: 16px; 
+                 line-height: 26px;
+                 vertical-align: middle;}
+.form-title { font-size: 23px; 
+              line-height: 48px;
+              color: black;
+              border-bottom: 3px rgba(124, 106, 106, 0.33) solid;}
+.form-row {height: 41px;
+           margin-top: 14px; 
+           padding-left:14px; 
+           border-bottom: 2px rgba(204, 198, 198, 0.48) solid; }
+.form-span  {position: absolute;}
+.name-span  {margin-left: 38px;}
+.proj-span  {margin-left: 30px;}
+.group-span {margin-left: 39px;}
+.level-span {margin-left: 44px;}
+.submit-row { padding: 12px 14px;     
+              margin: 21px 0 20px;     
+              border: 1px solid #eee;     
+              border-radius: 4px;     
+              text-align: right;     
+              overflow: hidden;
+}
+.submit-row input {height: 35px;
+                   line-height: 15px;
+                   margin: 0 0 0 5px;
+}
+.delete-form {display: block; 
+              background: #ba2121;    
+              border-radius: 4px;   
+              padding: 10px 15px;     
+              height: 35px;     
+              line-height: 14px; 
+              color: #fff;
+}
+.delete-user h1 {
+                 margin: 0 0 20px;
+                font-weight: 300;
+                font-size: 20px;
+                color: #666; 
+}
+.delete-user ul {
+                font-size: 20px;
+                margin: 1em 0 .5em 0;
+}
+.delete-user {
+                padding: 0;
+                line-height: 140%;    
+}
+.delete-user  #editing {
+                        background: rgb(181, 8, 8);
+                        border: 1px rgba(255, 255, 255, 0.28) solid;
+                        border-radius: 4px;
+}
+.delete-user #edit_save {
+                        border: 1px rgba(255, 255, 255, 0.28) solid;
+                        border-radius: 4px;
+                        background: rgba(48, 49, 54, 0.38);
+}
+.delete-user li {
+  font-size: 17px;
+  padding: 17px;
+}
+
+#nauth_user {
+  border: 1px solid white;
+  margin-top: 6px;
+  height: 107px;
+}
+#nauth_user h1 {
+  font-size: large;
+  line-height: 32px;
+  padding-left: 22px;
+  color: rgba(239, 25, 25, 0.82);
+}
+#nauth_user ul {
+  padding-left: 58px;
+  line-height: 22px;
+  font-size: 17px;
+  width: 778px;
+}
+
+#nauth_user li {
+  float: left;
+  border-bottom: 1px dotted;
+  margin-left: 18px;
+}
+
+
+
+

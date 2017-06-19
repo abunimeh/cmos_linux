@@ -19,10 +19,17 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
-    url(r'^teams/$', views.teams, name='teams'),
-    url(r'^regr/', include('regr.urls', namespace='regr')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^login/', views.login_auth, name='login_auth'),
+    url(r'^logout/', views.logout_auth, name='logout_auth'),
+    url(r'^pj_app/', include('pj_app.urls', namespace='pj_app')),
+    url(r'^user_info/', include('user_info.urls', namespace='user_info')),
+    url(r'^contact/', views.contact, name='contact'),
+    url(r'^page_error/$', views.page_error, name='page_error'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# handler404 = 'cas_site.views.page_not_found'

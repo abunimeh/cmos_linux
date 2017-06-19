@@ -9,6 +9,7 @@
 
 dir_guard = @mkdir -p ${@D}
 cd_guard = @cd ${@D}
+clean_db = @rm -rf ${OUTPUT_SIMV}/{{simv_dic.name}}/work.lib++ ${OUTPUT_SIMV}/{{simv_dic.name}}/AN.DB
 
 MAKEFLAGS += --silent
 
@@ -58,13 +59,15 @@ ${OUTPUT_SIMV}/{{simv_dic.name}}/simv_tbfl.pcl
 
 ${OUTPUT_SIMV}/{{simv_dic.name}}/.dut_ana: \
 ${OUTPUT_SIMV}/{{simv_dic.name}}/dut.flist \
+${OUTPUT_CLIB}/c_cfg.json \
 ${OUTPUT_SIMV}/{{simv_dic.name}}/simv_cfg.json \
 ${SHARE_CONFIG}/proj.cfg
+	${clean_db}
 	${cd_guard} && \
 	{{simv_dic.ana_tool}} \
 	{{simv_dic.da_opts}} \
-{%-if simv_dic.ca_opts%}
-	{{simv_dic.ca_opts}} \
+{%-if simv_dic.cda_opts%}
+	{{simv_dic.cda_opts}} \
 {%-endif%}
 	-f $< \
 	-l ${OUTPUT_SIMV}/{{simv_dic.name}}/dut_ana.log && \
@@ -72,13 +75,14 @@ ${SHARE_CONFIG}/proj.cfg
 
 ${OUTPUT_SIMV}/{{simv_dic.name}}/.tb_ana: \
 ${OUTPUT_SIMV}/{{simv_dic.name}}/tb.flist \
+${OUTPUT_CLIB}/c_cfg.json \
 ${OUTPUT_SIMV}/{{simv_dic.name}}/simv_cfg.json \
 ${SHARE_CONFIG}/proj.cfg
 	${cd_guard} && \
 	{{simv_dic.ana_tool}} \
 	{{simv_dic.ta_opts}} \
-{%-if simv_dic.ca_opts%}
-	{{simv_dic.ca_opts}} \
+{%-if simv_dic.cta_opts%}
+	{{simv_dic.cta_opts}} \
 {%-endif%}
 	-f $< \
 	-l ${OUTPUT_SIMV}/{{simv_dic.name}}/tb_ana.log && \
@@ -104,8 +108,8 @@ ${OUTPUT_SIMV}/{{simv_dic.name}}/{{file_name}} \
 {%-endfor%}
 ${OUTPUT_SIMV}/{{simv_dic.name}}/.dut_ana \
 ${OUTPUT_SIMV}/{{simv_dic.name}}/.tb_ana
-{%-if c_lst%}
-	@cd ${MODULE_OUTPUT} && make -f Makefile compile_c
+{%-if clib_flg%}
+	@cd ${MODULE_OUTPUT} && make -f Makefile compile_clib
 {%-endif%}
 	${cd_guard} && \
 {%-for pre_cmd in simv_dic.pre_cmd_lst%}
@@ -117,7 +121,10 @@ ${OUTPUT_SIMV}/{{simv_dic.name}}/.tb_ana
 	{{simv_dic.ce_opts}} \
 {%-endif%}
 	-top {{simv_dic.tb_top}} \
-{%-if c_lst%}
+{%-if simv_dic.upf_flg%}
+	-power_top {{simv_dic.power_top}} \
+{%-endif%}
+{%-if clib_flg%}
 	-LDFLAGS -L${OUTPUT_CLIB} -l${MODULE} \
 {%-endif%}
 	-l ${OUTPUT_SIMV}/{{simv_dic.name}}/elab.log \

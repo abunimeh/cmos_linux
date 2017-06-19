@@ -1,0 +1,300 @@
+{% extends 'user_info/user_info_base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+Svn-Info
+{% endblock %}
+
+{% block userinfo %}
+<!-- start content -->
+<div id = "userinfo">
+    <fieldset id="svn_list">
+        <p>
+            <span>Types:</span> 
+            <select id="types" class="types" data-value="Users" data-first-title="Choose" disabled="disabled">
+            </select>
+            <span>Repository:</span> 
+            <select id="repos" class="repository" data-value="Repository" data-first-title="Choose" disabled="disabled">
+            </select>
+            <span>Projects:</span>
+            <select id="projects" class="projects" data-value="choose" data-first-title="Choose" disabled="disabled">
+            </select>
+            <input  class="svnsearch" type="button" name="svnsearch" value="Query">
+        </p>
+    </fieldset>
+    <div class="userborder">
+        <div id = 'userstable'>
+            <table id="usermembs" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Directory</th>
+                        <th>Project</th>
+                        <th>User</th>
+                        <th>Group</th>
+                        <th>Level</th>
+                        <th>Auth</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for svninfo in dirinfo %}
+                        <tr align="center">    
+                            <td>{{ svninfo.directory }}</td>
+                            <td>{{ svninfo.project }}</td>
+                            <td>{{ svninfo.userpg }}</td>
+                            <td>{{ svninfo.group }}</td>
+                            <td>{{ svninfo.level}}</td>
+                            <td>{{ svninfo.auth}}</td>
+                        </tr>
+                     {% endfor %}           
+                </tbody>
+            </table>
+        </div>    
+    </div>
+</div>
+<!-- end content -->
+{% endblock %}
+
+
+{% block infojs %}
+<script type="text/javascript">
+function add_del_flag() {
+    if($('#selectflag').length) {
+        $('#selectflag').remove();
+    }
+}
+
+$(document).ready(function() {
+    $.cxSelect.defaults.url = "{% url 'user_info:svn_query_select' %}";    
+    $('#svn_list').cxSelect({
+      selects : ["types", "repository",  "projects"],
+      nodata : "none",
+    });
+    $('#usermembs').DataTable( {
+        "lengthChange": true,
+        "lengthMenu": [
+            [10, 8, 5 ],
+            [10, 8, 5 ]
+         ],//每页显示条数设置
+        "deferRender": true,
+        "destroy": true,
+        "bPaginate": true, //翻页功能
+        "searching": true,
+        "order":[[0,'asc']],
+    });        
+    $('.svnsearch').click(function(){
+        var type = $('.types').val();
+        var repository = $('.repository').val();
+        var project = $('.projects').val();
+        if (!type) {
+            add_del_flag();
+            $("#svn_list").append("<p id='selectflag' style='color:red;'>please choose type! </p>");            
+        } else{
+            add_del_flag();
+            if(!repository) {
+                if(type == "Users") {
+                    $.ajax({
+                        url:"{% url 'user_info:svn_ajax_userinfo' %}",
+                        type: "GET",
+                        data: {'type': type, 'repository': 'all', 'project': 'all'},
+                        success: function(data){
+                            $('.userborder').empty();
+                            $('.userborder').append('<div id ="userstable"><table id="usermembs" class="display" cellspacing="0" width="100%"><thead><tr><th>Directory</th><th>Project</th><th>User</th><th>Group</th><th>Level</th><th>Auth</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody ></table></div>'); 
+                            $('#usermembs').DataTable({
+                                "lengthChange": true,
+                                "lengthMenu": [
+                                    [10, 8, 5],
+                                    [10, 8, 5]
+                                 ],//每页显示条数设置
+                                "deferRender": true,
+                                "destroy": true,
+                                "bPaginate": true, //翻页功能
+                                "searching": true,
+                                "order":[[0,'asc']],
+                                "data": data,
+                                "columns": [
+                                    {"data": "directory"},
+                                    {"data": "project"},
+                                    {"data": "userpg"},
+                                    {"data": "group"},
+                                    {"data": "level"},
+                                    {"data": "auth"},
+                                ],
+                            });
+                        }
+                    });
+                } else if(type == "Groups") {
+                    $.ajax({
+                        url:"{% url 'user_info:svn_ajax_userinfo' %}",
+                        type: "GET",
+                        data: {'type': type, 'repository': 'all', 'project': 'all'},
+                        success: function (data) {
+                            $('.userborder').empty();
+                            $('.userborder').append('<div id ="userstable"><table id="usermembs" class="display" cellspacing="0" width="100%"><thead><tr><th>Directory</th><th>Project</th><th>Group</th><th>Level</th><th>Auth</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody ></table></div>'); 
+                            $('#usermembs').DataTable({
+                                "lengthChange": true,
+                                "lengthMenu": [
+                                    [10, 8, 5],
+                                    [10, 8, 5]
+                                 ],//每页显示条数设置
+                                "deferRender": true,
+                                "destroy": true,
+                                "bPaginate": true, //翻页功能
+                                "searching": true,
+                                "order":[[0,'asc']],
+                                "data": data,
+                                "columns": [
+                                    {"data": "directory"},
+                                    {"data": "project"},
+                                    {"data": "userpg"},
+                                    {"data": "level"},
+                                    {"data": "auth"},
+                                ],
+                            });
+                        }
+                    });                     
+                }       
+            } else {
+                if(!project) {
+                    if( type == "Groups") {
+                        $.ajax({
+                            url:"{% url 'user_info:svn_ajax_userinfo' %}",
+                            type: "GET",
+                            data: {'type': type, 'repository': repository, 'project': 'all'},
+                            success: function(data){
+                                $('.userborder').empty();
+                                $('.userborder').append('<div id ="userstable"><table id="usermembs" class="display" cellspacing="0" width="100%"><thead><tr><th>Directory</th><th>Project</th><th>Group</th><th>Level</th><th>Auth</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody ></table></div>'); 
+                                $('#usermembs').DataTable({
+                                    "lengthChange": true,
+                                    "lengthMenu": [
+                                        [10, 8, 5],
+                                        [10, 8, 5]
+                                     ],//每页显示条数设置
+                                    "deferRender": true,
+                                    "destroy": true,
+                                    "bPaginate": true, //翻页功能
+                                    "searching": true,
+                                    "order":[[0,'asc']],
+                                    "data": data,
+                                    "columns": [
+                                        {"data": "directory"},
+                                        {"data": "project"},
+                                        {"data": "userpg"},
+                                        {"data": "level"},
+                                        {"data": "auth"},
+                                    ],
+                                });
+                            }
+                        });
+                    } else if (type == "Users") {
+                        $.ajax({
+                            url:"{% url 'user_info:svn_ajax_userinfo' %}",
+                            type: "GET",
+                            data: {'type': type, 'repository': repository, 'project': 'all'},
+                            success: function(data){
+                                $('.userborder').empty();
+                                $('.userborder').append('<div id ="userstable"><table id="usermembs" class="display" cellspacing="0" width="100%"><thead><tr><th>Directory</th><th>Project</th><th>User</th><th>Group</th><th>Level</th><th>Auth</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody ></table></div>'); 
+                                $('#usermembs').DataTable({
+                                    "lengthChange": true,
+                                    "lengthMenu": [
+                                        [10, 8, 5],
+                                        [10, 8, 5]
+                                     ],//每页显示条数设置
+                                    "deferRender": true,
+                                    "destroy": true,
+                                    "bPaginate": true, //翻页功能
+                                    "searching": true,
+                                    "order":[[0,'asc']],
+                                    "data": data,
+                                    "columns": [
+                                        {"data": "directory"},
+                                        {"data": "project"},
+                                        {"data": "userpg"},
+                                        {"data": "group"},
+                                        {"data": "level"},
+                                        {"data": "auth"},
+                                    ],
+                                });
+                            }
+                        });
+                    }
+                } else {
+                    if( type == "Groups") {
+                        $.ajax({
+                            url:"{% url 'user_info:svn_ajax_userinfo' %}",
+                            type: "GET",
+                            data: {'type': type, 'repository': repository, 'project': project},
+                            success: function(data){
+                                $('.userborder').empty();
+                                $('.userborder').append('<div id ="userstable"><table id="usermembs" class="display" cellspacing="0" width="100%"><thead><tr><th>Directory</th><th>Project</th><th>Group</th><th>Level</th><th>Auth</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody ></table></div>'); 
+                                $('#usermembs').DataTable({
+                                    "lengthChange": true,
+                                    "lengthMenu": [
+                                        [10, 8, 5],
+                                        [10, 8, 5]
+                                     ],//每页显示条数设置
+                                    "deferRender": true,
+                                    "destroy": true,
+                                    "bPaginate": true, //翻页功能
+                                    "searching": true,
+                                    "order":[[0,'asc']],
+                                    "data": data,
+                                    "columns": [
+                                        {"data": "directory"},
+                                        {"data": "project"},
+                                        {"data": "userpg"},
+                                        {"data": "level"},
+                                        {"data": "auth"},
+                                    ],
+                                });
+                            }
+                        });
+                    } else if (type == "Users") {
+                        $.ajax({
+                            url:"{% url 'user_info:svn_ajax_userinfo' %}",
+                            type: "GET",
+                            data: {'type': type, 'repository': repository, 'project': project},
+                            success: function(data){
+                                $('.userborder').empty();
+                                $('.userborder').append('<div id ="userstable"><table id="usermembs" class="display" cellspacing="0" width="100%"><thead><tr><th>Directory</th><th>Project</th><th>User</th><th>Group</th><th>Level</th><th>Auth</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody ></table></div>'); 
+                                $('#usermembs').DataTable({
+                                    "lengthChange": true,
+                                    "lengthMenu": [
+                                        [10, 8, 5],
+                                        [10, 8, 5]
+                                     ],//每页显示条数设置
+                                    "deferRender": true,
+                                    "destroy": true,
+                                    "bPaginate": true, //翻页功能
+                                    "searching": true,
+                                    "order":[[0,'asc']],
+                                    "data": data,
+                                    "columns": [
+                                        {"data": "directory"},
+                                        {"data": "project"},
+                                        {"data": "userpg"},
+                                        {"data": "group"},
+                                        {"data": "level"},
+                                        {"data": "auth"},
+                                    ],
+                                });
+                            }
+                        });
+                    }
+                }                
+            }
+        }
+    });
+});  
+</script>
+{% endblock %}

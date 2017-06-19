@@ -1,0 +1,381 @@
+{% extends 'user_info/user_info_base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+Ldap-Info
+{% endblock %}
+
+{% block userinfo %}
+<!-- start content -->
+<div id = "userinfo">
+	{% if not nav_flag %}
+    <fieldset id="ldap_list">
+        <p>
+        <span>Operations:</span>
+        <select id="operation" class="operation" data-value="Query" data-first-title="Choose" disabled="disabled">
+        </select>
+        <span>Teams:</span> 
+        <select id="team" class="team" data-value="all" data-first-title="Choose" disabled="disabled">
+        </select>
+        <span>Users:</span> 
+        <select id="user" class="user" data-value="Choose" data-first-title="Choose" disabled="disabled"></select>
+        <input  class="ldapsearch" type="button" name="ldapsearch" value="Operation">
+        </p>
+    </fieldset>
+    {% endif %}
+    {% if content_flag %}
+        <div class="userborder">
+            <div id = 'userstable'>
+                <table id="usermembs" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Team</th>
+                            <th>Manager</th>
+                            <th>E-mail</th>
+                            <th>Telephone</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for userinfo in membdata %}
+                            <tr align="center">    
+                                <td>{{ userinfo.username }}</td>
+                                <td>{{ userinfo.team }}</td>
+                                <td>{{ userinfo.manager }}</td>
+                                <td>{{ userinfo.email }}</td>
+                                <td>{{ userinfo.tel }}</td>
+                            </tr>
+                         {% endfor %}           
+                    </tbody>
+                </table>
+            </div>    
+        </div>
+    {% else %}
+        <div class="userborder">
+            {% if pd_success %}
+                <div class="pd_success" style="font-size: 18px;line-height: 26px; margin: 153px;">
+                    {{usernm}} password modify sucessfully and send it to your email !
+                </div>
+            {% else %}
+        	<div id = 'userform'>                    
+        		{% if pw_modify %}
+        			<div id = 'pwmodify'>
+		                <form id = "pd_form" name="pd_form" method="post" action="{% url 'user_info:ldap_pdmodify' %}">
+		                     {% csrf_token %}
+                                <label for="ldapnm">Username:</label>
+                                <input type="text" name="ldapnm" id="ldapnm" class="txtfield" tabindex="1" value={{usernm}} tabindex="8" readonly="readonly">
+                                <input type="password" name="hpasswd" id="hpasswd" class="txtfield"  value="" style="display: none;">
+                                <label for="passwd">New Password:</label>
+                                <input type="password" name="passwd" id="passwd" class="txtfield"  value="" tabindex="12">
+                                <label for="apasswd">Input again:</label>
+                                <input type="password" name="apasswd" id="apasswd" class="txtfield"  value="" tabindex="13">
+		                        <button type="submit" class="flatbtn-blu btninfo" style="margin-top: 8px;">Submit</button>
+						</form>                			                				
+        			</div>
+        		{% else %}
+                    {% if adduser %}
+                        <form id = "info_form" name="info_form" method="post" action="{% url 'user_info:ldap_useradd' %}">
+                        {% csrf_token %}
+                        <label for="ldapnm">Username:<p>(*edit)</p></label>
+                        <input type="text" name="ldapnm" id="ldapnm" class="txtfield" tabindex="1" value={{username}} tabindex="1">
+                        <label for="passwd">Password:<p>(initial)</p></label>
+                        <input type="text" name="passwd" id="passwd" class="txtfield"  tabindex="2" value="nfs123" readonly="readonly">
+                        <label for="ldaptel">Telephone:<p>(edit)</p></label>
+                        <input type="text" name="ldaptel" id="ldaptel" class="txtfield" tabindex="3"  value={{tel}} >
+                    {% else %}
+                        <label for="ldapnm">Username:</label>
+                        <input type="text" name="ldapnm" id="ldapnm" class="txtfield" tabindex="1" value={{username}} readonly="readonly">
+                        <label for="ldaptel">Telephone:</label>
+                        <input type="text" name="ldaptel" id="ldaptel" class="txtfield"  tabindex="3" value={{tel}}  readonly="readonly">
+                    {%  endif %}
+                        <label for="ldaptm">Team:</label>
+                        <input type="text" name="ldaptm" id="ldaptm" class="txtfield" tabindex="4" value={{team}} readonly="readonly" >
+                        <label for="ldapmg">Manager:</label>
+                        <input type="text" name="ldapmg" id="ldapmg" class="txtfield"  value={{manager}} tabindex="5" readonly="readonly">                          
+                    {% if not adduser %}
+                        <label for="ldapem">E-mail:</label>
+                        <input type="email" name="ldapem" id="ldapem" class="txtfield"  value={{email}} tabindex="6" disabled="disabled">
+                    {% endif %}                     
+                        <label for="ldapst">State:</label>
+                        <select name="ldapst" id="ldapst" class="txtfield" tabindex="7" readonly="readonly" >
+                            {% if delete_success %}
+                            <option value="resignation" selected="selected">resignation</option>
+							{% else %}
+                            <option value="on-job" selected="selected">on-job</option>
+                            {% endif %}										
+                        </select>
+                    {% if adduser %}
+                        <button type="submit" class="flatbtn-blu btninfo">Submit</button>
+                        </form>
+                    {% endif %} 
+
+                    {% if add_success %}
+                        <div style="font-size: 14px;line-height: 26px; color: red;">
+                            {{username}} adds successfully and new person information send your email!</a>
+                        </div>
+                    {%  endif %}
+                    {% if add_fail %}
+                        <div id ="add_fail" style="font-size: 14px;line-height: 26px;color: red;">
+                            {{username}} exists, add it again!
+                        </div>                              
+                    {%  endif %}
+                    {% if update_success %}
+                        <div style="font-size: 14px;line-height: 26px;color: red;">
+                           {{username}} updates successfully</a>
+                        </div>
+                    {%  endif %}
+                    {% if delete_success %}
+                        <div style="font-size: 14px;line-height: 26px; color: red;">
+                            {{username}} deletes successfully!</a>
+                        </div>
+                    {%  endif %}
+
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div> 
+<!-- end content -->
+{% endblock%}
+
+
+{% block infojs %}
+<script type="text/javascript">
+function delete_info(){
+    if($(".pd_success").length) {
+        $(".pd_success").remove();
+    }
+    if($("#pdchr").length) {
+        $("#pdchr").remove();
+    }
+    if($("#dpd").length) {
+        $("#dpd").remove();
+    }        
+};
+$(document).ready(function() {
+    $('#usermembs').DataTable( {
+        "lengthChange": true,
+        "lengthMenu": [
+            [10, 8, 5 ],
+            [10, 8, 5 ]
+         ],//每页显示条数设置
+        "deferRender": true,
+        "destroy": true,
+        "bPaginate": true, //翻页功能
+        "searching": true,
+        "order":[[0,'asc']],
+    });
+    $.cxSelect.defaults.url = "{% url 'user_info:ldap_queryselect' team usernm %}";    
+    $('#ldap_list').cxSelect({
+      selects : ["operation","team", "user"],
+      nodata : "none"
+    });
+    $('.ldapsearch').click(function(){
+        var operation = $('.operation').val();
+        var team = $('.team').val();
+        var user = $('.user').val();
+        if(!operation) {
+            alert('Please Choose operation!');
+        } else {
+            if (!team) {
+                alert('please Choose team!');
+            }  else {
+                if (!user) {
+                    switch (operation) {        
+                        case 'Query':
+                            $.ajax({
+                                url:"{% url 'user_info:ldap_ajaxmembers' %}",
+                                type: "GET",
+                                data: {'operation': operation, 'team': team},
+                                success: function(data){
+                                    $('.userborder').empty();
+                                    $('.userborder').append('<div id ="userstable"><table id="usermembs" class="display" cellspacing="0" width="100%"><thead><tr><th>Name</th><th>Team</th><th>Manager</th><th>E-mail</th><th>Telephone</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody ></table></div>'); 
+                                    $('#usermembs').DataTable({
+                                        "lengthChange": true,
+                                        "lengthMenu": [
+                                            [10, 8, 5],
+                                            [10, 8, 5]
+                                         ],//每页显示条数设置
+                                        "deferRender": true,
+                                        "destroy": true,
+                                        "bPaginate": true, //翻页功能
+                                        "searching": true,
+                                        "order":[[0,'asc']],
+                                        "data": data,
+                                        "columns": [
+                                            {"data": "username"},
+                                            {"data": "team"},
+                                            {"data": "manager"},
+                                            {"data": "email"},
+                                            {"data": "tel"},
+                                        ],
+                                    });
+                                }
+                            });
+                            break;
+                        case 'Edit':
+                            alert('Please Choose user who you want to edit!');
+                            break;
+                        case 'Delete':
+                            alert('Please Choose user who you want to delete!');                            
+                            break;
+                        case 'Add':
+                            $.ajax({
+                                url: "{% url 'user_info:ldap_ajaxmembers' %}",
+                                type: "GET",
+                                data: {'operation': operation, 'team': team},
+                                success: function(data) {
+                                    $('.userborder').empty();
+                                    $('.userborder').append('<div id = "userform"><form id = "info_form" name="info_form" method="post" action=""><label for="ldapnm">Username:<p>(*edit)</p></label><input type="text" name="ldapnm" id="ldapnm" class="txtfield" tabindex="1" value=""><label for="passwd">Password:<p>(initial)</p></label><input type="text" name="passwd" id="passwd" class="txtfield"  tabindex="2" value="" readonly="readonly"><label for="ldaptel">Telephone:<p>(edit)</p></label><input type="text" name="ldaptel" id="ldaptel" class="txtfield" tabindex="3" value=""><label for="ldaptm">Team:</label><input type="text" name="ldaptm" id="ldaptm" class="txtfield" tabindex="4" value="" readonly="readonly" ><label for="ldapmg">Manager:</label><input type="text" name="ldapmg" id="ldapmg" class="txtfield"  value="" tabindex="4" readonly="readonly"><label for="ldapst">State:</label><select name="ldapst" id="ldapst" class="txtfield" tabindex="6" readonly="readonly" ><option value="on-job" selected="selected">on-job</option></select><button type="submit" class="flatbtn-blu btninfo">Submit</button></form></div>');
+                                    $('#ldapnm').val(data.username);
+                                    $('#passwd').val(data.passwd);                                  
+                                    $('#ldaptel').val(data.tel);
+                                    $('#ldaptm').val(data.team)
+                                    $('#ldapmg').val(data.manager);
+                                    $('#info_form').attr("action","{% url 'user_info:ldap_useradd' %}");
+									$('#info_form').submit(function(event){
+										var username = $('#ldapnm').val();
+										var password = $('#passwd').val();
+										var usernm_ptn = /^[a-zA-Z]\w{2,17}$/;
+										var passwd_ptn = /^[a-zA-Z0-9]\w{5,19}$/;
+										var user_tel1 = /^(([0\+]\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
+										var user_tel2 = /^(\d{7,8}|\d{11})(-(\d{3,}))?$/;
+										if (usernm_ptn.test(username)) {
+											if(passwd_ptn.test(password)) {
+												return true;
+											}
+										} else {
+											if ($("#add_nm").length) {
+												$("#add_nm").remove();
+											}
+											$("#ldapnm").after("<div id = add_nm style='color:red;'>Username must 3~18 characters(a-zA-Z0-9) and first character is alphabet .</div>")				
+											return false;			
+										}
+									});                                    
+                                },
+                            });
+                            break;
+                    }
+                } else {
+                	switch (operation) {
+                		case 'Query':
+                			$.ajax({
+                				url: "{% url 'user_info:ldap_ajaxmembers' %}",
+                				type: "GET",
+                				data: {'operation': operation, 'team': team, 'user': user},
+                				success: function(data) {
+                                    $('.userborder').empty();
+                                    $('.userborder').append('<div id = "userform"><form id = "info_form" name="info_form" method="post" action=""><label for="ldapnm">Username:</label><input type="text" name="ldapnm" id="ldapnm" class="txtfield" tabindex="1" value="" readonly="readonly"><label for="ldaptel">Telephone:</label><input type="text" name="ldaptel" id="ldaptel" class="txtfield"  tabindex="2" value="" disabled="disabled"><label for="ldaptm">Team:</label><input type="text" name="ldaptm" id="ldaptm" class="txtfield" tabindex="3" value="" disabled="disabled" ><label for="ldapmg">Manager:</label><input type="text" name="ldapmg" id="ldapmg" class="txtfield"  value="" tabindex="4" disabled="disabled"><label for="ldapem">E-mail:</label><input type="text" name="ldapem" id="ldapem" class="txtfield"  tabindex="5" value="" disabled="disabled"><label for="ldapst">State:</label><select name="ldapst" id="ldapst" class="txtfield" tabindex="6" disabled="disabled" ><option value="on-job" selected="selected">on-job</option></select></form></div>');
+                                    $('#ldapnm').val(data.username);
+                                    $('#ldaptel').val(data.tel);
+                                    $('#ldaptm').val(data.team);
+                                    $('#ldapem').val(data.email);
+                                    $('#ldapmg').val(data.manager);
+                				},
+                			});
+                			break;
+                		case 'Edit':
+                			$.ajax({
+                				url: "{% url 'user_info:ldap_ajaxmembers' %}",
+                				type: "GET",
+                				data: {'operation': operation, 'team': team, 'user': user},
+                				success: function(data) {
+                					$('.userborder').empty();
+                                    $('.userborder').append('<div id = "userform"><form id = "info_form" name="info_form" method="post" action=""><label for="ldapnm">Username:</label><input type="text" name="ldapnm" id="ldapnm" class="txtfield" tabindex="1" value="" readonly="readonly"><label for="ldaptel">Telephone:<p>(edit)</p></label><input type="text" name="ldaptel" id="ldaptel" class="txtfield"  tabindex="2" value=""><label for="ldaptm">Team:</label><input type="text" name="ldaptm" id="ldaptm" class="txtfield" tabindex="3" value="" disabled="disabled" ><label for="ldapmg">Manager:</label><input type="text" name="ldapmg" id="ldapmg" class="txtfield"  value="" tabindex="4" disabled="disabled"><label for="ldapem">E-mail:</label><input type="text" name="ldapem" id="ldapem" class="txtfield"  tabindex="5" value="" disabled="disabled"><label for="ldapst">State:</label><select name="ldapst" id="ldapst" class="txtfield" tabindex="6" disabled="disabled" ><option value="on-job" selected="selected">on-job</option></select><button type="submit" class="flatbtn-blu btninfo">Submit</button></form></div>');
+                                    $('#ldapnm').val(data.username);
+                                    $('#ldaptel').val(data.tel);
+                                    $('#ldapem').val(data.email);
+                                    $('#ldapmg').val(data.manager);
+                                    $('#ldaptm').val(data.team)
+                                    $('#info_form').attr("action","{% url 'user_info:ldap_membupdate' %}");
+                				},
+                			});
+                			break;	
+                		case 'Delete':
+                			$.ajax({
+                				url: "{% url 'user_info:ldap_ajaxmembers' %}",
+                				type: "GET",
+                				data: {'operation': operation, 'team': team, 'user': user},
+                				success: function(data) {
+                					$('.userborder').empty();
+                                    $('.userborder').append('<div id = "userform"><form id = "info_form" name="info_form" method="post" action=""><label for="ldapnm">Username:</label><input type="text" name="ldapnm" id="ldapnm" class="txtfield" tabindex="1" value="" readonly="readonly"><label for="ldaptel">Telephone:</label><input type="text" name="ldaptel" id="ldaptel" class="txtfield"  tabindex="2" value="" disabled="disabled"><label for="ldaptm">Team:</label><input type="text" name="ldaptm" id="ldaptm" class="txtfield" tabindex="3" value="" disabled="disabled" ><label for="ldapmg">Manager:</label><input type="text" name="ldapmg" id="ldapmg" class="txtfield"  value="" tabindex="4" disabled="disabled"><label for="ldapem">E-mail:</label><input type="text" name="ldapem" id="ldapem" class="txtfield"  tabindex="5" value="" disabled="disabled"><label for="ldapst">State:</label><select name="ldapst" id="ldapst" class="txtfield" tabindex="6"><option value="resignation" select="selected">resignation</option></select><button type="submit" class="flatbtn-blu btninfo">Submit</button></form></div>');
+                                    $('#ldapnm').val(data.username);
+                                    $('#ldaptel').val(data.tel);
+                                    $('#ldapem').val(data.email);
+                                    $('#ldapmg').val(data.manager);
+                                    $('#ldaptm').val(data.team)
+                                    $('#info_form').attr("action","{% url 'user_info:ldap_userdelete' %}");
+                				},
+                			});	
+                			break;
+                	}		
+                }
+            }
+        }
+    });
+    $('#pd_form').submit(function(){
+        var username = $('#ldapnm').val();
+        var password = $('#passwd').val();
+        var apassword = $('#apasswd').val();
+        var usernm_ptn = /^[a-zA-Z]\w{2,17}$/;
+        var passwd_ptn = /^[a-zA-Z0-9]\w{5,19}$/;
+        var user_tel1 = /^(([0\+]\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
+        var user_tel2 = /^(\d{7,8}|\d{11})(-(\d{3,}))?$/;
+        if (usernm_ptn.test(username)) {
+            if(passwd_ptn.test(password) && passwd_ptn.test(apassword)) {
+                if (password === apassword) {
+                    return true;                    
+                } else {
+                    delete_info();
+                    $("#pwmodify").after("<div id ='dpd' style = 'color:red;'>Twice new Password is different, please input again</div>");         
+                    return false;
+                }
+            } else {
+                delete_info();    
+                $("#pwmodify").after("<div id ='pdchr' style = 'color:red;'>New password must 6~20 characters(a-zA-Z0-9).</div>");
+                return false;
+            }
+        }        
+    });
+	$('#info_form').submit(function(){
+		var username = $('#ldapnm').val();
+		var password = $('#passwd').val();
+		var usernm_ptn = /^[a-zA-Z]\w{2,17}$/;
+		var passwd_ptn = /^[a-zA-Z0-9]\w{5,19}$/;
+		var user_tel1 = /^(([0\+]\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
+		var user_tel2 = /^(\d{7,8}|\d{11})(-(\d{3,}))?$/;
+		if (usernm_ptn.test(username)) {
+			if(passwd_ptn.test(password)) {
+                    return true;                    
+			} else {
+                delete_info();    
+				$("#pwmodify").after("<div id ='pdchr' style = 'color:red;'>New password must 6~20 characters(a-zA-Z0-9).</div>");
+				return false;
+			}
+		} else {
+			if ($("#add_nm").length) {
+				$("#add_nm").remove();
+			}
+			if ($("#add_fail").length) {
+				$("#add_fail").remove();
+			}														
+			$("#ldapnm").after("<div id = add_nm style='color:red;'>Username must 3~18 characters(a-zA-Z0-9) and first character is alphabet .</div>")				
+			return false;			
+		}
+	});
+});
+</script>
+{% endblock %}
+
+

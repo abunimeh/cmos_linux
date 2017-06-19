@@ -1,0 +1,122 @@
+{% extends "pj_app/pj_app_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+    Fm Info
+{% endblock %}
+
+{% block flowjs %}
+<script type="text/javascript">
+function gen_tab(udata) {
+    $("body").showLoading();
+    $.ajax({
+        url: "{% url 'pj_app:fm_get_loginfo' %}",
+        data: udata,
+        success: function(data){
+            $('#show_all').empty();
+            var tab_str = '<div id="show_tab1" style="margin-top:33px;"><table id="tab1" class="display"><thead><tr><th>Job</th><th>Proj</th><th>Status</th><th>Run Time</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div>'
+            $('#show_all').append(tab_str);
+            var tab_attrs = {
+                "deferRender": true,
+                "destroy": true,
+                "lengthChange": true,
+                "lengthMenu": [
+                  [5, 50, 100, -1],
+                  [5, 50, 100, "All"]],
+                "bPaginate": true,
+                "searching": true,
+                "order":[[3,'desc']],
+                "scrollY": false,
+                "data": data,
+                "columns": [
+                    { "data": "module" ,
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                            }
+                            return data ;
+                        },    
+                    },
+                    { "data": "proj",
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                            }
+                            return data ;
+                        },    
+                    },
+                    { "data": "status",
+                        "createdCell": function (tr, cellData, rowData, row, col) {
+                            var bk_color;
+                            if (cellData == 'failed') {
+                                bk_color = 'red';
+                            } else {
+                                bk_color = "green";
+                            }                                                
+                            $(tr).css('background', bk_color);
+                        },
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                            }
+                            return data ;
+                        },                            
+
+                    },
+                    { "data": "run_time",
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                            }
+                            return data ;
+                        },    
+                    }],
+            } 
+            var table = $('#tab1').DataTable(tab_attrs);
+            $("body").hideLoading();
+        }
+    });    
+}
+//
+$(function () {
+    $(".tsearch").click(function(){
+        var team = $("#team").val()
+        var user = $("#user").val();
+        var proj = $("#project").val();
+        var module = $("#module").val();
+        var tstart = $("#indate").val();
+        var   tend = $("#dateinfo").val();
+        if (!tstart) {
+            alert("Please Choose running start time!");
+        } 
+        else if (!tend) {
+            alert("Please Choose running end time!");        
+        } else {
+            if (!user) {
+            alert("Please Choose User!");
+            } else {
+                if(!proj) {
+                    alert("Please Choose proj!");
+                } else {
+                    var url_data = { 'team': team,
+                                     'user':user,
+                                     'proj':proj, 
+                                     'module':module, 
+                                     'tstart':tstart,
+                                     'tend':tend};
+                    if(!module) {
+                        url_data['model'] = 'all_mds';
+                    }else{
+                        url_data['model'] = 'sg_md';
+                    }
+                    gen_tab(url_data);
+                }                   
+            }
+        }
+    });
+    
+});
+$.cxSelect.defaults.url = "{% url 'pj_app:query_select' 'fm' %}";
+</script>
+{% endblock %}

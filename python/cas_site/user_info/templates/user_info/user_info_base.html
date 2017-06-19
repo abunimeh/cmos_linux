@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content %}
+<!-- start content -->
+<div id="container_st" class="clearfix" style="width: 1300px; padding-bottom: 138px;">
+    <div class="content" style="height:auto; width: 1100px; margin: 0px auto;">
+        <div id = "user-list">
+            <div id ="user_img">
+                <img src="{% static 'images/userauth/person.PNG' %}" />
+                <h1>{{usernm}}</h1>
+            </div>
+            <div class ="user_info">
+                <ul>
+                    <li><img src="{% static 'images/userauth/ldap.PNG' %}" /><a class="inactive active" href="#" style="font-size: 1.4em;">LDAP</a>   
+                        <ul style=" display: block;">
+                            <li><a href="{% url 'user_info:ldap_userinfo' %}">Personal Info</a></li>
+                            <li><a href="{% url 'user_info:ldap_pdmodify' %}">Passwd Modify</a></li>
+                            <li><a href="{% url 'user_info:ldap_allmembers' %}">Users Operater</a></li>
+                        </ul>
+                    </li>
+                    <li><img src="{% static 'images/userauth/svn.PNG' %}"><a class="inactive active" href="#" style="font-size: 1.4em;">SVN</a>   
+                        <ul style=" display: block;">
+                            <li><a href="{% url 'user_info:svn_userinfo' %}">User Info</a></li>
+                            <li><a href="{% url 'user_info:svn_user_query' %}">User Operator</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% block userinfo %}
+
+        {% endblock %}
+    </div>
+</div>  
+<!-- end content -->
+{% endblock%}
+
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.inactive').click(function(){
+        if($(this).siblings('ul').css('display')=='none'){
+            $(this).parent('li').siblings('li').removeClass('inactives');
+            $(this).addClass('inactives');
+            $(this).siblings('ul').slideDown(20).children('li');
+            if($(this).parents('li').siblings('li').children('ul').css('display')=='block'){
+                $(this).parents('li').siblings('li').children('ul').parent('li').children('a').removeClass('inactives');
+                $(this).parents('li').siblings('li').children('ul').slideUp(20);
+            }
+        }else{
+            //控制自身变成+号
+            $(this).removeClass('inactives');
+            //控制自身菜单下子菜单隐藏
+            $(this).siblings('ul').slideUp(20);
+            //控制自身子菜单变成+号
+            $(this).siblings('ul').children('li').children('ul').parent('li').children('a').addClass('inactives');
+            //控制自身菜单下子菜单隐藏
+            $(this).siblings('ul').children('li').children('ul').slideUp(20);
+            //控制同级菜单只保持一个是展开的（-号显示）
+            $(this).siblings('ul').children('li').children('a').removeClass('inactives');
+        }
+    });   
+});
+</script>
+{% block infojs %}
+
+{% endblock%}
+{% endblock %}
+
+

@@ -1,0 +1,1020 @@
+{% extends "pj_app/pj_app_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+  Regression Info
+{% endblock %}
+ 
+{% block flowjs %}
+<script type="text/javascript">
+//row extra table
+  function format (row_dt) {
+    return '<table cellpadding="5" cellspacing="0" border="0" >' +
+                '<tr>'  +
+                    '<td>' + 'Error_info: ' +row_dt.sec.case.error_info + '</td>'+
+                '</tr>'
+          '</table>';          
+  }
+  $.cxSelect.defaults.url = "{% url 'pj_app:query_select' 'regr' %}";    
+  $(function() {
+    $(".tsearch").click(function(){
+      var user = $("#user").val();
+      var proj = $("#project").val();
+      var module = $("#module").val();
+      var tstart = $("#indate").val();
+      var   tend = $("#dateinfo").val();
+      if (!tstart) {
+        alert("Please Choose running start time!");
+      }
+      else if (!tend) {
+        alert("Please Choose running end time!");        
+      }
+      else {
+        if (!user) {
+          alert("Please Choose User!")
+        }
+        else {
+          if (!proj) {
+            $("body").showLoading();
+            //ajax table data
+            $.ajax({
+                url:"{% url 'pj_app:regr_get_model' %}",
+                data: {'model':'proj','user':user, 'proj':'None', 'module':'None', 'tstart':tstart,'tend':tend},
+                success: function(data) {
+                    //clear and create table
+                    $('#show_all').empty();  
+                    $('#show_all').append('<div id="show_tab1"style="margin-top:20px;"><div><table id="tab1" class="display"><thead><tr><th>Project</th><th>Project Leader</th><th>Project Design Leader</th><th>Project Verif Leader</th><th>Passing Rate</th><th>Run Time</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div><div id ="line_ct" style="display:none;margin:16px 0px;"><div id="ccontainer" style="min-width: 310px; height: 400px; margin: 0 auto;"></div></div><div id= "pcontainer" style="display: none;margin:16px 40px; height:410px;"><div id="left_ct" style="width:600px;float:left;" ><div id="lpcontainer" style="min-width: 310px; max-width: 600px; height: 400px; margin:0px;"></div></div><div id="right_ct" style="width:600px;float:left;"><div id="rpcontainer" style="min-width: 310px; max-width: 600px; height: 400px; margin:0px;"></div></div></div><div id="show_tab2" style="margin-top:20px;"><table id="tab2" class="display"><thead><tr><th>Project</th><th>Project Leader</th><th>Project Design Leader</th><th>Project Verif Leader</th><th>Passing Rate</th><th>Run Time</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div></div>');
+                    var dataSet1 = new Array();
+                    var dataSet2 = new Array();
+                    for(var i in data) {
+                        for(var time in data[i]) {
+                            if(time == 'day') {
+                              dataSet1.push(data[i]);
+                            }
+                            if(time == 'sec') {
+                              dataSet2.push(data[i]);
+                            }
+                        }
+                    }
+                    $('#tab1').DataTable({  
+                        "dom": '<"top" B>lfrtip<"clear">',
+                        "buttons": [
+                            {
+                              text:"Show line",
+                              action: function(e, dt, node, config) {
+                                  $('#pcontainer').css("display","none");
+                                  $('#line_ct').css("display","block");
+                                  var dic_rt   = new Object();
+                                  var dic_proj = new Object();
+                                  var passrt   = new Array();
+                                  var fig_list = new Array();
+                                  function sortDict(dict) {
+                                    var dict2 = {}, keys = Object.keys(dict).sort();
+                                    for (var i=0, key, n=keys.length; i < n; ++i) {
+                                        key=keys[i];
+                                        dict2[key] = dict[key];
+                                    }
+                                    return dict2;
+                                  }
+                                  for (var key1 in rt_dic) {
+                                     for (var key2 in ps_dic) {
+                                        if (key1 == key2) {
+                                           if (rt_dic[key1].runt in dic_rt) {
+                                              dic_rt[rt_dic[key1].runt].push([ps_dic[key2].pr,rt_dic[key1].model]);
+                                           }
+                                           else {
+                                              dic_rt[rt_dic[key1].runt] = [[ps_dic[key2].pr,rt_dic[key1].model]];                          
+                                           }
+                                        }
+                                      }
+                                  }
+                                  var rtDic = sortDict(dic_rt);
+                                  for (var key in rtDic) {
+                                      var regEx = new RegExp("\\_", "gi");
+                                      var keys = key.replace(regEx,"/");
+                                      var sec  = Date.parse(keys)+24*60*60*1000;
+                                      for (var key1 in rtDic[key]) {
+                                        if(rtDic[key][key1][1] in dic_proj){
+                                          dic_proj[rtDic[key][key1][1]].push([sec,rtDic[key][key1][0]]);   
+                                        }
+                                        else {
+                                          dic_proj[rtDic[key][key1][1]]=[[sec,rtDic[key][key1][0]]];
+                                        }
+                                      }
+                                  }
+                                  for (var key in dic_proj) {
+                                      fig_list.push({'name':key, 'data': dic_proj[key]});
+                                  }
+
+                                  Highcharts.chart('ccontainer', {
+                                      chart: {
+                                          type: 'line'
+                                      },
+                                      title: {
+                                          text: 'Project Passing Rate along with Running time'
+                                      },
+                                      subtitle: {
+                                          text: null
+                                      },
+                                      xAxis: {
+                                          type :'datetime',
+                                          dateTimeLabelFormats: { // don't display the dummy year
+                                              month: '%e. %b. %y',
+                                              year: '%b'
+                                          },
+                                          title: {
+                                              text: 'Running Time'
+                                          },
+                                      },
+                                      yAxis: {
+                                          title: {
+                                              text: 'Passing Rate (%)'
+                                          }
+                                      },
+                                      credits: {
+                                          enabled:false
+                                      },
+                                      exporting:{
+                                        enabled:false
+                                      },
+                                      tooltip: {
+                                            headerFormat: '<b>'+'Proj: '+'{series.name}'+'</b><br>',
+                                            pointFormat: 'Rt: '+'{point.x:%e. %B. %Y}'+'<br>'+'Pr: '+'{point.y:.2f} %'
+                                      },
+
+                                      plotOptions: {
+                                          line: {
+                                              dataLabels: {
+                                                  enabled: true
+                                              },
+                                              enableMouseTracking: true
+                                          }
+                                      },
+                                      series: fig_list
+                                  });
+                              }
+                            },
+                            {
+                              text:"Show Pie",
+                              action: function(e, dt, node, config) {
+                                  $('#line_ct').css("display","none");
+                                  $('#pcontainer').css("display","block");
+                                  var dic_proj = new Object();
+                                  var proj_dic = new Object();
+                                  for (var key1 in rt_dic) {
+                                     for (var key2 in ps_dic) {
+                                        if (key1 == key2) {
+                                           if (rt_dic[key1].runt in dic_proj) {
+                                              dic_proj[rt_dic[key1].runt].push([ps_dic[key2].pn,ps_dic[key2].tn,rt_dic[key1].model]);
+                                           }
+                                           else {
+                                              dic_proj[rt_dic[key1].runt] = [[ps_dic[key2].pn,ps_dic[key2].tn,rt_dic[key1].model]];
+                                           }
+                                        }
+                                      }
+                                  }
+                                  
+                                  for (var key in dic_proj) {
+                                    for (var key1 in dic_proj[key]) {
+                                      if (dic_proj[key][key1][2] in proj_dic) { 
+                                        proj_dic[dic_proj[key][key1][2]].push([dic_proj[key][key1][0], dic_proj[key][key1][1]]);
+                                      }
+                                      else {
+                                        proj_dic[dic_proj[key][key1][2]] = [[dic_proj[key][key1][0], dic_proj[key][key1][1]]];
+                                      }
+                                    }
+                                  }
+                                  for (var key in proj_dic) {
+                                    var pn = 0;
+                                    var tn = 0;
+                                    for(var i=0; i < proj_dic[key].length; i++) {
+                                      for (var j=0; j< proj_dic[key][i].length; j++) {
+                                          if (j == 0) {
+                                            pn += proj_dic[key][i][j];
+                                          }
+                                          else if (j == 1) {
+                                            tn += proj_dic[key][i][j]; 
+                                          }
+                                      }
+                                    }
+                                    proj_dic[key] = [pn, tn];
+                                  }
+
+                                  var sum_tn = 0;
+                                  var sum_pn = 0;
+                                  for (var key in proj_dic) {
+                                       sum_pn +=proj_dic[key][0];
+                                       sum_tn +=proj_dic[key][1];
+                                  }
+                                  //pn and tn 
+                                  for (var key in proj_dic) {
+                                       proj_dic[key][0] =parseFloat((proj_dic[key][0]/sum_pn).toFixed(4)) * 100;
+                                       proj_dic[key][1] =parseFloat((proj_dic[key][1]/sum_tn).toFixed(4)) * 100;
+                                  }
+                                  var pn_data = [];
+                                  var tn_data = [];
+                                  for (var key in proj_dic) {
+                                    pn_data.push({name: key, y:proj_dic[key][0]});
+                                    tn_data.push({name: key, y:proj_dic[key][1]});                    
+                                  }
+                                  Highcharts.chart('lpcontainer', {
+                                      chart: {
+                                          type: 'pie'
+                                      },
+                                      title: {
+                                          text: 'The proportion of project cases of all cases '
+                                      },
+                                      subtitle: {
+                                          text: null
+                                      },
+                                      credits: {
+                                          enabled:false
+                                      },
+                                      exporting:{
+                                        enabled:false
+                                      },
+                                      plotOptions: {
+                                          series: {
+                                              dataLabels: {
+                                                  enabled: true,
+                                                  format: '{point.name}: {point.y:.2f}%'
+                                              }
+                                          }
+                                      },
+
+                                      tooltip: {
+                                          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                          pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                                      },
+                                      series: [{
+                                        name: 'All Project Cases',
+                                        colorByPoint: true,
+                                        data: pn_data
+                                    }]
+                                  });
+                                  Highcharts.chart('rpcontainer', {
+                                      chart: {
+                                          type: 'pie'
+                                      },
+                                      title: {
+                                          text: 'The proportion of project passing cases of all passing cases '
+                                      },
+                                      subtitle: {
+                                          text: null
+                                      },
+                                      credits: {
+                                          enabled:false
+                                      },
+                                      exporting:{
+                                        enabled:false
+                                      },
+                                      plotOptions: {
+                                          series: {
+                                              dataLabels: {
+                                                  enabled: true,
+                                                  format: '{point.name}: {point.y:.2f}%'
+                                              }
+                                          }
+                                      },
+
+                                      tooltip: {
+                                          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                          pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                                      },
+                                      series: [{
+                                        name: 'All Module passing Cases',
+                                        colorByPoint: true,
+                                        data: tn_data
+                                    }]
+                                  });
+                              }
+                            },
+                            {
+                              extend: 'excelHtml5',
+                              title: "ProjectExcel--day",
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            },
+                            {
+                              extend: 'csvHtml5',
+                              title: "ProjectCsv--day",
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            },
+                            {
+                              text:"Close",
+                              action: function(e, dt, node, config) {
+                                  $('#line_ct').hide();
+                                  $('#pcontainer').hide();
+                              }
+                            }
+                        ],     
+                        "lengthChange": true,
+                        "lengthMenu": [
+                            [5, 50, 100, -1],
+                            [5, 50, 100, "All"]
+                         ],//每页显示条数设置
+                        "deferRender": true,
+                        "destroy": true,
+                        "bPaginate": true, //翻页功能
+                        "searching": true,
+                        "order":[[5,'desc']],
+                        "scrollY": false,//dt高度
+                        "data": dataSet1,
+                        "columns": [
+                            { "data": "day.model_lst.0" },
+                            { "data": "day.model_lst.1" },
+                            { "data": "day.model_lst.2" },
+                            { "data": "day.model_lst.3" },
+                            { "data": "day.items",
+                              "render": function (data, type, full, meta) {
+                                return data.pr + '%'+ "("+ data.pn + '/'+ data.tn +")"
+                              },
+                              "createdCell": function (tr, cellData, rowData, row, col) {
+                                $(tr).css('background', cellData.bc);
+                              }
+                            },
+                            { "data": "day.time",
+                               "render": function (data, type, full, meta) {
+                                return data.runt ;
+                              }
+                            }
+                        ],
+                        "initComplete": function (settings, json) {//列筛选
+                           var api = this.api();
+                           window.rt_dic = {};
+                           window.ps_dic = {};
+                           api.columns().indexes().flatten().each(function (i) {
+                              if (i == 4) {
+                                   var column = api.column(i);
+                                   column.data().sort().each(function (d, j) {
+                                      ps_dic[j] = d;
+                                   });
+                               } 
+                              else if(i == 5) {
+                                   var column = api.column(i);
+                                   column.data().unique().sort().each(function (d, j) {
+                                      rt_dic[j] = d;
+                                   });
+                               }   
+                          });
+
+                          api.columns().indexes().flatten().each(function (i) {
+                               if (i !=4 && i!=5 ) {
+                                   var column = api.column(i);
+                                   var $span = $('<span class="addselect" style="font-size:11px;">▾</span>').appendTo($(column.header()))
+                                   var select = $('<select><option value="">All</option></select>')
+                                           .appendTo($(column.header()))
+                                           .on('click', function (evt) {
+                                               evt.stopPropagation();
+                                               var val = $.fn.dataTable.util.escapeRegex(
+                                                       $(this).val()
+                                               );
+                                               column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                           });
+                                   column.data().unique().sort().each(function (d, j) {
+                                       function delHtmlTag(str) {
+                                           return str.replace(/<[^>]+>/g, "");//去掉html标签
+                                       }
+         
+                                       d = delHtmlTag(d);
+                                       select.append('<option value="' + d + '">' + d + '</option>');
+                                       $span.append(select);
+                                   });
+                               }
+                           });
+                        },
+                    });
+                    $('#tab2').DataTable({  
+                        "dom": '<"top" B>lfrtip<"clear">',
+                        "buttons": [
+                            {
+                              extend: 'csvHtml5',
+                              title: "ProjectCsv--sec",
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            },
+                            {
+                              extend: 'excelHtml5',
+                              title: "ProjectExcel--sec" ,
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            }
+                        ],
+                        "deferRender": true,
+                        "destroy": true,
+                        "lengthChange": false,
+                          "bPaginate": true, //翻页功能
+                          "searching": true,
+                          "lengthChange": true,
+                          "lengthMenu": [
+                              [10, 50, 100, -1],
+                              [10, 50, 100, "All"]
+                           ],//每页显示条数设置
+                          "order":[[5,"desc"]],
+                          "scrollY": false,//dt高度
+                          "data": dataSet2,     
+                          "columns": [
+                          { "data": "sec.model_lst.0" },
+                          { "data": "sec.model_lst.1" },
+                          { "data": "sec.model_lst.2" },
+                          { "data": "sec.model_lst.3" },
+                          { "data": "sec.items",
+                            "render": function (data, type, full, meta) {
+                              return data.pr + '%'+ "("+ data.pn + '/'+ data.tn +")" ;
+                            },
+                           "createdCell": function (tr, cellData, rowData, row, col) {
+                              $(tr).css('background', cellData.bc);
+                            } 
+                          },
+                          { "data": "sec.time",
+                            "render": function (data, type, full, meta) {            
+                              return data.runt;
+                            } 
+                          }],
+                          "initComplete": function () {//列筛选
+                            var api = this.api();
+                            api.columns().indexes().flatten().each(function (i) {
+                                 if (i != 4 && i !=5) {
+                                     var column = api.column(i);
+                                     var $span = $('<span class="addselect" style="font-size:11px;">▾</span>').appendTo($(column.header()))
+                                     var select = $('<select><option value="">All</option></select>')
+                                             .appendTo($(column.header()))
+                                             .on('click', function (evt) {
+                                                 evt.stopPropagation();
+                                                 var val = $.fn.dataTable.util.escapeRegex(
+                                                         $(this).val()
+                                                 );
+                                                 column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                             });
+                                     column.data().unique().sort().each(function (d, j) {
+                                         function delHtmlTag(str) {
+                                             return str.replace(/<[^>]+>/g, "");//去掉html标签
+                                         }
+           
+                                         d = delHtmlTag(d)
+                                         select.append('<option value="' + d + '">' + d + '</option>')
+                                         $span.append(select)
+                                     });
+                                 }
+                             });
+                          },
+                      });
+                    $("body").hideLoading();
+                }
+            });
+        }
+        else {
+          if (!module) {
+            $("body").showLoading();
+            $.ajax({
+                url:"{% url 'pj_app:regr_get_model' %}",
+                data: {'model':'module','user':user, 'proj':proj, 'module':'None', 'tstart':tstart, 'tend':tend},
+                success: function(data){
+                    $('#show_all').empty();
+                    $('#show_all').append('<div id="show_tab1" style="margin-top:20px;"><table id="tab1" class="display"><thead><tr><th>Module</th><th>Module Design Owner</th><th>Module Verif Owner</th><th>Passing Rate</th><th>Run time</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div><div id ="line_ct" style="display:none;margin:16px 0px;"><div id="ccontainer" style="min-width: 310px; height: 400px; margin: 0 auto;"></div></div><div id= "pcontainer" style="display: none;margin:16px 40px; height:410px;"><div id="left_ct" style="width:600px;float:left;" ><div id="lpcontainer" style="min-width: 310px; max-width: 600px; height: 400px; margin:0px;"></div></div><div id="right_ct" style="width:600px;float:left;"><div id="rpcontainer" style="min-width: 310px; max-width: 600px; height: 400px; margin:0px;"></div></div></div><div id="show_tab2" style="margin-top:20px;"><table id="tab2" class="display"><thead><tr><th style="width:75px;">Module</th><th>Module Design Owner</th><th>Module Verif Owner</th><th>Passing Rate</th><th>Run Time</th><th>End Time</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div>');
+                    var dataSet1 = new Array();
+                    var dataSet2 = new Array();
+                    for(var i in data) {
+                        for(var time in data[i]) {
+                            if(time == 'day') {
+                              dataSet1.push(data[i]);
+                            }
+                            if(time == 'sec') {
+                              dataSet2.push(data[i]);
+                            }
+                        }
+                    }
+                    $('#tab1').DataTable( {
+                        "dom":'<"top" B>lfrtip<"clear">',     
+                        "buttons": [
+                            {
+                              text:"Show line",
+                              action: function(e, dt, node, config) {
+                                  $('#pcontainer').css("display","none");
+                                  $('#line_ct').css("display","block");
+                                  var dic_rt   = new Object();
+                                  var dic_proj = new Object();
+                                  var passrt   = new Array();
+                                  var fig_list = new Array();
+                                  function sortDict(dict) {
+                                    var dict2 = {}, keys = Object.keys(dict).sort();
+                                    for (var i=0, key, n=keys.length; i < n; ++i) {
+                                        key=keys[i];
+                                        dict2[key] = dict[key];
+                                    }
+                                    return dict2;
+                                  }
+                                  for (var key1 in rt_dic) {
+                                     for (var key2 in ps_dic) {
+                                        if (key1 == key2) {
+                                           if (rt_dic[key1].runt in dic_rt) {
+                                              dic_rt[rt_dic[key1].runt].push([ps_dic[key2].pr,rt_dic[key1].model]);
+                                           }
+                                           else {
+                                              dic_rt[rt_dic[key1].runt] = [[ps_dic[key2].pr,rt_dic[key1].model]];                          
+                                           }
+                                        }
+                                      }
+                                  }
+                                  var rtDic = sortDict(dic_rt);
+                                  for (var key in rtDic ) {
+                                      var regEx = new RegExp("\\_", "gi");
+                                      var keys = key.replace(regEx,"/");
+                                      var sec  = Date.parse(keys)+24*60*60*1000;
+                                      for (var key1 in rtDic[key]) {
+                                        if(rtDic[key][key1][1] in dic_proj){
+                                          dic_proj[rtDic[key][key1][1]].push([sec,rtDic[key][key1][0]]);   
+                                        }
+                                        else {
+                                          dic_proj[rtDic[key][key1][1]]=[[sec,rtDic[key][key1][0]]];
+                                        }
+                                      }
+                                  }
+                                  for (var key in dic_proj) {
+                                      fig_list.push({'name':key, 'data': dic_proj[key]})
+                                  }
+
+                                  Highcharts.chart('ccontainer', {
+                                      chart: {
+                                          type: 'line'
+                                      },
+                                      title: {
+                                          text: 'Project Passing Rate along with Running time'
+                                      },
+                                      subtitle: {
+                                          text: null
+                                      },
+                                      credits: {
+                                          enabled:false
+                                      },
+                                      exporting:{
+                                        enabled:false
+                                      },
+                                      xAxis: {
+                                          type :'datetime',
+                                          dateTimeLabelFormats: { // don't display the dummy year
+                                              month: '%e. %b. %y',
+                                              year: '%b'
+                                          },
+                                          title: {
+                                              text: 'Running Time'
+                                          },
+                                      },
+                                      yAxis: {
+                                          title: {
+                                              text: 'Passing Rate (%)'
+                                          }
+                                      },
+                                      tooltip: {
+                                            headerFormat: '<b>'+'Proj: '+'{series.name}'+'</b><br>',
+                                            pointFormat: 'Rt: '+'{point.x:%e. %B. %Y}'+'<br>'+'Pr: '+'{point.y:.2f} %'
+                                      },
+
+                                      plotOptions: {
+                                          line: {
+                                              dataLabels: {
+                                                  enabled: true
+                                              },
+                                              enableMouseTracking: true
+                                          }
+                                      },
+                                      series: fig_list
+                                  });
+                              }
+                            },
+                            {
+                              text:"Show Pie",
+                              action: function(e, dt, node, config) {
+                                  $('#line_ct').css("display","none");
+                                  $('#pcontainer').css("display","block");
+                                  var dic_model = new Object();
+                                  var model_dic = new Object();
+                                  for (var key1 in rt_dic) {
+                                     for (var key2 in ps_dic) {
+                                        if (key1 == key2) {
+                                           if (rt_dic[key1].runt in dic_model) {
+                                              dic_model[rt_dic[key1].runt].push([ps_dic[key2].pn,ps_dic[key2].tn,rt_dic[key1].model]);
+                                           }
+                                           else {
+                                              dic_model[rt_dic[key1].runt] = [[ps_dic[key2].pn,ps_dic[key2].tn,rt_dic[key1].model]];
+                                           }
+                                        }
+                                      }
+                                  }
+                                  for (var key in dic_model) {
+                                    for (var key1 in dic_model[key]) {
+                                      if (dic_model[key][key1][2] in model_dic) { 
+                                        model_dic[dic_model[key][key1][2]].push([dic_model[key][key1][0], dic_model[key][key1][1]]);
+                                      }
+                                      else {
+                                        model_dic[dic_model[key][key1][2]] = [[dic_model[key][key1][0], dic_model[key][key1][1]]];
+                                      }
+                                    }
+                                  }
+                                  for (var key in model_dic) {
+                                    var pn = 0;
+                                    var tn = 0;
+                                    for(var i=0; i < model_dic[key].length; i++) {
+                                      for (var j=0; j< model_dic[key][i].length; j++) {
+                                          if (j == 0) {
+                                            pn += model_dic[key][i][j];
+                                          }
+                                          else if (j == 1) {
+                                            tn += model_dic[key][i][j]; 
+                                          }
+                                      }
+                                    }
+                                    model_dic[key] = [pn, tn];
+                                  }
+                                  var sum_tn = 0;
+                                  var sum_pn = 0;
+                                  for (var key in model_dic) {
+                                       sum_pn +=model_dic[key][0];
+                                       sum_tn +=model_dic[key][1];
+                                  }
+                                  //pn and tn 
+                                  for (var key in model_dic) {
+                                       model_dic[key][0] =parseFloat((model_dic[key][0]/sum_pn).toFixed(4)) * 100;
+                                       model_dic[key][1] =parseFloat((model_dic[key][1]/sum_tn).toFixed(4)) * 100;
+                                  }
+                                  var pn_data = [];
+                                  var tn_data = [];
+                                  for (var key in model_dic) {
+                                    pn_data.push({name: key, y:model_dic[key][0]});
+                                    tn_data.push({name: key, y:model_dic[key][1]});                    
+                                  }
+                                  Highcharts.chart('lpcontainer', {
+                                      chart: {
+                                          type: 'pie'
+                                      },
+                                      title: {
+                                          text: 'The proportion of module cases of all cases'
+                                      },
+                                      subtitle: {
+                                          text: null
+                                      },
+                                      credits: {
+                                          enabled:false
+                                      },
+                                      exporting:{
+                                        enabled:false
+                                      },
+                                      plotOptions: {
+                                          series: {
+                                              dataLabels: {
+                                                  enabled: true,
+                                                  format: '{point.name}: {point.y:.2f}%'
+                                              }
+                                          }
+                                      },
+
+                                      tooltip: {
+                                          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                          pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                                      },
+                                      series: [{
+                                        name: 'All Module Cases',
+                                        colorByPoint: true,
+                                        data: tn_data
+                                    }]
+                                  });
+                                  Highcharts.chart('rpcontainer', {
+                                      chart: {
+                                          type: 'pie'
+                                      },
+                                      title: {
+                                          text: 'The proportion of module passing cases of all passing cases'
+                                      },
+                                      subtitle: {
+                                          text: null
+                                      },
+                                      credits: {
+                                          enabled:false
+                                      },
+                                      exporting:{
+                                        enabled:false
+                                      },
+                                      plotOptions: {
+                                          series: {
+                                              dataLabels: {
+                                                  enabled: true,
+                                                  format: '{point.name}: {point.y:.2f}%'
+                                              }
+                                          }
+                                      },
+
+                                      tooltip: {
+                                          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                          pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                                      },
+                                      series: [{
+                                        name: 'All Module passing Cases',
+                                        colorByPoint: true,
+                                        data: pn_data
+                                    }]
+                                  });
+                              }
+                            },
+                            {
+                              extend: 'csvHtml5',
+                              title: 'ModuleCsv--day',
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            },
+                            {
+                              extend: 'excelHtml5',
+                              title: 'ModuleExcel--day',
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            },
+                            {
+                              text:"Close",
+                              action: function(e, dt, node, config) {
+                                  $('#line_ct').hide();
+                                  $('#pcontainer').hide();
+                              }
+                            }
+                        ],      
+                        "deferRender": true,
+                        "destroy": true,
+                        "lengthChange": true,
+                        "lengthMenu": [
+                          [5, 50, 100, -1],
+                          [5, 50, 100, "All"]
+                         ],//每页显示条数设置
+                        "bPaginate": true, //翻页功能
+                        "searching": true,
+                        "order":[[4,'desc']],
+                        "scrollY": false,//dt高度
+                        "data": dataSet1,  
+                        "columns": [
+                        { "data": "day.model_lst.0" },
+                        { "data": "day.model_lst.1" },
+                        { "data": "day.model_lst.2" },
+                        { "data": "day.items",
+                          "render": function (data, type, full, meta) {
+                              return data.pr + '%'+ "("+ data.pn + '/'+ data.tn +")";
+                           },
+                          "createdCell": function (tr, cellData, rowData, row, col) {
+                              $(tr).css('background', cellData.bc);
+                           }
+                        },
+                        { "data": "day.time",
+                          "render": function (data, type, full, meta) {            
+                              return data.runt;
+                           }
+                        }
+                        ],
+                        initComplete: function () {//列筛选
+                             var api = this.api();
+                             window.rt_dic = {};
+                             window.ps_dic = {};
+                             api.columns().indexes().flatten().each(function (i) {
+                                if (i == 3) {
+                                     var column = api.column(i);
+                                     column.data().sort().each(function (d, j) {
+                                        ps_dic[j] = d;
+                                     });
+                                 } 
+                                 else if(i == 4) {
+                                     var column = api.column(i);
+                                     column.data().sort().each(function (d, j) {
+                                        rt_dic[j] = d;
+                                     });
+                                 }   
+                             });
+                            api.columns().indexes().flatten().each(function (i) {
+                               if (i !=3 && i !=4 ) {
+                                   var column = api.column(i);
+                                   var $span = $('<span class="addselect" style="font-size:11px;">▾</span>').appendTo($(column.header()))
+                                   var select = $('<select><option value="">All</option></select>')
+                                           .appendTo($(column.header()))
+                                           .on('click', function (evt) {
+                                               evt.stopPropagation();
+                                               var val = $.fn.dataTable.util.escapeRegex(
+                                                       $(this).val()
+                                               );
+                                               column.search(val ? '^' + val + '$' : '', true, false).draw();                   
+                                           });
+                                   column.data().unique().sort().each(function (d, j) {
+                                       function delHtmlTag(str) {
+                                           return str.replace(/<[^>]+>/g, "");//去掉html标签
+                                       }
+
+                                       d = delHtmlTag(d)
+                                       select.append('<option value="' + d + '">' + d + '</option>')
+                                       $span.append(select)
+                                   });
+                               }
+                           });
+                         },
+                    });
+                    $('#tab2').DataTable( {      
+                        "dom": '<"top" B>lfrtip<"clear">',
+                        "buttons": [
+                            {
+                              extend: 'csvHtml5',
+                              title: 'ModuleCsv--sec',
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            },
+                            {
+                              extend: 'excelHtml5',
+                              title: 'ModuleExcel--sec',
+                              exportOptions: {
+                                  format: {
+                                    header: function(data, columnIdx) {
+                                      return data.split("▾")[0].split("<")[0];;
+                                    }
+                                  }
+                              }
+                            }
+                        ],
+                        "deferRender": true,
+                        "destroy": true,
+                        "lengthChange": false,
+                        "bPaginate": true, //翻页功能
+                        "searching": true,
+                        "lengthChange": true,
+                        "lengthMenu": [
+                          [10, 50, 100, -1],
+                          [10, 50, 100, "All"]
+                         ],//每页显示条数设置
+                        "order":[[5,"desc"]],
+                        "scrollY": false,//dt高度
+                        "data": dataSet2,  
+                        "columns": [
+                        { "data": "sec.model_lst.0" },
+                        { "data": "sec.model_lst.1" },
+                        { "data": "sec.model_lst.2" },
+                        { "data": "sec.items",
+                        "render": function (data, type, full, meta) {
+                             return data.pr + '%'+ "("+ data.pn + '/'+ data.tn +")";
+                            },
+                        "createdCell": function (tr, cellData, rowData, row, col) {
+                              $(tr).css('background', cellData.bc);
+                            }
+                        },
+                        { "data": "sec.time.runt" },
+                        { "data": "sec.items.rund" }
+                        ],
+                        initComplete: function () {//列筛选
+                          var api = this.api();
+                          api.columns().indexes().flatten().each(function (i) {
+                             if (i !=3 && i !=4 && i !=5 && i !=6 && i !=7) {
+                                 var column = api.column(i);
+                                 var $span = $('<span class="addselect" style="font-size:11px;">▾</span>').appendTo($(column.header()))
+                                 var select = $('<select><option value="">All</option></select>')
+                                         .appendTo($(column.header()))
+                                         .on('click', function (evt) {
+                                             evt.stopPropagation();
+                                             var val = $.fn.dataTable.util.escapeRegex(
+                                                     $(this).val()
+                                             );
+                                             column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                         });
+                                 column.data().unique().sort().each(function (d, j) {
+                                     function delHtmlTag(str) {
+                                         return str.replace(/<[^>]+>/g, "");//去掉html标签
+                                     }
+
+                                     d = delHtmlTag(d)
+                                     select.append('<option value="' + d + '">' + d + '</option>')
+                                     $span.append(select)
+                                 });
+                             }
+                         });
+                        },
+                    });
+                    $("body").hideLoading();
+                    $(".csearch").click(function(){
+                          
+                    }); 
+                    $(".psearch").click(function(){
+                       
+                    }); 
+                    $(".close").click(function(){
+                    });
+                } 
+            });
+          }
+          else {
+              $("body").showLoading();
+              $.ajax({
+                  url:"{% url 'pj_app:regr_get_model'  %}",
+                  data: {'model':'case', 'user':user, 'proj':proj, 'module':module, 'tstart':tstart, 'tend':tend} ,
+                  success: function(data) {
+                    $('#show_all').empty();
+                    $('#show_all').append('<div id="show_tab2" style="margin-top:20px;"><table id="tab2" class="display"><thead><tr><th></th><th>Case Name</th><th>Reger type</th><th>Case Simv</th><th>SVN CL</th><th>Seed</th><th>Status</th><th>Error Stage</th><th>CPU Time</th><th>Run Time</th><th>End time</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div>');
+                    var dataSet = data;
+                    var table = $('#tab2').DataTable({
+                        "dom": '<"top" B>lfrtip<"clear">',
+                        "buttons": [
+                            {
+                              extend: 'csvHtml5',
+                              title: 'CaseCsv'
+                            },
+                            {
+                              extend: 'excelHtml5',
+                              title: 'CaseExcel',
+                            }
+                        ],
+                        "deferRender": true,
+                        "destroy": true,
+                        "lengthMenu": [
+                            [15, 50, 100, -1],
+                            [15, 50, 100, "All"]
+                         ],//每页显示条数设置
+                        "lengthChange": true,
+                        "bPaginate": true, //翻页功能
+                        "searching": true,
+                        "order":[[9,"desc"]],
+                        "scrollY": false,//dt高度
+                        "data": dataSet,   
+                        "columns": [
+                            { "data":null,
+                              "className": 'details-control',
+                              "orderable": false,
+                              "defaultContent":''},
+                            { "data": "sec.case.casename" },
+                            { "data": "sec.case.regr_type" },
+                            { "data": "sec.case.vn" },
+                            { "data": "sec.case.proj_cl" },
+                            { "data": "sec.case.seed" },
+                            { "data": "sec.case",
+                                "render": function (data, type, full, meta) {
+                                    return data.status
+                                },
+                                "createdCell": function (tr, cellData, rowData, row, col) {
+                                    $(tr).css('background', cellData.bc);
+                                },  
+                            },
+                            { "data": "sec.case.error_stage" },
+                            { "data": "sec.case.simu_cpu_time" },
+                            { "data": "sec.time.runt"},
+                            { "data": "sec.time.rund"},
+                        ]
+                    });
+                    $("body").hideLoading();
+                    $('#tab2 tbody').on('click', 'td.details-control', function() {
+                        var tr = $(this).closest('tr');
+                        var row = table.row(tr);
+                        if (row.data().sec.case.error_info == "None") {
+                            row.child.hide();
+                        } else {
+                            if(row.child.isShown()) {
+                                row.child.hide();
+                                tr.removeClass('shown');
+                            } else {
+                                row.child(format(row.data()) ).show();
+                                tr.addClass('shown');
+                            }                                        
+                        }
+                    });
+                  }              
+              });
+            }
+          }
+        }
+      }  
+    });
+});
+</script>
+{% endblock %}

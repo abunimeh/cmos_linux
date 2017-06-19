@@ -1,0 +1,376 @@
+{% extends "pj_app/pj_app_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+    Dc Info
+{% endblock %}
+
+{% block extra %}
+    <div id="dialog">
+        <div id="container" style="min-width: 768px; height: 500px; margin: 0 auto; position: relative;"> </div>
+    </div>
+{% endblock %}
+
+{% block flowjs %}
+<script type="text/javascript">
+//string format
+String.prototype.format = function(){
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g, function(s,i) {
+        return args[i];
+    });
+}
+//standing innitial
+String.prototype.firstUpperCase = function() {
+    return this.toString()[0].toUpperCase() + this.toString().slice(1);
+} 
+//row extra table
+function format (row_dt) {
+    var warn_str = "";
+    var error_str = "";
+    if ( row_dt.ew_info.warn) {
+        for(var warn_type in row_dt.ew_info.warn) {
+            if (warn_type != 'ew_num') {
+                warn_str += warn_type +'(' + row_dt.ew_info.warn[warn_type] +')' + '| ';
+            }
+        }
+    } else {
+        warn_str = "no warn type"
+    }
+    if (row_dt.ew_info.error) {
+        for(var error_type in row_dt.ew_info.error) {
+            if (error_type != 'ew_num') {
+                error_str += error_type +'(' + row_dt.ew_info.error[error_type] +')' + '| ';                
+            }
+        }
+    } else {
+        error_str = 'no error type'
+    } 
+    return '<table cellpadding="5" cellspacing="0" border="0" >' +
+                '<tr>'  +
+                    '<td>' + '<button id="error" style="border:0.2px solid rgba(0, 21, 255, 0.08);">Error type:</button>' + '</td>'+
+                    '<td>' + error_str + '</td>'+
+                '</tr>' +
+                '<tr>'  +
+                    '<td>' + '<button id="warn" style="border:0.2px solid rgba(0, 21, 255, 0.08);">Warn type:</button>' + '</td>'+
+                    '<td>' + warn_str + '</td>'+
+                '</tr>' +
+          '</table>';          
+}
+
+function gen_column(data, ew_title){
+    var ew_data = [];
+    if (ew_title == "Error infomations") {
+      for(var error_type in data.ew_info.error) {
+        if (error_type != 'ew_num') {
+            ew_data.push([error_type, parseInt(data.ew_info.error[error_type])]);
+        }
+      }
+    } else if (ew_title == "Warn infomations") {
+      for(var warn_type in data.ew_info.warn) {
+        if (warn_type != 'ew_num') {        
+            ew_data.push([warn_type, parseInt(data.ew_info.warn[warn_type])]);
+        }
+      }
+    }
+    Highcharts.chart('container', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: ew_title + ' of '+ data.module + ' module at ' + data.run_time
+        },
+        xAxis: {
+            type: 'category',
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Numbers'
+            }
+        },
+        credits: {
+            enabled:false
+        },
+        exporting:{
+            enabled:false
+        },
+
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: 'Numbers: <b>{point.y}</b>'
+        },
+        series: [{
+            name: ew_title,
+            data: ew_data,
+            dataLabels: {
+                enabled: true,
+                rotation: -90,
+                color: '#FFFFFF',
+                align: 'right',
+                format: '{point.y}', // one decimal
+                y: 10, // 10 pixels down from the top
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        }]
+    });    
+}
+
+function gen_tab(udata) {
+    $("body").showLoading();
+    $.ajax({
+        url: "{% url 'pj_app:dc_get_loginfo' %}",
+        data: udata,
+        success: function(data){
+            $('#show_all').empty();
+            var tab_str = '<button id="time_btn">Timing Rpt Analysis</button><div id="show_tab1" style="margin-top:13px;"><table id="tab1" class="display"><thead><tr><th></th><th>Job</th><th>Status</th><th>Cpu Time</th><th>Error/Warning Sum</th><th>Log Path</th><th>Run Time</th><th></th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table></div>'
+            if (udata.module) {
+                var qor_str = '<button id="qor_btn">Qor Rpt Analysis</button>';
+                tab_str = qor_str + tab_str; 
+            }
+            $('#show_all').append(tab_str);
+            var tab_attrs = {
+                "deferRender": true,
+                "destroy": true,
+                "lengthChange": true,
+                "lengthMenu": [
+                  [5, 50, 100, -1],
+                  [5, 50, 100, "All"]],
+                "bPaginate": true,
+                "searching": true,
+                "order":[[6,'desc']],
+                "scrollY": false,
+                "data": data,
+                "columns": [
+                    { "data":null,
+                      "className": 'details-control',
+                      "orderable": false,
+                      "defaultContent":''},
+                    { "data": "module", 
+                        "render": function (data, type, full, meta) {
+                            if(!data || data =="NA") {
+                                data = "NA";
+                            } 
+                            return data;
+                        }
+                    },
+                    { "data": "status",
+                        "createdCell": function (tr, cellData, rowData, row, col) {
+                            var bk_color;
+                            if (cellData == 'fail') {
+                                bk_color = 'red';
+                            } else if (cellData == 'pass') {
+                                bk_color = "green";
+                            } else if (cellData == 'running') {
+                                bk_color = "yellow";
+                            }                                                 
+                            $(tr).css('background', bk_color);
+                        },
+                        "render": function (data, type, full, meta) {
+                            if(!data || data =="NA") {
+                                data = "NA";
+                            } 
+                            return data;
+                        }                        
+                    },
+                    { "data": "cpu_time",
+                        "render": function (data, type, full, meta) {
+                            if(!data || data =="NA") {
+                                data = "NA";
+                            } 
+                            return data;
+                        }
+                    },
+                    { "data": "ew_info" ,
+                        "render": function (data, type, full, meta) {
+                            var warn_num = 0;
+                            var error_num = 0;
+                            if ( data.warn) {
+                                warn_num = data.warn.ew_num;
+                            }
+                            if (data.error) {
+                                error_num = data.error.ew_num; 
+                            }
+                            return "Error:" + error_num +"   " + "Warn:" + warn_num;
+                        },
+                    },
+                    { "data": "log_path",
+                      "className":"pfile",
+                      "render": function (data, type, full, meta) {
+                           if (data && data !='NA') {
+                               data = '<a href="'+ "local_log_"+ data +'" target="_blank">' + data + '</a>';
+                           } else {
+                               data = "NA";
+                           }
+                           return data;
+                      }             
+                    },
+                    { "data": "run_time",
+                        "render": function (data, type, full, meta) {
+                            if (data == 'NA' || !data) {
+                                data = 'NA';
+                            }
+                            return data ;
+                        },                                      
+                    },
+                    { "data": "run_time",
+                        "render": function (data, type, full, meta) {
+                            if (data && data != "NA") {
+                                data = '<input type="checkbox" name="checkList" style="transform: scale(1.3);">';
+                            } else {
+                                data ="NA";
+                            }
+                            return data ;
+                        },              
+                    }
+                ],
+            } 
+            var table = $('#tab1').DataTable(tab_attrs);
+            $("body").hideLoading();
+            // each row extra table show errors and 
+            $('#tab1 tbody').on('click', 'td.details-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                if (!row.data().ew_info.warn && 
+                    !row.data().ew_info.error ) {
+                    row.child.hide();
+                } else {
+                    if(row.child.isShown()) {
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    } else {
+                        row.child( format(row.data()) ).show();
+                        tr.addClass('shown');
+                    }                                        
+                }
+                //show the error and warn nums column
+                if(row.data().ew_info.warn) {
+                    $("#warn").click(function(){
+                        gen_column(row.data(), "Warn infomations");                        
+                        $("#dialog").dialog("open");
+                        // event.preventDefault();
+                    });                                      
+                }
+                if(row.data().ew_info.error) {
+                    $("#error").click(function(event){
+                        gen_column(row.data(), "Error infomations");                        
+                        $("#dialog").dialog("open");
+                        // event.preventDefault();
+                    });                                      
+                } 
+            });
+            //
+            var tm_lst = [];
+            var md_lst = [];
+            $("#tab1 tbody").on('change',"td input[name='checkList']", function(){
+                var $box = $(this);
+                var tmodule = table.row($box.parent().parent()[0]).data()['module'];
+                var run_tm = table.row($box.parent().parent()[0]).data()['run_time'];
+                if (this.checked) {
+                    tm_lst.push(run_tm);
+                    md_lst.push(tmodule);
+                } else{
+                    var tindex = tm_lst.indexOf(run_tm); 
+                    var mindex = md_lst.indexOf(tmodule); 
+                    if (tindex > -1) {
+                        tm_lst.splice(tindex,1);
+                    }
+                    if (mindex > -1) {
+                        md_lst.splice(mindex,1);
+                    }
+                }
+            });
+
+            $("#qor_btn").click(function(){
+                var tm_len = tm_lst.length;
+                if(tm_len == 1) {
+                    var current_href = window.location.href;                                
+                    var new_url = current_href + udata.user + '/' + udata.proj + '/'+ udata.module 
+                    + '/' + tm_lst[0] + '/' + 'no_tm' + '/' +'qor_rpt'+ '/'; 
+                    window.open(new_url);
+                } else if(tm_len == 2){
+                    tm_lst = tm_lst.sort();
+                    var current_href = window.location.href;                                
+                    var new_url = current_href + udata.user + '/' + udata.proj + '/'+ udata.module 
+                    + '/' + tm_lst[0] + '/' + tm_lst[1] + '/' +'qor_rpt' +'/'; 
+                    window.open(new_url);
+                } else {
+                    alert("Please just choose not more than two Jobs to compare!");                    
+                }
+            }); 
+
+            $("#time_btn").click(function(){
+                var tm_len = tm_lst.length;
+                if(tm_len == 1){
+                    var current_href = window.location.href;                                
+                    var new_url = current_href + udata.user + '/' + udata.proj + '/'+ md_lst[0] 
+                    + '/' + tm_lst[0] + '/' + 'no_tm' + '/' +'tm_rpt' + '/'; 
+                    window.open(new_url); 
+                } else {
+                    alert("Please choose only one Job to analyze!");
+                }
+            });
+        }
+    });    
+}
+
+//
+$(function () {
+    $("#dialog").dialog({
+        autoOpen:false,
+        width:800,
+        height:580,
+    });    
+    $(".tsearch").click(function(){
+        var team = $("#team").val()
+        var user = $("#user").val();
+        var proj = $("#project").val();
+        var module = $("#module").val();
+        var tstart = $("#indate").val();
+        var   tend = $("#dateinfo").val();
+        if (!tstart) {
+            alert("Please Choose running start time!");
+        } 
+        else if (!tend) {
+            alert("Please Choose running end time!");        
+        } else {
+            if (!user) {
+            alert("Please Choose User!");
+            } else {
+                if(!proj) {
+                    alert("Please Choose proj!");
+                } else {
+                    var url_data = { 'team': team,
+                                     'user':user,
+                                     'proj':proj, 
+                                     'module':module, 
+                                     'tstart':tstart,
+                                     'tend':tend};
+                    if(!module) {
+                        url_data['model'] = 'all_mds';
+                    }else{
+                        url_data['model'] = 'sg_md';
+                    }
+                    gen_tab(url_data);
+                }                   
+            }
+        }
+    });
+    
+});
+$.cxSelect.defaults.url = "{% url 'pj_app:query_select' 'dc' %}";
+</script>
+{% endblock %}

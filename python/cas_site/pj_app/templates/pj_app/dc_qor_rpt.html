@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load pj_app_extras %}
+
+{% block title %}
+  Dc qor rpt
+{% endblock %}
+
+{% block content %}
+<div id="container_st" class="clearfix" style="width: 1300px; padding-bottom: 138px;">
+  <div class="content" style="height:auto; width: 1290px; margin: 0px auto;">
+    {% if rpt_data.ref_qor_null %}
+      <div class="qor_null">You choose dc flow-----{{rpt_data.ref_tm}} no 
+      qor and power report, please check it out!</div>
+    {% elif rpt_data.tar_qor_null %}
+      <div class="qor_null">You choose dc flow-----tar_tm: {{rpt_data.tar_tm}} no 
+      qor and power report, please check it out!</div>
+    {% else %}  
+      <div id="show_all">
+        <div class="ref-tar">
+            <span>Qor and Power Report Summary:</span>
+        </div>
+        <div id="show_sum">  
+          <table id="tab_sum" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+            <thead>
+              <tr>
+                <th>Type</th>              
+                <th>Time</th>              
+                <th>Qor Rpt Path</th>              
+                <th>Power Rpt Path</th>              
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ref</td>
+                {% if rpt_data.qor_pw_rpt.ref %}
+                  <td>{{rpt_data.qor_pw_rpt.ref.run_time}}</td>
+                  <td><a href="{%  url 'pj_app:dc_detail_loginfo' rpt_data.qor_pw_rpt.ref.qor_log %}" target="_blank">{{rpt_data.qor_pw_rpt.ref.qor_log}}</a></td>                  
+                  <td><a href="{%  url 'pj_app:dc_detail_loginfo' rpt_data.qor_pw_rpt.ref.pw_log %}" target="_blank">{{rpt_data.qor_pw_rpt.ref.pw_log}}</a></td>                  
+                {% else %}
+                  <td>NA</td>   
+                  <td>NA</td>   
+                  <td>NA</td>   
+                {% endif %}
+              </tr>
+              {% if tar_tm != "no_tm" %}
+                <tr>
+                  <td>Tar</td>
+                  {% if rpt_data.qor_pw_rpt.tar %}
+                    <td>{{rpt_data.qor_pw_rpt.tar.run_time}}</td>
+                    <td><a href="{%  url 'pj_app:dc_detail_loginfo' rpt_data.qor_pw_rpt.tar.qor_log %}" target="_blank">{{rpt_data.qor_pw_rpt.tar.qor_log}}</a></td>                  
+                    <td><a href="{%  url 'pj_app:dc_detail_loginfo' rpt_data.qor_pw_rpt.tar.pw_log %}" target="_blank">{{rpt_data.qor_pw_rpt.tar.pw_log}}</a></td>                  
+                  {% else %}
+                    <td>NA</td>   
+                    <td>NA</td>   
+                    <td>NA</td>   
+                  {% endif %}
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>  
+        </div>
+        <div class="ref-tar">
+            <span>Timing Path Group Summary:</span>
+        </div>             
+        <div id="show_tab1">  
+          <table id="tab1" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+            <thead>
+              {% if tar_tm == "no_tm" %}
+                <tr>
+                  <th>Timing Path Group<br/>(unit:nm)</th>              
+                  {% for tpg in rpt_data.tpg_items %}
+                    <th>{{tpg}}</th>
+                  {% endfor %}
+                </tr>
+              {% else %}
+                <tr>
+                  <th rowspan="2">Timing Path Group<br/>(unit:nm)</th>              
+                  {% for tpg in rpt_data.tpg_items %}
+                    <th colspan="2">{{tpg}}</th>
+                  {% endfor %}                  
+                </tr>
+                <tr>
+                  {% for tpg in rpt_data.tpg_items %}
+                    <th>ref</th>
+                    <th>tar</th>
+                  {% endfor %}                  
+                </tr>
+              {% endif %}
+            </thead>
+            <tbody>
+              {% for tpg, tpg_lst in rpt_data.tpg.items %}
+                <tr>
+                    <td style="background: rgba(7, 53, 215, 0.44)">{{tpg}}</td>
+                  {% for tpg_num in tpg_lst %}
+                    <td>{{tpg_num}}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>  
+        </div>
+        <div class="ref-tar">
+            <span>Power Summary:</span>
+        </div>                   
+        <div id="show_tab2">  
+          <table id="tab2" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+            <thead>
+              {% if tar_tm == "no_tm" %}
+                <tr>
+                  <th>Power</th>              
+                  {% for pw_th in rpt_data.power.items %}
+                    <th>{{pw_th}} Power</th>
+                  {% endfor %}
+                </tr>
+              {% else %}
+                <tr>
+                  <th rowspan="2">Power</th>              
+                  {% for pw_th in rpt_data.power.items %}
+                    <th colspan="2">{{pw_th}} Power</th>
+                  {% endfor %}
+                </tr>
+                <tr>
+                  {% for pw_th in rpt_data.power.items %}
+                    <th>ref</th>
+                    <th>tar</th>
+                  {% endfor %}
+                </tr>
+              {% endif %}
+            </thead>
+            <tbody>
+              <tr>
+                <td style="background: rgba(7, 53, 215, 0.44)">num</td>
+                {% for power_num in rpt_data.power.values %}
+                  <td>{{power_num}}</td>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>  
+        </div>
+        {% if tar_tm == "no_tm" %}
+          <div class="ref-tar">
+              <span>Cell Summary:</span>
+          </div>                   
+          <div id="show_tab3">  
+            <table id="tab3" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+              <thead>
+                <tr>
+                  <th>Cell Count</th>              
+                  {% for cell in rpt_data.cell_count.items %}
+                    <th>{{cell}}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="background: rgba(7, 53, 215, 0.44)">num</td>
+                  {% for cell_cnt in rpt_data.cell_count.values %}
+                    <td>{{cell_cnt}}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>  
+          </div> 
+          <div class="ref-tar">
+              <span>Area Summary:</span>
+          </div>                   
+          <div id="show_tab4">  
+            <table id="tab4" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+              <thead>
+                <tr>
+                  <th>Area</th>   
+                  {% for area in rpt_data.area.items %}
+                    <th>{{area}}</th>
+                  {% endfor %}                             
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="background: rgba(7, 53, 215, 0.44)">num</td>              
+                  {% for area_num in rpt_data.area.values %}
+                    <td>{{area_num}}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>  
+          </div>             
+        {% else %}
+          <div class="ref-tar">
+              <span>Cell Summary:</span>
+          </div>                   
+          <div id="show_tab3">  
+            <table id="tab3" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+              <thead>
+                <tr>
+                  <th rowspan="2">Cell Count</th> 
+                  {% for cell in rpt_data.cell_count.items|slice:":6" %}
+                    <th colspan="2">{{cell}}</th>
+                  {% endfor %}                               
+                </tr>
+                <tr>
+                  {% for cell in rpt_data.cell_count.items|slice:":6" %}
+                    <th>ref</th>
+                    <th>tar</th>
+                  {% endfor %}                               
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="background: rgba(7, 53, 215, 0.44)">num</td>
+                  {% for cell_cnt in rpt_data.cell_count.values|slice:":12" %}
+                    <td>{{cell_cnt}}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>  
+          </div> 
+          <div id="show_tab4" style="margin-top: -8px;">  
+            <table id="tab4" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+              <thead>
+                <tr>
+                  {% for cell in rpt_data.cell_count.items|slice:"6:" %}
+                    <th colspan="2">{{cell}}</th>
+                  {% endfor %}                               
+                </tr>
+                <tr>
+                  {% for cell in rpt_data.cell_count.items|slice:"6:" %}
+                    <th>ref</th>
+                    <th>tar</th>
+                  {% endfor %}                               
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {% for cell_cnt in rpt_data.cell_count.values|slice:"12:" %}
+                    <td>{{cell_cnt}}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>  
+          </div> 
+          <div class="ref-tar">
+              <span>Area Summary:</span>
+          </div>                   
+          <div id="show_tab5">  
+            <table id="tab5" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+              <thead>
+                <tr>
+                  <th rowspan="2">Area</th>              
+                  {% for area in rpt_data.area.items|slice:":5" %}
+                    <th colspan="2">{{area}}</th>
+                  {% endfor %}                             
+                </tr>
+                <tr>
+                  {% for area in rpt_data.area.items|slice:":5" %}
+                    <th>ref</th>
+                    <th>tar</th>
+                  {% endfor %}                             
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="background: rgba(7, 53, 215, 0.44)">num</td>
+                  {% for area_num in rpt_data.area.values|slice:":10" %}
+                    <td>{{area_num}}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>  
+          </div> 
+          <div id="show_tab6" style="margin-top: -8px;">  
+            <table id="tab6" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+              <thead>
+                <tr>
+                  {% for area in rpt_data.area.items|slice:"5:9" %}
+                    <th colspan="2">{{area}}</th>
+                  {% endfor %}                             
+                </tr>
+                <tr>
+                  {% for area in rpt_data.area.items|slice:"5:9" %}
+                    <th>ref</th>
+                    <th>tar</th>
+                  {% endfor %}                             
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {% for area_num in rpt_data.area.values|slice:"10:18" %}
+                    <td>{{area_num}}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>  
+          </div>
+          {% if rpt_data.area.items|length_is:"12" %}
+          <div id="show_tab7" style="margin-top: -8px;">  
+            <table id="tab7" class="table table-striped table-bordered" cellspacing="0" width="100%" style="border: 2px solid rgba(58, 53, 53, 0.36)">
+              <thead>
+                <tr>
+                  {% for area in rpt_data.area.items|slice:"9:" %}
+                    <th colspan="2">{{area}}</th>
+                  {% endfor %}                             
+                </tr>
+                <tr>
+                  {% for area in rpt_data.area.items|slice:"9:" %}
+                    <th>ref</th>
+                    <th>tar</th>
+                  {% endfor %}                             
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {% for area_num in rpt_data.area.values|slice:"18:" %}
+                    <td>{{area_num}}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>  
+          </div>
+          {% endif %}          
+        {% endif %}       
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  String.prototype.format = function(){
+      var args = arguments;
+      return this.replace(/\{(\d+)\}/g, function(s,i) {
+          return args[i];
+      });
+  }
+
+  function rpt_tabs(tab_id) {
+    var tab_atrr = {
+      "deferRender": true,
+      "lengthChange": false,
+      "bPaginate": false, //翻页功能
+      "searching": false,
+      "bSort":false,
+      "bInfo": false,      
+    }
+    var table = $(tab_id).DataTable(tab_atrr);
+    if (tab_id == "#tab1") {
+      var rowspan = $("#tab1 thead th:first").attr("rowspan");
+      if (rowspan == 2) {
+        var rows = $("#tab1 tbody tr");
+        for (var i = 0; i < rows.length; ++i) {
+          var td_str = "#tab1 tbody tr:eq({0}) td:eq({1})";
+          var tr_len = $("#tab1 tbody tr:eq({0}) td".format(i)).length;
+          for(var j=3; j<tr_len; j=j+2) {
+            var td_odd = $(td_str.format(i, j));
+            var td_even = $(td_str.format(i, j+1));
+            var td_odd_num = parseFloat(td_odd.text());
+            var td_even_num = parseFloat(td_even.text());  
+            if (isNaN(td_even_num) || isNaN(td_even_num)) {
+              continue;
+            }
+            if( td_odd_num < td_even_num) {
+                td_odd.css("background", "rgb(104, 247, 10)");
+            } else if (td_odd_num > td_even_num){
+                td_even.css("background", "rgb(104, 247, 10)");
+            }
+          }          
+        }
+      }
+    } 
+  }
+  rpt_tabs("#tab_sum");  
+  rpt_tabs("#tab1");
+  rpt_tabs("#tab2");
+  rpt_tabs("#tab3");
+  rpt_tabs("#tab4");
+  rpt_tabs("#tab5");
+  rpt_tabs("#tab6");
+  rpt_tabs("#tab7");
+</script>
+<link rel="stylesheet" href="{% static 'DataTables-1.10.12/media/css/dataTables.bootstrap.min.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}"    type="text/css" media="screen" />
+<script type="text/javascript" src="{% static 'DataTables-1.10.12/media/js/dataTables.bootstrap.min.js' %}" charset="utf8" ></script>
+{% endblock%}

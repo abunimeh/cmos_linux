@@ -64,6 +64,9 @@ table.dataTable thead .sorting_desc_disabled {
 table.dataTable tbody tr {
   background-color: #ffffff;
 }
+table.dataTable tbody tr td {
+  text-align: center;
+}
 table.dataTable tbody tr.selected {
   background-color: #B0BED9;
 }

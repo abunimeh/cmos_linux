@@ -1,0 +1,20 @@
+{% if pd_add %}
+    <h2 style= 'display: block'>User Password Modify---{{username}}</h2>
+    <div style = 'font-size:20px; font-weight: bold'> 
+        <label>Username:</label>
+        <input type='text' value = {{username}}>
+    </div>
+        <div style = 'font-size:20px; font-weight: bold'> 
+        <label>Newpassword:</label>
+        <input type='text' value = {{password}}>
+    </div> 
+{% else %}
+    <h2 style= 'display: block'>The team add new member---{{username}}</h2>
+    <div style = 'font-size: 18px; font-weight: bold'> 
+        <div>Name: {{username}}<div>
+        <div>Team: {{team}}<div>
+        <div>Manager: {{manager}}<div>
+        <div>Email: {{email}}<div>
+        <div>Telephone: {{telephone}}<div>          
+    </div>
+{% endif %}

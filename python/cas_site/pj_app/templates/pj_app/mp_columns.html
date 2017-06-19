@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load pj_app_extras %}
+
+{% block title %}
+    Data Analysis Columns
+{% endblock %}
+
+{% block content %}
+<div id="container_st" class="clearfix" style="width: 1300px; padding-bottom: 370px;">
+  <div class="content" style="height:auto; width: 1290px; margin: 0px auto;">
+    {% if plot_data.nodata %}
+        <p style="font-size: 30px; text-align: center;">{{plot_data.case_nm}} has no data!</p>
+    {% else%}
+        <div class="colm_nav colm_border">
+            <div class="colm_clk">
+                <div id="ln_loading" style="text-align: center; font-size: 21px"> Loading Line chart, please wait...</div>
+                <div id="container_line" style="min-width: 310px; height: 270px; margin: 0 auto"></div>
+            </div>
+            <div class="colm_border parameters" style="background: white;">
+                <form action="{% url 'pj_app:mp_form_ajax_colms' %}" method="GET" id="clk_form">
+                    <label for="st_pt">Start Clk:</label>
+                    <input type="text" name="st_pt">
+                    <label for="ed_pt">End Clk:</label>
+                    <input type="text" name="ed_pt">
+                    <input type="text" name="id_nums" value={{plot_data.pk_lst|join:"*"}} style="display: none;">
+                    <!-- <input type="submit" name="clk_bt" value="Submit"> -->
+                </form>
+            </div>
+        </div>
+        <div class=" colm_border colm_ctn">
+            {% if plot_data.y_tag %}
+                <div id="colm_st">
+                    <div style="margin: 6px 0px;display: inline-block; background: cornsilk;">
+                        <label>Clk Point: <span>{{plot_data.x_max}}</span></label>
+                    </div>
+                    <div style="margin: 6px 0px 6px 980px;display: inline-block;">
+                        <select id="colm_selt_st">
+                            <option selected="selected">case_items</option>
+                            <option>case_names</option>
+                        </select>
+                    </div>
+                    <div id="colm_loading_st" style="text-align: center; font-size: 21px;clear: both;"> Loading column content, please wait...</div>
+                    <div id="container_colm_st" style="min-width: 310px; height: 370px; margin: 0 auto;clear: both;"></div>
+                </div>
+                <div id="colm_ed" style="display: none;">
+                    <div style="margin: 6px 0px;display: inline-block; background: cornsilk;">
+                        <label>Clk Point: <span></span></label>
+                    </div>
+                    <div style="margin: 6px 0px 6px 980px;display: inline-block;">
+                        <select id="colm_selt_ed">
+                            <option selected="selected">case_items</option>
+                            <option>case_names</option>
+                        </select>
+                    </div>
+<!--                     <div id="colm_loading_ed" style="text-align: center; font-size: 21px;clear: both;"> Loading column content, please wait...</div>
+ -->                    <div id="container_colm_ed" style="min-width: 310px; height: 370px; margin: 0 auto;clear: both;"></div>
+                </div>
+                <div id="show_tab" style="margin-top: 20px;"></div>         
+            {% else %}
+                <p style="line-height: 30px;">These cases have no same items below: </p>
+                <div>
+                    <table id="tab" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Case name</th>
+                                <th>Case items</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for case_nm in plot_data.x_axis %}
+                                <tr>
+                                    <th>{{case_nm}}</th>
+                                    {% for items in plot_data.y_cnm %}
+                                        {% if forloop.counter == forloop.parentloop.counter %}
+                                            <th>{{items}}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <th>NA</th>
+                                    <th>NA</th>
+                                </tr>                            
+                            {% endfor %}                        
+                        </tbody>
+                    </table>             
+                </div>        
+            {% endif %}
+        </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    Array.prototype.unique = function () {
+        var r= new Array();
+        label: for(var i=0, n=this.length; i<n; i++ ) {
+            for(var x=0, y=r.length; x<y; x++) {
+                if(r[x] == this[i]) {
+                    continue label;
+                }
+            }
+            r[r.length] = this[i];
+        }
+        return r;
+    }
+
+    function datatables() {
+        $("#tab").DataTable({
+            "deferRender": true,
+            "lengthChange": false,
+            "bPaginate": true, //翻页功能
+            "searching": true,
+            "order":[[0,"asc"]],
+        });        
+    }
+
+    function gen_table(xdata, data_lst){
+        $('#show_tab').empty();
+        var tab_tag = false;
+        var tab_str = '<p style="font-size:20px;">Case different items below: </p><table id="tab" class="display"><thead><tr><th>Case name</th><th>Case items</th></tr></thead><tfoot><tr><th></th><th></th></tr></tfoot><tbody>';
+        $.each(xdata, function(cindex, case_nm){
+            $.each(data_lst, function(index, obj){
+                if(cindex == index && !$.isEmptyObject(obj)){
+                    $.each(obj, function(key, val){
+                        tab_str += '<tr><th>'+ case_nm +'</th>' + '<th>' + key + ':' + val +'</th></tr>';
+                    });
+                    tab_tag = true;
+                }                
+            })
+        });
+        tab_str += '</tbody></table>';
+        $('#show_tab').append(tab_str);
+    }
+
+    function plot_line(xdata, ydata, pks, intv) {
+        var last_val;
+        Highcharts.chart('container_line', {
+            chart: {
+                zoomType: 'x',
+                // type: 'spline'
+            },
+            title: {
+                text: 'Clock Sample Qoint',
+                x: -20, //center
+                style: {
+                    'font-size': '20px',
+                    'color' : 'black',
+                }                
+            },
+            xAxis: {
+                categories: xdata,
+                title: {
+                    text: "Clock points /(ns)",
+                    style: {
+                        'font-size': '18px',
+                        'color' : 'black',
+                    }
+                },
+                labels: {
+                    style: {
+                        "color": 'green',
+                    }
+                }                
+            },
+            yAxis: {
+                title: {
+                    text: '',
+                    style: {
+                        'font-size': '18px',
+                        'color' : 'black',
+                    }                    
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            credits: {
+                enabled:false
+            },
+            exporting:{
+                enabled:false
+            },          
+            tooltip: {
+                crosshairs: [true, false],
+                formatter: function(){
+                    return "Clk: " + this.x;
+                }
+            },
+            plotOptions: {
+                series: {
+                    point: {
+                        events: {
+                            click: function(e) {
+                                var x_val = parseInt(this.x) * parseInt(intv);
+                                if(last_val==undefined) {
+                                    $("input[name='st_pt']")[0].value = x_val;
+                                    $("#colm_st label span").text(x_val);
+                                    ajax_get_rate(x_val, pks);
+                                } else {
+                                    if(x_val > parseInt(last_val)) {
+                                        $("input[name='st_pt']")[0].value = last_val;
+                                        $("input[name='ed_pt']")[0].value = x_val;
+                                    } else {
+                                        $("input[name='st_pt']")[0].value = x_val;
+                                        $("input[name='ed_pt']")[0].value = last_val;
+                                    }
+                                    $("#colm_ed").show();
+                                    $("#colm_st label span").text(last_val);
+                                    $("#colm_ed label span").text(x_val);
+                                    ajax_get_rate(last_val, pks);
+                                    ajax_get_rate(x_val, pks, 'container_colm_ed', '#colm_selt_ed', '#colm_ed');
+                                }
+                                last_val = x_val;
+                            }
+                        }
+                    },
+                animation: false,
+                allowPointSelect: true,
+                },
+            },
+            legend: {
+                enabled: true,
+            },
+            series:[{
+                name: "Clock",
+                data: ydata,
+            }]
+        });
+    }
+
+    function plot_column(xaxis, data, clom_selt) {
+        var clom_selt = arguments[2] ? arguments[2] : 'container_colm_st'
+        Highcharts.chart(clom_selt, {
+                chart: {
+                    type: 'column',
+                    options3d: {
+                        enabled: true,
+                        alpha: 0,
+                        beta: 0,
+                        depth: 20,
+                    }
+                },
+                title: {
+                    text: 'Comparing performace parameters in different cases',
+                    style: {
+                        'font-size': '20px',
+                        'color' : 'black',
+                    }                
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: xaxis,
+                    crosshair: true,
+                    title: {
+                        text: "Case Name",
+                        style: {
+                            'font-size': '18px',
+                            'color' : 'black',
+                        }
+                    },
+                    labels: {
+                        style: {
+                            "color": 'green',
+                        }
+                    }                    
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Numbers',
+                        style: {
+                            'font-size': '18px',
+                            'color' : 'black',
+                        }                        
+                    }
+                },
+                credits: {
+                    enabled:false
+                },
+                exporting:{
+                    enabled:false
+                },                    
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.f}</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true,
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                    },
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0,
+                        depth: 25,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.f}',
+                        },
+                    },
+                },
+                series: data
+        });
+    }
+
+    function select_column_plot(plot_data, clom_selt, item_selt) {
+        var item_selt = arguments[2] ? arguments[2]: "#colm_selt_st" 
+        $(item_selt).change(function(){
+            var colm_val = $(this).val();
+            var xaxis = new Array();
+            var data = new Array();
+            if(colm_val == "case_items") {
+                xaxis = plot_data.x_axis;
+                data = plot_data.y_cnm.y_axis;
+            } else if(colm_val == "case_names") {
+                $.each(plot_data.x_axis, function(xindex, xval) {
+                    var data_lst = new Array();
+                    $.each(plot_data.y_cnm.y_axis, function(yindex, obj){
+                        $.each(obj, function(key, yval){
+                            if(key == "data"){
+                                data_lst.push(yval[xindex]);
+                            }else if(key == "name") {
+                                xaxis.push(yval);
+                            }
+                        });
+                    });
+                    data.push({"name": xval, "data": data_lst});
+                });
+            }
+            plot_column(xaxis.unique(), data, clom_selt);
+        });
+    }
+
+    function ajax_get_rate(xaxis, pks, clom_selt, item_selt, loading) {
+        var loading = arguments[4] ? arguments[4] : "#colm_st"
+        $(loading).showLoading();        
+        $.ajax({
+            url: "{% url 'pj_app:mp_rows_data' 'ajax' %}",
+            data: {"x_axis": xaxis, "pks": pks},
+            success: function(data){
+                if(data.y_tag) {
+                    plot_column(data.x_axis, data.y_cnm.y_axis, clom_selt);
+                    gen_table(data.x_axis, data.y_cnm.ny_axis);                    
+                    $(loading).hideLoading();
+                    select_column_plot(data, clom_selt, item_selt);
+                    datatables();           
+                }
+            },
+            error: function() {
+                alert("loading data error, please refresh again!");
+            }            
+        });
+    }
+    
+    $(function () {
+        var plot_data = {{plot_data|to_js}};
+        // initial colmun
+        if(plot_data.y_tag) {
+            plot_column(plot_data.x_axis, plot_data.y_cnm.y_axis);
+            gen_table(plot_data.x_axis, plot_data.y_cnm.ny_axis);
+        }
+        $("#colm_loading_st").hide();
+        //initial line figure
+        var xdata = new Array();
+        var ydata = new Array();
+        for (var i = 0; i <= plot_data.x_max; i = i+parseInt(plot_data.intv_max)) {
+            xdata.push(i);
+            ydata.push(0);
+        }
+        plot_line(xdata, ydata, plot_data.pk_lst, plot_data.intv_max);
+        $("#ln_loading").hide();
+
+        //select different options to show columns
+        if(plot_data.y_tag) {
+            select_column_plot(plot_data);
+        }       
+
+        // ajax--form load data
+        $('#clk_form').on('submit', function(event) {
+            event.preventDefault();
+            var st_pt = $("input[name='st_pt']")[0].value;
+            var ed_pt = $("input[name='ed_pt']")[0].value;
+            if (parseInt(st_pt) || parseInt(st_pt)==0) {
+                if ((!isNaN(ed_pt) && ed_pt.replace(/\s+/,"") != "") || ed_pt == "") {
+                    $(".colm_ctn").showLoading();
+                    $.ajax({
+                        data: $(this).serialize(),
+                        type: $(this).attr('method'),
+                        url: $(this).attr('action'),
+                        success: function(data) {
+                            if(data.y_tag) {
+                                plot_column(data.x_axis, data.y_cnm.y_axis);
+                                gen_table(data.x_axis, data.y_cnm.ny_axis);                    
+                                select_column_plot(data);
+                                datatables();               
+                            }
+                            $(".colm_ctn").hideLoading();
+                        },
+                        error: function(data) {
+                            alert("loading data error, please refresh again!")
+                        }
+                    });                    
+                } else {
+                    alert("please end clk point is positive integer!");
+                }
+            } else {
+                alert("please input at least start clk point(positive integer)!");
+            }
+        });
+        datatables();               
+    });
+</script>
+{% endblock %}

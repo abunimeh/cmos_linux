@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 
-#background { background:url(../images/background.jpg) no-repeat center top; left:0; width:100%; min-width:100%; height:100%; min-height:100%; position:fixed; top:0; z-index:0; }
+#background { background: url(../images/background.jpg) no-repeat center top; left:0; width:100%; min-width:100%; height:100%; min-height:100%; position:fixed; top:0; z-index:0; }
 .clear { clear: both; }
 .clearfix:after { content: "."; display:block; height:0; clear:both; visibility:hidden; }/* ----- clear fix for floats ----- */
 .clearfix { display:inline-block; }
@@ -42,15 +42,60 @@ a:link,a:visited{text-decoration:none}
 #wrapper { width:100%; background:#dbdcdd; z-index:1; }
 #header { background:#fff url(../images/header-bg.jpg) top repeat-x; border-bottom:#d1d1d1 0px solid; position:fixed; top:0px; left:0px; width:100%; z-index:109; }
 #header-bottom { background:url(../images/bg-header-bottom.png) bottom repeat-x; height:4px; top:4px; position:relative; }
-#wrapper .header-content #CAS_site {float:left;}
-#wrapper .header-content #logo_site {float:left;}
+#wrapper .header-content #cas_nav {position: relative; width: 70%;float:left;}
+#wrapper .header-content #logo_site {width: 30%;position: relative;line-height: 50px;float:left;}
+#cas_nav ul li {display: inline-block; line-height: 50px;width: auto; font-size: 18px; padding:0px 26px;}
+#cas_nav ul li a {color: black;}
+#cas_nav ul li a:hover {color: blue;}
+#wrapper .header-content #cas_nav ul {padding-left: 300px;}
 /* End Branding
 --------------------------------------------------------------------------------------------------------*/
+
+/* = logout 
+--------------------------------------------------------------------------------------------------------*/
+#lgn_cfm {
+    position: absolute; 
+    left: 786px; 
+    right: 0px; 
+    top: 175px; 
+    width: 328px; 
+    height: 181px; 
+    z-index: 110; 
+    border: 1px solid rgba(47, 38, 38, 0.28); 
+    border-radius: 6px;
+}
+#lgn_cfm input {
+    font-size: 18px; 
+    width: 79px; 
+    height: 29px; 
+    float:right;
+    margin: 0px 13px;
+    background: rgba(255, 255, 255, 0.67); 
+}
+.lg_bd {
+    margin:10px; 
+    border: 1px solid rgba(255, 255, 255, 0.68); 
+    border-radius: 6px;
+    width: 305px; 
+    height:162px; 
+    background: rgba(254, 251, 251, 0.42);
+}
+
+.lg_bd div {
+    margin: 37px; 
+    line-height: 30px; 
+    font-size:23px; 
+    padding: 0px 33px; 
+}
+
+/* End logout
+--------------------------------------------------------------------------------------------------------*/
+
 
 
 /* =Main Content
 --------------------------------------------------------------------------------------------------------*/
-#container_st { padding:225px 10px 45px 10px; width:1200px; margin:0 auto; z-index:1; position:relative; }
+#container_st { padding:128px 10px 45px 10px; width:1200px; margin:0 auto; z-index:1; position:relative; }
 .col1-2 { width:460px; padding:0 20px 0 0; float:left; }
 .col1-3 { width:300px; padding:0 20px 0 0; float:left; }
 .col2-3 { width:620px; padding:0 20px 0 0; float:left; }
@@ -99,7 +144,7 @@ ul.list, ul.check, ul.normal { padding:3px 0 2px 0; }
 /* =Footer
 --------------------------------------------------------------------------------------------------------*/
 #footer { border-top:#d2d2d2 1px solid; width:100%; background:#fff; z-index:1; position:relative; }
-.footer-content { width:940px; margin:0 auto; padding:10px 10px 18px 50px; }
+.footer-content { width:940px; margin:0 auto; padding:10px 30px 18px 30px; }
 .footer-content h3 { font-size:20px; padding:41px 0 17px 0; line-height:20px; }
 .footer-content p { padding:4px 15px 5px 0; }
 #footer-bottom { border-top:#d2d2d2 1px solid; height:40px; width:940px; position:relative; display:inline-block; margin:45px 0 0 0; padding:10px 0 0px 0; }
@@ -169,11 +214,150 @@ ul.list, ul.check, ul.normal { padding:3px 0 2px 0; }
 .datainp{ width:150px; height:30px; border:1px #ccc solid;border-radius: 3px;}
 .datep{ margin-bottom:40px;}
 #container_st .content #items_list span {font-size: 18px; margin-right: 3px;}
-#container_st .content #items_list select {height: 26px; margin-right: 9px; border-radius: 2px;}
+#container_st .content #items_list select {height: 26px; margin-right: 9px;}
 #container_st .content #items_list #module {margin-right: 25px;}
 #container_st .content #items_list .tsearch {margin-left: 10px; border-radius: 4px; height: 28px; width: 67px; background: lightgrey;}
 .csearch,.psearch ,.close{margin-left: 4px; border-radius: 2px; height: 27px; width: 76px; background: lightgrey;}
 
+/*regressions index*/
+#show_all h1  {
+    font-size: 19px;
+    line-height: 41px;
+}
+/*pj index*/
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+}
+#pj_flows {
+    padding: 20px 220px;
+}
+#pj_flows h1 {
+    font-size: 19px; 
+    line-height: 70px;
+}
+#pj_flows #pj_tab tbody td {
+    /*padding-left: 3px;*/
+    font-size: 16px;
+}
+.pj_extra {
 
+}
+.pj_extra  {
+  text-align: left;
+}
+/*dc report info */
+.ref-tar {
+    line-height: 30px;
+    font-size: 18px;
+    margin: 11px 0px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.64);
+}
+.ref-tar span {
+    margin-right: 18px;
+    line-height: 32px;
+    background: rgba(130, 144, 111, 0.92); 
+}
+.ref-tar .unit {
+    float: right;
+    margin: 0;
+    font-size: 17px;
+    color: red;
+    background:  rgba(252, 24, 24, 0) none repeat scroll 0% 0%;
+}
+.table-bordered {
+    border: 2px solid rgba(58, 53, 53, 0.36);
+    background: cadetblue;
+}
+#show_all table th,#show_all table td {
+    text-align: center;
+    vertical-align: middle;
+}
 
+/*file*/
+.fupload {
+    visibility: hidden;
+    float: right;
+}
+.pfile input {
+    border: 0;
+    background: darkgrey;
+    font-size: 16px;
+}
+
+/*Timing Rpt*/
+#level_selt select {
+    float: right;
+    width: 84px;
+    height: 27px;
+    margin-bottom: 5px;
+}
+#time_btn, #line_btn {
+    float:left;
+    height:27px;
+    margin-bottom:7px;
+}
+#qor_btn {
+    float:left;
+    height:27px;
+    margin-bottom:7px;
+    margin-right:10px; 
+}
+.qor_null {
+    text-align: center;
+    font-size: 20px;
+    height: 181px;
+    padding-top: 111px;
+}
+
+/*data columns analysis*/
+.colm_nav {
+    height: 300px;
+}
+.colm_ctn {
+    height: auto; 
+    margin-top: 10px;
+}
+.colm_clk {
+    float: left;
+    width: 80%;
+}
+.parameters {
+    width: 18%; 
+    height: 270px;    
+    display: inline-block;
+    margin-left: 25px;
+    background: white;
+}
+.colm_border {
+    border: 1px solid white;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.52);    
+    padding: 13px;
+}
+
+.parameters form {
+        line-height: 32px;
+        padding: 9px;
+        border:2px solid rgb(221, 212, 212);
+        border-radius: 5px;
+        background: rgba(248, 250, 252, 1);
+}
+
+.parameters label {
+    font-size: 19px;
+}
+
+.parameters input[type="text"] {
+    width: 140px;
+    margin-left: 30px;
+    height: 26px;
+}
+
+.parameters input[type="submit"] {
+    margin: 3px 0px 0px 101px;
+}
 

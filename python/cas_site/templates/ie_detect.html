@@ -1,0 +1,36 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		<title>IE Detect</title>
+     	<script type="text/javascript">
+     		var nav_ua = navigator.userAgent;
+     		if (nav_ua.indexOf('Trident') == -1) {
+				if(!window.location.origin){
+			        var rdt_url = window.location.protocol + '//' + window.location.host;
+				} else {
+				    var rdt_url = window.location.origin;
+				}  
+			  window.location.href = rdt_url;        		     			
+     		}
+     	</script>
+     	<link rel="stylesheet" href="{% static 'css/ie_detect.css' %}" type="text/css" media="screen" />
+	</head>
+	<body>
+		<div id="mother">
+			<div id="errorBox">
+				<div id="errorText">
+					<p>
+					    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CAS site does not support IE to visit, Please use Chrome or Firefox to try it. 
+					    If you any question, please <a href="{% url 'contact' %}" >contact us<a>!
+					</p>
+				</div>
+				<ul id="contact">
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>

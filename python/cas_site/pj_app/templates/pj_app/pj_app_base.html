@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content %}
+<div id="container_st" class="clearfix" style="width: 1300px; padding-bottom: 200px;">
+  <div class="content" style="height:auto; width: 1290px; margin: 0px auto;">
+    <p style="font-size: 32px; width: 200px; margin-bottom: 20px; font-weight: 900;">{{pj_type}} 
+    </p>
+    <fieldset id="items_list">
+      <p>
+        <span>Teams:</span> 
+        <select id="team" class="team" data-value={{team}} data-first-title="Choose" disabled="disabled">
+        </select>
+        <span>Users:</span> 
+        <select id="user" class="user" data-value={{user}}  data-first-title="Choose" disabled="disabled"></select>
+        <span>Projects:</span>
+        <select id="project" class="project" data-value="Choose Projects" data-first-title="Choose" disabled="disabled"></select>
+        <span>Modules:</span>
+        <select id="module" class="module" data-value="Choose Modules" data-first-title="Choose" disabled="disabled"></select>
+        <span>Start:</span>
+        <input class="datainp" id="indate" type="text" placeholder="Choose" readonly> 
+        <span>End:</span>
+        <input class="datainp" id="dateinfo" type="text" placeholder="Choose"  readonly>
+        <input  class="tsearch" type="button" name="search" value="Search">
+      </p>
+    </fieldset>
+    <hr style="clear: both;height: 2px; width: 1290px; background: rgba(33, 7, 7, 0.19) none repeat scroll 0% 0%;">
+    <div id="show_all">
+      <h1>There are users using pj tool to run {{pj_type |lower }} below:</h1>
+      <div id="show_tab1">  
+        <table id="tab1" class="display">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th></th>
+            </tr>
+          </tfoot>
+          <tbody>
+            {% for user in user_list %}
+            <tr align="center">
+              <td>{{ user }}</td>
+              <td>{{ user }}@cpu.com.cn</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>  
+      </div>
+    </div>
+    {% block extra %}
+      
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  $(function() {
+    $("#items_list").cxSelect({
+      selects : ["team", "user", "project", "module"],
+      nodata : "none"
+    });
+
+    jeDate.skin('gray');
+    jeDate({
+      dateCell:"#indate",//isinitVal:true,
+      format:"YYYY-MM-DD",
+      isinitVal:true,
+      date_diff: 0,
+      isTime:true, //isClear:false,
+      minDate:"2014-01-01 00:00:00",
+    })
+
+    jeDate({
+      dateCell:"#dateinfo",
+      format:"YYYY-MM-DD",
+      isinitVal:true,
+      isTime:true, //isClear:false,
+      minDate:"2014-01-01 00:00:00",
+    })
+
+    $('#tab1').DataTable({
+      "scrollY": "350px",
+      "deferRender": true,
+      "order":[[0,"asc"]],
+      "lengthChange": false,
+      "bPaginate": true, //翻页功能
+      "searching": false,
+    });
+  });
+</script>
+  {% block flowjs %}
+
+  {% endblock %}
+{% endblock%}

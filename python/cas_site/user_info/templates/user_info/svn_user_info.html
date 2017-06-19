@@ -1,0 +1,84 @@
+{% extends 'user_info/user_info_base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+Svn-user-Info
+{% endblock %}
+
+{% block userinfo %}
+<!-- start content -->
+<div id = "userinfo">
+    {% if lead_flg %}
+    <div id ="add_user"><a href="{% url 'user_info:svn_user_add' %}" style="margin-left: 7px;">Add user</a>
+    </div>
+    {% endif %}
+    <div class="userborder">
+        <div id = 'userstable'>
+            <table id="usermembs" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Project</th>
+                        <th>Group</th>
+                        <th>Level</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for svninfo in dirinfo.auth %}
+                        <tr align="center">  
+                            {% if lead_flg %}  
+                            <td><a href="{% url 'user_info:svn_user_update' svninfo.pk %}">{{ svninfo.userpg }}</a></td>
+                            {% else %}
+                            <td>{{ svninfo.userpg }}</a></td>
+                            {% endif %}
+                            <td>{{ svninfo.project }}</td>
+                            <td>{{ svninfo.group }}</td>
+                            <td>{{ svninfo.level}}</td>
+                        </tr>
+                     {% endfor %}           
+                </tbody>
+            </table>
+        </div>    
+    </div>
+    {%  if auth_flg %}
+    <div id = "nauth_user">
+        <h1>These users at your team have no authority in svn below:</h1>
+        <ul>
+            {% for user in dirinfo.noauth %}
+                <li>{{user}}</li>                            
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div> 
+<!-- end content -->
+{% endblock %}
+
+{% block infojs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#usermembs').DataTable( {
+        "lengthChange": true,
+        "lengthMenu": [
+            [10, 8, 5 ],
+            [10, 8, 5 ]
+         ],//每页显示条数设置
+        "deferRender": true,
+        "destroy": true,
+        "bPaginate": true, //翻页功能
+        "searching": true,
+        "order":[[0,'asc']],
+    });
+
+});  
+</script>
+{% endblock %}

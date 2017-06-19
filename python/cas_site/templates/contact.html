@@ -1,68 +1,27 @@
-{% extends 'base.html' %}
 {% load staticfiles %}
 {% load i18n %}
 
-<!-- start content -->
-{% block content %}
-  <div id="container" class="clearfix">
-    <div class="content">
-      <div id="slideshow">
-        <div id="slider">
-          <div class="oneByOne_item"> <div><img src="{% static 'images/slideshow/map-usa.png' %}" class="item_1_1" alt="" /></div>
-            <h3 class="text_1_1">Pj Tool</h3>
-            <p class="text_1_2 large">Pj tool can make your works easy and convenience---<a href="/static/doc/_build/html/runner.html">learn more</a></p>
-          </div>
-          <div class="oneByOne_item"> <div><img src="{% static 'images/slideshow/map-ger.png' %}" class="item_1_2" alt="" /></div>
-            <h3 class="text_1_1">Document Platform</h3>
-            <p class="text_1_2 large"> This app describes our platform in detail---<a href="/static/doc/_build/html/index.html">learn more</a></p>
-          </div>
-        </div>
-        <!-- end slider -->
+ <!DOCTYPE html>
+ <html>
+ <head>
+   <title>contact</title>
+ </head>
+ <body>
+    <div style="width: 900px; height: 500px; margin: 0px auto; border: 2px solid rgba(233, 231, 231, 0.65); border-radius: 4px; margin-top: 80px;">
+      <div style="padding: 25px 50px;">
+          <img src="{% static 'images/contact.jpg' %}" />          
       </div>
-      <!-- end slideshow -->
-      <!-- start slideshow navigation -->
-      <div id="cyclenav" class="alignright"></div>
-      <!-- end slideshow navigation -->
-      <div id="quote" class="clear">
-        <div class="coda-slider-wrapper">
-          <div class="coda-slider preload" id="coda-slider-1">
-            <div class="panel">
-              <div class="panel-wrapper">
-                <div class="logos alignleft"><img src="{% static 'images/logos/verification_platform.png' %}"  /></div>
-                <div class="quote">
-                  <p class="quoter">Verification Platform</p>
-                  <p>This site targets at public service interface of Verification Platform</p>
-                   <br />
-                   <br />
-               </div>
-              </div>
-            </div>
-            <!-- end panel -->
-          </div>
-        </div>
+      <div style="padding: 10px 50px; font-size: 17px; height: 195px; background: aliceblue;">
+        <p>Contact us</p>
+        <ul style="line-height: 28px;">
+            <li>yigy@cpu.com.cn</li>
+            <li>chenh@cpu.com.cn</li>
+        </ul>
+        <p>Location</p>
+        <ul style="line-height: 28px;">
+            <li>Room 419, 3rd Floor</li>
+        </ul>
       </div>
-      <!-- end quote -->
     </div>
-  </div>
-<!-- end content -->
-{% endblock %}
-
-
-{% block js %}
-
-<script type="text/javascript">
-$(function() {
-    $('#slider').cycle({
-        fx: 'scrollLeft',
-        timeout:5000,
-        speed:400,
-        pager:  '#cyclenav'
-    });
-
-    
-}); 
-</script>
-
-{% endblock%}
-
-
+ </body>
+ </html>

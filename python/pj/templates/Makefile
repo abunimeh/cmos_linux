@@ -6,22 +6,109 @@
 dir_guard = @mkdir -p ${@D}
 cd_guard = @cd ${@D}
 
+C_SRC = ${MODULE_C}/src
+CLIB_SRC = ${OUTPUT_CLIB}/src
+
+TARGET_LIB = ${OUTPUT_CLIB}/lib${MODULE}.so
+TARGET_SRC = ${OUTPUT_CLIB}/${MODULE}
+
+BASE_COMP_OPTS = {{base_comp_opts}}
+LIB_COMP_OPTS = {{lib_comp_opts}}
+SRC_COMP_OPTS = {{src_comp_opts}}
+SRC_RUN_OPTS = {{src_run_opts}}
+
+{%-if clib_flg%}
+OBJECTS_LIB = ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.c, %.lib.c.o, ${shell find ${MODULE_C} -type f -iname "*.c"}}}
+OBJECTS_LIB += ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.cpp, %.lib.cpp.o, ${shell find ${MODULE_C} -type f -iname "*.cpp"}}}
+OBJECTS_LIB += ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.cc, %.lib.cc.o, ${shell find ${MODULE_C} -type f -iname "*.cc"}}}
+OBJECTS_LIB += ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.cxx, %.lib.cxx.o, ${shell find ${MODULE_C} -type f -iname "*.cxx"}}}
+{%-endif%}
+
+{%-if csrc_flg%}
+OBJECTS_SRC = ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.c, %.src.c.o, ${shell find ${C_SRC} -type f -iname "*.c"}}}
+OBJECTS_SRC += ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.cpp, %.src.cpp.o, ${shell find ${C_SRC} -type f -iname "*.cpp"}}}
+OBJECTS_SRC += ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.cc, %.src.cc.o, ${shell find ${C_SRC} -type f -iname "*.cc"}}}
+OBJECTS_SRC += ${patsubst ${MODULE_C}%, ${OUTPUT_CLIB}%, ${patsubst %.cxx, %.src.cxx.o, ${shell find ${C_SRC} -type f -iname "*.cxx"}}}
+{%-endif%}
+
 ### c targets
-{%-if c_lst%}
-{%-for c in c_lst%}
-${OUTPUT_CLIB}/{{c}}.o: ${MODULE_C}/{{c}}.c
+${TARGET_LIB}: ${OBJECTS_LIB}
 	${dir_guard}
-	${cd_guard} && gcc {{c_opts}} -I${VCS_HOME}/include -c $<
+	${CXX} -pthread -shared -o $@ $^
+
+${TARGET_SRC}: ${OBJECTS_SRC}
+	${dir_guard}
+	${CXX} -pthread -o $@ $^
+
+${OUTPUT_CLIB}/%.lib.c.o: ${MODULE_C}/%.c
+	${dir_guard}
+	${CC} ${BASE_COMP_OPTS} ${LIB_COMP_OPTS} -o $@ $^
+${OUTPUT_CLIB}/%.lib.cpp.o: ${MODULE_C}/%.cpp
+	${dir_guard}
+	${CXX} ${BASE_COMP_OPTS} ${LIB_COMP_OPTS} -o $@ $^
+${OUTPUT_CLIB}/%.lib.cc.o: ${MODULE_C}/%.cc
+	${dir_guard}
+	${CXX} ${BASE_COMP_OPTS} ${LIB_COMP_OPTS} -o $@ $^
+${OUTPUT_CLIB}/%.lib.cxx.o: ${MODULE_C}/%.cxx
+	${dir_guard}
+	${CXX} ${BASE_COMP_OPTS} ${LIB_COMP_OPTS} -o $@ $^
+
+${OUTPUT_CLIB}/%.src.c.o: ${MODULE_C}/%.c
+	${dir_guard}
+	${CC} ${BASE_COMP_OPTS} ${SRC_COMP_OPTS} -o $@ $^
+${OUTPUT_CLIB}/%.src.cpp.o: ${MODULE_C}/%.cpp
+	${dir_guard}
+	${CXX} ${BASE_COMP_OPTS} ${SRC_COMP_OPTS} -o $@ $^
+${OUTPUT_CLIB}/%.src.cc.o: ${MODULE_C}/%.cc
+	${dir_guard}
+	${CXX} ${BASE_COMP_OPTS} ${SRC_COMP_OPTS} -o $@ $^
+${OUTPUT_CLIB}/%.src.cxx.o: ${MODULE_C}/%.cxx
+	${dir_guard}
+	${CXX} ${BASE_COMP_OPTS} ${SRC_COMP_OPTS} -o $@ $^
+
+.PHONY: lib_pre_cmd lib_post_cmd src_pre_cmd src_post_cmd
+lib_pre_cmd:
+{%-for pre_cmd in lib_pre_cmd_lst%}
+{%-if loop.last%}
+	{{pre_cmd}}
+{%-else%}
+	{{pre_cmd}} && \
+{%-endif%}
 {%-endfor%}
-${OUTPUT_CLIB}/uvm_dpi.o: ${UVM_HOME}/src/dpi/uvm_dpi.cc
-	${dir_guard}
-	${cd_guard} && g++ {{c_opts}} -I${VCS_HOME}/include -c $<
-${OUTPUT_CLIB}/lib${MODULE}.so: \
-{%-for c in c_lst%}
-${OUTPUT_CLIB}/{{c}}.o \
+lib_post_cmd:
+{%-for post_cmd in lib_post_cmd_lst%}
+{%-if loop.last%}
+	{{post_cmd}}
+{%-else%}
+	{{post_cmd}} && \
+{%-endif%}
 {%-endfor%}
-${OUTPUT_CLIB}/uvm_dpi.o
-	${dir_guard}
-	${cd_guard} && gcc -shared -o $@ $^
-compile_c: ${OUTPUT_CLIB}/lib${MODULE}.so
+src_pre_cmd:
+{%-for pre_cmd in src_pre_cmd_lst%}
+{%-if loop.last%}
+	{{pre_cmd}}
+{%-else%}
+	{{pre_cmd}} && \
+{%-endif%}
+{%-endfor%}
+src_post_cmd:
+{%-for post_cmd in src_post_cmd_lst%}
+{%-if loop.last%}
+	{{post_cmd}}
+{%-else%}
+	{{post_cmd}} && \
+{%-endif%}
+{%-endfor%}
+
+{%-if clib_flg%}
+compile_clib: lib_pre_cmd ${TARGET_LIB} lib_post_cmd
+{%-else%}
+compile_clib:
+{%-endif%}
+
+{%-if csrc_flg%}
+run_csrc: src_pre_cmd ${TARGET_SRC} src_post_cmd
+	cd ${OUTPUT_CLIB} && ${TARGET_SRC} ${SRC_RUN_OPTS}
+{%-else%}
+run_csrc:
 {%-endif%}

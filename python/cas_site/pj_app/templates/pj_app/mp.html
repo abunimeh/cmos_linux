@@ -1,0 +1,244 @@
+{% extends "pj_app/pj_app_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+    MP Info
+{% endblock %}
+
+{% block flowjs %}
+<script type="text/javascript">
+Array.prototype.unique = function () {
+    var r= new Array();
+    label: for(var i=0, n=this.length; i<n; i++ ) {
+        for(var x=0, y=r.length; x<y; x++) {
+            if(r[x] == this[i]) {
+                continue label;
+            }
+        }
+        r[r.length] = this[i];
+    }
+    return r;
+}
+
+//row extra table
+function format (row_dt) {
+    var html = "";
+    for(var paras in row_dt.props) {
+        html += "<td>" + paras + ": " + row_dt.props[paras] + "</td>";
+    }
+    return '<table cellpadding="5" cellspacing="0" border="0" >' +
+                '<tr>'  +
+                    '<td>' + 'Parameters: '+ '</td>'+
+                '</tr>' +
+                '<tr>' +
+                    html +
+                '</tr>' +
+          '</table>';          
+}
+
+function gen_new_window(pk_lst, url_str){
+    var cur_href = window.location.href;
+    var pk_str = pk_lst.join("*");
+    var new_href = cur_href + url_str + pk_str;
+    window.open(new_href);
+}
+
+
+function gen_tab(udata) {
+    $("body").showLoading();
+    $.ajax({
+        url: "{% url 'pj_app:mp_get_loginfo' %}",
+        data: udata,
+        success: function(data){
+            $('#show_all').empty();
+            var tab_str = '<div id="show_tab1" style="margin-top:13px;"><table id="tab1" class="display"><thead><tr><th></th><th>Case Name</th><th>Module</th><th>Package nums</th><th>Seed</th><th>Status</th><th>Run Time</th><th></th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tfoot><tbody></tbody></table></div>';
+            $('#show_all').append(tab_str);
+            var tab_attrs = {
+                "dom": '<"top" B>lfrtip<"clear">',
+                "buttons": [
+                    {
+                      text: 'Single Line Plot',
+                    },
+                    {
+                      text: 'Multiple Rating Plot',
+                    }],                
+                "deferRender": true,
+                "destroy": true,
+                "lengthChange": true,
+                "lengthMenu": [
+                  [5, 50, 100, -1],
+                  [5, 50, 100, "All"]],
+                "bPaginate": true,
+                "searching": true,
+                "order":[[6,'desc']],
+                "scrollY": false,
+                "data": data,
+                "columns": [
+                    { "data":null,
+                      "className": 'details-control',
+                      "orderable": false,
+                      "defaultContent":''
+                    },                
+                    { "data": "pj_props" , //Case Name
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                                return data;
+                            }
+                            return data.c_name ;
+                        },    
+                    },
+                    { "data": "pj_props" , //Case Name
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                                return data;
+                            }
+                            return data.m_name;
+                        },    
+                    },
+                    { "data": "pkg_nums", //Seed
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 0;
+                                return data;
+                            }
+                            return data;
+                        },    
+                    },
+                    { "data": "pj_props", //Seed
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                                return data;
+                            }
+                            return data.seed ;
+                        },    
+                    },                    
+                    { "data": "status", //Seed
+                        "createdCell": function (tr, cellData, rowData, row, col) {
+                            var bk_color;
+                            if (cellData == 'Fault') {
+                                bk_color = 'red';
+                            } else if (cellData == 'Done') {
+                                bk_color = "green";
+                            } else if (cellData == 'Running') {
+                                bk_color = "yellow";
+                            }                                                 
+                            $(tr).css('background', bk_color);
+                        },
+                        "render": function (data, type, full, meta) {
+                            if(!data) {
+                                data = "NA";
+                            } 
+                            return data;
+                        }                        
+                    },                    
+                    { "data": "run_time", //Run Time
+                        "render": function (data, type, full, meta) {
+                            if (!data) {
+                                data = 'NA';
+                                return data;
+                            }
+                            return data;
+                        },    
+                    },
+                    { "data": "pj_props", //checkbox
+                        "render": function (data, type, full, meta) {
+                            if (data) {
+                                data = '<input type="checkbox" name="checkList" style="transform: scale(1.3);">';
+                            } else {
+                                data ="NA";
+                            }
+                            return data ;
+                        },              
+                    }
+                ],
+            } 
+            var table = $('#tab1').DataTable(tab_attrs);
+            $("body").hideLoading();
+            $('#tab1 tbody').on('click', 'td.details-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                if(row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+            //choose cases in different run time
+            var pk_lst = [];
+            var md_lst = [];
+            $("#tab1 tbody").on('change',"td input[name='checkList']", function(){
+                var tb_row = table.row($(this).parent().parent()[0]).data()
+                var pk = tb_row.pk;
+                if (this.checked) {
+                    pk_lst.push(pk);
+                } else{
+                    var pk_index = pk_lst.indexOf(pk);
+                    if(pk_index > -1) {
+                        pk_lst.splice(pk_index,1);
+                    }
+                }
+            });
+            // button event to show plots
+            table.button(0).action(function(e, dt, button, config) {
+                if (pk_lst.length == 1) {
+                    gen_new_window(pk_lst, "data_lines/");
+                } else {
+                    alert("Please choose only one case to analysis!")
+                }
+            });
+            table.button(1).action(function(e, dt, button, config) {
+                if (pk_lst.length >= 1) {
+                    gen_new_window(pk_lst, "data_columns/");
+                } else {
+                    alert("Please choose at least one case to analysis!")
+                }
+            });
+        },
+        error: function() {
+            alert("ajax request error!");
+        }
+    });    
+}
+
+$(function () {
+    $(".tsearch").click(function(){
+        var team = $("#team").val()
+        var user = $("#user").val();
+        var proj = $("#project").val();
+        var module = $("#module").val();
+        var tstart = $("#indate").val();
+        var   tend = $("#dateinfo").val();
+        if (!tstart) {
+            alert("Please Choose running start time!");
+        } 
+        else if (!tend) {
+            alert("Please Choose running end time!");        
+        } else {
+            if (!user) {
+            alert("Please Choose User!");
+            } else {
+                if(!proj) {
+                    alert("Please Choose proj!");
+                } else {
+                    var url_data = { 'team': team,
+                                     'user':user,
+                                     'proj':proj, 
+                                     'module':module, 
+                                     'tstart':tstart,
+                                     'tend':tend};
+                    gen_tab(url_data);
+                }                   
+            }
+        }
+    });
+    
+});
+$.cxSelect.defaults.url = "{% url 'pj_app:query_select' 'mp' %}";
+</script>
+{% endblock %}

@@ -1,6 +1,6 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -29,7 +29,7 @@
     <link rel="next" title="backend构架介绍" href="backend.html" />
     <link rel="prev" title="配置文件使用手册" href="config.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -64,10 +64,17 @@
 <li><a class="reference internal" href="#doc">子命令doc</a></li>
 <li><a class="reference internal" href="#clean">子命令clean</a></li>
 <li><a class="reference internal" href="#gen">子命令gen</a></li>
+<li><a class="reference internal" href="#leda">子命令leda</a></li>
+<li><a class="reference internal" href="#ac">子命令ac</a></li>
+<li><a class="reference internal" href="#dc">子命令dc</a></li>
+<li><a class="reference internal" href="#tm">子命令tm</a></li>
+<li><a class="reference internal" href="#fm">子命令fm</a></li>
+<li><a class="reference internal" href="#icc">子命令icc</a></li>
+<li><a class="reference internal" href="#cdc">子命令cdc</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id4">平台目录结构</a><ul>
-<li><a class="reference internal" href="#proj-root-share-cmn-config">PROJ_ROOT/share/cmn/config/</a></li>
+<li><a class="reference internal" href="#proj-root-share-config">PROJ_ROOT/share/config/</a></li>
 <li><a class="reference internal" href="#proj-root-verification-module">PROJ_ROOT/verification/MODULE</a></li>
 </ul>
 </li>
@@ -233,10 +240,12 @@ Global options:
 <div class="section" id="id2">
 <h2>查看pj子命令<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令：</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">pj</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LOG</span><span class="p">]</span> <span class="p">{</span><span class="n">run</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">vplan</span><span class="p">,</span><span class="n">reg</span><span class="p">,</span><span class="n">doc</span><span class="p">,</span><span class="n">clean</span><span class="p">,</span><span class="n">gen</span><span class="p">,</span><span class="n">leda</span><span class="p">}</span> <span class="o">...</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">pj</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">init</span><span class="p">,</span><span class="n">run</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">vplan</span><span class="p">,</span><span class="n">reg</span><span class="p">,</span><span class="n">doc</span><span class="p">,</span><span class="n">clean</span><span class="p">,</span><span class="n">gen</span><span class="p">,</span><span class="n">leda</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">dc</span><span class="p">,</span><span class="n">tm</span><span class="p">,</span><span class="n">fm</span><span class="p">}</span> <span class="o">...</span>
 
 <span class="n">positional</span> <span class="n">arguments</span><span class="p">:</span>
-  <span class="p">{</span><span class="n">run</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">vplan</span><span class="p">,</span><span class="n">reg</span><span class="p">,</span><span class="n">doc</span><span class="p">,</span><span class="n">clean</span><span class="p">,</span><span class="n">gen</span><span class="p">,</span><span class="n">leda</span><span class="p">}</span>
+  <span class="p">{</span><span class="n">init</span><span class="p">,</span><span class="n">run</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">vplan</span><span class="p">,</span><span class="n">reg</span><span class="p">,</span><span class="n">doc</span><span class="p">,</span><span class="n">clean</span><span class="p">,</span><span class="n">gen</span><span class="p">,</span><span class="n">leda</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">dc</span><span class="p">,</span><span class="n">tm</span><span class="p">,</span><span class="n">fm</span><span class="p">}</span>
+    <span class="n">im</span>                  <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">running</span> <span class="n">pj</span> <span class="n">instance</span> <span class="n">messager</span>
+    <span class="n">init</span>                <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">generating</span> <span class="n">initial</span> <span class="n">svn</span> <span class="n">directories</span>
     <span class="n">run</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">running</span> <span class="n">simulation</span> <span class="ow">and</span> <span class="n">regression</span>
     <span class="n">cov</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">merging</span> <span class="ow">and</span> <span class="n">analyzing</span> <span class="n">coverage</span>
     <span class="n">vplan</span>               <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">processing</span> <span class="n">vplan</span>
@@ -245,22 +254,35 @@ Global options:
     <span class="n">clean</span>               <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">cleaning</span> <span class="n">output</span>
     <span class="n">gen</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">generating</span> <span class="n">environments</span>
     <span class="n">leda</span>                <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">leda</span> <span class="n">flow</span>
+    <span class="n">ac</span>                  <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">auto</span> <span class="n">connect</span> <span class="n">flow</span>
+    <span class="n">dc</span>                  <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">run</span> <span class="n">dc</span>
+    <span class="n">tm</span>                  <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">parsing</span> <span class="n">the</span> <span class="n">timing</span> <span class="n">report</span>
+    <span class="n">fm</span>                  <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">run</span> <span class="n">formality</span>
+    <span class="n">icc</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">run</span> <span class="n">icc</span>
+    <span class="n">cdc</span>                 <span class="n">sub</span> <span class="n">cmd</span> <span class="n">about</span> <span class="n">run</span> <span class="n">cdc</span>
 
 <span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
   <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
-  <span class="o">-</span><span class="n">l</span> <span class="n">LOG</span>                <span class="nb">input</span> <span class="n">log</span> <span class="n">name</span> <span class="o">&lt;</span><span class="n">MUST</span> <span class="n">come</span> <span class="n">first</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>目前pj的全部子命令有：</p>
 <ul class="simple">
+<li>im：负责启动pj内部即时通信工具</li>
+<li>init：负责版本控制初始化相关（新版带权限管控的svn repo不可用）</li>
 <li>run：负责simulation和regression相关，包括verdi</li>
-<li>cov：负责coverage相关</li>
-<li>vplan：负责vplan相关</li>
-<li>reg：负责autoreg相关</li>
-<li>doc：负责NaturalDocs相关</li>
-<li>clean：负责clean output以及中间文件相关</li>
-<li>gen：负责模板生成相关</li>
-<li>leda：负责leda flow相关</li>
+<li>cov：负责coverage收集与生成报告</li>
+<li>vplan：负责vplan生成与更新</li>
+<li>reg：负责autoreg</li>
+<li>doc：负责NaturalDocs生成</li>
+<li>clean：负责clean output以及可选目录的中间文件</li>
+<li>gen：负责模块级验证目录初始模板生成</li>
+<li>leda：负责leda flow</li>
+<li>ac：负责自动连线</li>
+<li>dc：负责dc flow</li>
+<li>tm：负责独立生成dc timing报告</li>
+<li>fm：负责formality flow</li>
+<li>icc：负责icc flow</li>
+<li>cdc: 负责cdc flow</li>
 </ul>
 </div>
 <div class="section" id="id3">
@@ -514,11 +536,6 @@ Global options:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-output</span> <span class="pre">-tb</span> <span class="pre">-config</span></code></li>
 </ul>
 </li>
-<li>clean leda flow相关中间文件：<ul>
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">clean</span> <span class="pre">-leda</span></code></li>
-<li>只保留leda.tcl以及makefile</li>
-</ul>
-</li>
 </ul>
 <p>pj将全部中间文件按类放置于PROJ_MODULE/output下，在了解这些分类目录的前提下，用rm也可以很方便的clean，目录结构功能细节请参考 <a class="reference internal" href="#id4">平台目录结构</a></p>
 </div>
@@ -541,12 +558,295 @@ Global options:
 </li>
 </ul>
 </div>
+<div class="section" id="leda">
+<h3>子命令leda<a class="headerlink" href="#leda" title="Permalink to this headline">¶</a></h3>
+<p>leda是方便用户对相应的RTL进行是否符合特性规则的检查所用的工具：</p>
+<ul class="simple">
+<li>查看子命令leda的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">leda</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+</ul>
+<p>配置leda.cfg：</p>
+<ul class="simple">
+<li>打开$PROJ_ROOT/flow/leda/leda.cfg文件完成配置</li>
+<li>配置格式与case.cfg格式相同，详见 <a class="reference internal" href="config.html#config"><span class="std std-ref">配置文件使用手册</span></a></li>
+<li>leda可变配置不多，默认不变也可以正常运行</li>
+<li>option log_directory_name<ul>
+<li>可以改变log目录的名称</li>
+<li>默认是leda_logs</li>
+</ul>
+</li>
+<li>option log_file_name<ul>
+<li>可以改变leda log的文件名称</li>
+<li>默认是leda.log</li>
+</ul>
+</li>
+<li>option error_string<ul>
+<li>可以调整检测leda报错的关键字符串</li>
+<li>默认是[ERROR], [FAILURE]</li>
+</ul>
+</li>
+</ul>
+<p>使用pj跑leda flow：</p>
+<ul>
+<li><p class="first">对相应RTL进行leda check并生成log：</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">leda</span> <span class="pre">-gen_log</span> <span class="pre">-f</span> <span class="pre">FLIELIST</span> <span class="pre">-t</span> <span class="pre">LEDA_TOP</span></code></li>
+<li>需要提供RTL的filelist以及top模块名</li>
+</ul>
+</li>
+<li><p class="first">指定特定的leda cfg或多个leda waiver对相应RTL进行leda check并生成log：</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">leda</span> <span class="pre">-gen_log</span> <span class="pre">-f</span> <span class="pre">FLIELIST</span> <span class="pre">-t</span> <span class="pre">LEDA_TOP</span> <span class="pre">-c</span> <span class="pre">LEDA_CFG</span> <span class="pre">-w</span> <span class="pre">LEDA_WAIVER</span></code></li>
+<li>需要提供RTL的filelist以及top模块名</li>
+<li>-c 为可选参数，可根据需求自己指定leda的cfg，默认为$PROJ_ROOT/flow/leda/leda.cfg文件</li>
+<li>-w 可以自行指定多个leda_waiver文件，添加的leda_waiver最终都会保存在leda.tcl文件中，原leda.tcl会备份为leda_&lt;timestamp&gt;.tcl</li>
+</ul>
+</li>
+<li><p class="first">leda check过程中提供black box过滤功能：</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">leda</span> <span class="pre">-gen_log</span> <span class="pre">-f</span> <span class="pre">FLIELIST</span> <span class="pre">-t</span> <span class="pre">LEDA_TOP</span> <span class="pre">-bbf</span> <span class="pre">BB_FILELIST</span></code></li>
+<li>屏蔽掉相应bb_flielist中指定文件的leda check</li>
+<li>bb_filelist的书写规则与filelist书写规则相同，除了不支持-f递归查询</li>
+</ul>
+</li>
+<li><p class="first">打开leda GUI查看、审查与修订leda log中相应的问题：</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">leda</span> <span class="pre">-gui</span></code></li>
+<li>打开GUI之后可以利用disable instance of rule来进行相应的review</li>
+</ul>
+<div class="figure">
+<img alt="_images/leda_gui.png" src="_images/leda_gui.png" />
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="ac">
+<h3>子命令ac<a class="headerlink" href="#ac" title="Permalink to this headline">¶</a></h3>
+<p>ac是方便用户完成相应顶层例化自动连线的工具，主要利用emacs的verilog mode auto template：</p>
+<ul class="simple">
+<li>查看子命令ac的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">ac</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>指定目录对目录以及子目录下面全部的*.ac.v自动连线生成*.v：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">ac</span> <span class="pre">-d</span> <span class="pre">DIR</span></code></li>
+<li>原始文件*.ac.v每次生成都会自动覆盖掉之前的*.v</li>
+</ul>
+</li>
+</ul>
+<p>以下为一段*.ac.v的语法示例：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">module</span> <span class="n">top</span> <span class="p">(</span><span class="o">/*</span><span class="n">AUTOARG</span><span class="o">*/</span><span class="p">);</span>
+   <span class="nb">input</span>  <span class="n">top__sub_a__s1</span><span class="p">;</span>
+   <span class="nb">input</span> <span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="n">top__sub_b__s2</span><span class="p">;</span>
+   <span class="nb">input</span> <span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="n">top__sub_a__asdfghjk</span><span class="p">;</span>
+   <span class="n">output</span> <span class="n">sub_b__top__s1</span><span class="p">;</span>
+
+   <span class="o">/*</span><span class="n">AUTOREG</span><span class="o">*/</span>
+   <span class="o">/*</span><span class="n">AUTOWIRE</span><span class="o">*/</span>
+
+   <span class="n">sub_a</span> <span class="c1">#(/*AUTOINSTPARAM*/) sa1(// Custom Connections</span>
+                                  <span class="o">.</span><span class="n">top__sub_a__ss1</span> <span class="p">(</span><span class="n">top__sub_a__asdfghjk</span><span class="p">),</span>
+                                  <span class="o">/*</span><span class="n">AUTOINST</span><span class="o">*/</span><span class="p">);</span>
+   <span class="n">sub_b</span> <span class="c1">#(/*AUTOINSTPARAM*/) sb1 (// Custom Connections</span>
+                                   <span class="o">/*</span><span class="n">AUTOINST</span><span class="o">*/</span><span class="p">);</span>
+<span class="n">endmodule</span>
+<span class="o">//</span> <span class="n">Local</span> <span class="n">Variables</span><span class="p">:</span>
+<span class="o">//</span> <span class="n">verilog</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="n">directories</span><span class="p">:(</span><span class="s2">&quot;.&quot;</span> <span class="s2">&quot;DIR_SUB_A&quot;</span> <span class="s2">&quot;DIR_SUB_B&quot;</span><span class="p">)</span>
+<span class="o">//</span> <span class="n">End</span><span class="p">:</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>与正常verilog相同</li>
+<li>端口命名规则为SRCMODULE__TARMODULE__SIGNAL(最初始端模块名__最终端模块名__信号名)</li>
+<li>ac工具会跟据/*AUTO*/类注释标志进行自动替换</li>
+<li>文件结尾的注释不可少，在verilog-library-directories中要填该top需要例化连线的子模块目录，支持相对路径，否则ac工具无法获悉子模块的端口名</li>
+</ul>
+</div>
+<div class="section" id="dc">
+<h3>子命令dc<a class="headerlink" href="#dc" title="Permalink to this headline">¶</a></h3>
+<p>dc是方便用户完成相应RTL综合的基础自动化流程：</p>
+<ul class="simple">
+<li>查看子命令dc的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+</ul>
+<p>配置dc.cfg：</p>
+<ul class="simple">
+<li>打开$PROJ_ROOT/flow/dc/src/dc.cfg与$PROJ_ROOT/flow/dc/src/fm.cfg文件完成配置</li>
+<li>配置格式与case.cfg格式相同，详见 <a class="reference internal" href="config.html#config"><span class="std std-ref">配置文件使用手册</span></a></li>
+<li>dc的配置复杂，需要完成正确的配置才可以正确跑通，<strong>cfg文件中的DESIGN_NAME和DESIGN_LIST必须指定</strong></li>
+<li>fm.cfg的配置是为了方便完成dc flow后面的自动化formality flow</li>
+<li>具体dc.cfg与fm.cfg的每一项配置的目的可以咨询后端组 <strong>qianxf&#64;cpu.com.cn</strong></li>
+</ul>
+<p>使用pj跑dc flow：</p>
+<ul class="simple">
+<li>生成tcl文件，对相应RTL进行dc综合：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-gen_tcl</span> <span class="pre">-run</span></code></li>
+<li>dc综合出来的output在$PROJ_ROOT/flow/dc_&lt;timestamp&gt;下面</li>
+</ul>
+</li>
+<li>只生成tcl文件：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-gen_tcl</span> <span class="pre">-s</span> <span class="pre">SRC</span></code></li>
+<li>命令只创建$PROJ_ROOT/flow/dc_&lt;timestamp&gt;目录生成tcl文件，不运行dc</li>
+<li>生成出来的tcl output在$PROJ_ROOT/flow/dc_&lt;timestamp&gt;下面</li>
+</ul>
+</li>
+<li>指定特定的src目录，根据目录下的cfg与template生成tcl文件，并对相应RTL进行dc综合：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-gen_tcl</span> <span class="pre">-run</span> <span class="pre">-s</span> <span class="pre">SRC</span></code></li>
+<li>-s为可选参数，指定一个包含cfg和temnplate的src目录，默认为$PROJ_ROOT/flow/dc/src</li>
+</ul>
+</li>
+<li>指定已存在的dc_&lt;timestamp&gt;目录，在该目录下利用已有的tcl文件对相应RTL进行dc综合：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-d</span> <span class="pre">DC_&lt;timestamp&gt;</span> <span class="pre">-run</span></code></li>
+</ul>
+</li>
+<li>对相应RTL进行dc综合(topo模式)：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-d</span> <span class="pre">DC_&lt;timestamp&gt;</span> <span class="pre">-run</span> <span class="pre">-topo</span></code> 或 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-gen_tcl</span> <span class="pre">-run</span> <span class="pre">-topo</span></code></li>
+</ul>
+</li>
+<li>对相应RTL进行dc综合，并自动生成文本格式的timing report：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-d</span> <span class="pre">DC_&lt;timestamp&gt;</span> <span class="pre">-run</span> <span class="pre">-tm</span></code> 或 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-gen_tcl</span> <span class="pre">-run</span> <span class="pre">-tm</span></code></li>
+<li>文本格式的按timing violation分布区间的归纳统计报告：$PROJ_ROOT/flow/dc_&lt;timestamp&gt;/reports/sum_tm</li>
+</ul>
+</li>
+<li>调整timing report的startpoint与endpoint的hierarchy层数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-d</span> <span class="pre">DC_&lt;timestamp&gt;</span> <span class="pre">-run</span> <span class="pre">-tm</span> <span class="pre">-l</span> <span class="pre">2</span></code> 或 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-gen_tcl</span> <span class="pre">-run</span> <span class="pre">-tm</span> <span class="pre">-l</span> <span class="pre">2</span></code></li>
+<li>-l level参数控制的是所需要统计的timing violation的startpoint与endpoint的hierarchy层数</li>
+<li>默认level值为1</li>
+</ul>
+</li>
+<li>对相应RTL进行dc综合之后自动进行综合前后的formality check：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-d</span> <span class="pre">DC_&lt;timestamp&gt;</span> <span class="pre">-run</span> <span class="pre">-fm</span></code> 或 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">dc</span> <span class="pre">-gen_tcl</span> <span class="pre">-run</span> <span class="pre">-fm</span></code></li>
+<li>formality的output在$PROJ_ROOT/flow/dc_&lt;timestamp&gt;/fm_&lt;timestamp&gt;下面</li>
+</ul>
+</li>
+</ul>
+<p>利用pj跑dc flow每次的结果都会被我们收集的数据库中，同样也有一个web页面可以展示之前每个人kick off每个dc的结果统计，关于该report平台、platform server以及平台数据库请参考 <a class="reference internal" href="backend.html#backend"><span class="std std-ref">backend构架介绍</span></a></p>
+</div>
+<div class="section" id="tm">
+<h3>子命令tm<a class="headerlink" href="#tm" title="Permalink to this headline">¶</a></h3>
+<p>tm是dc的附属子命令，目的是独立分析dc的timing report并生成文本格式的分布区间归纳统计报告：</p>
+<ul class="simple">
+<li>查看子命令tm的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">tm</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+<li>对相应的dc timing report进行分布区间归纳统计报告分析：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">tm</span> <span class="pre">-f</span> <span class="pre">TIMING_REPORT</span></code></li>
+<li>生成的统计报告是TIMING REPORT同级的sum_tm</li>
+<li>默认的level参数为1</li>
+</ul>
+</li>
+<li>改变默认的level参数<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">tm</span> <span class="pre">-f</span> <span class="pre">TIMING_REPORT</span> <span class="pre">-l</span> <span class="pre">2</span></code></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="fm">
+<h3>子命令fm<a class="headerlink" href="#fm" title="Permalink to this headline">¶</a></h3>
+<p>fm是方便用户完成独立的formality比对的基础自动化流程：</p>
+<p>配置fm.cfg：</p>
+<ul class="simple">
+<li>打开$PROJ_ROOT/flow/fm/src/fm.cfg文件完成配置</li>
+<li>配置格式与case.cfg格式相同，详见 <a class="reference internal" href="config.html#config"><span class="std std-ref">配置文件使用手册</span></a></li>
+</ul>
+<p>使用pj跑fm flow：</p>
+<ul class="simple">
+<li>提供ref与imp完成formality比对检查：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">fm</span> <span class="pre">-ref</span> <span class="pre">REF_FILE</span> <span class="pre">-imp</span> <span class="pre">IMP_FILE</span> <span class="pre">-s</span> <span class="pre">SRC</span></code></li>
+<li>REF_FILE与IMP_FILE都可以是独立的.v文件或者filelist文件</li>
+<li>-s为可选参数，用户可自行指定src目录，该目录下包含cfg文件和template，默认为$PROJ_ROOT/flow/fm/src目录</li>
+<li>fm比对出来的output在$PROJ_ROOT/flow/fm_&lt;timestamp&gt;下面</li>
+</ul>
+</li>
+</ul>
+<p>利用pj跑fm flow每次的结果也都会被我们收集的数据库中，请参考 <a class="reference internal" href="backend.html#backend"><span class="std std-ref">backend构架介绍</span></a></p>
+</div>
+<div class="section" id="icc">
+<h3>子命令icc<a class="headerlink" href="#icc" title="Permalink to this headline">¶</a></h3>
+<p>icc是方便用户完成物理设计的自动化流程：</p>
+<ul class="simple">
+<li>查看子命令icc的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">icc</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+</ul>
+<p>配置icc.cfg：</p>
+<ul class="simple">
+<li>打开$PROJ_ROOT/flow/icc/src/icc.cfg文件完成配置</li>
+<li>配置格式与case.cfg格式相同，详见 <a class="reference internal" href="config.html#config"><span class="std std-ref">配置文件使用手册</span></a></li>
+<li>具体icc.cfg的每一项配置的目的可以咨询后端组 <strong>jiangz&#64;cpu.com.cn</strong></li>
+</ul>
+<p>使用pj跑icc flow：</p>
+<ul class="simple">
+<li>在指定的目录下运行icc的指定阶段：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">icc</span> <span class="pre">-d</span> <span class="pre">ICC_&lt;timestamp&gt;</span> <span class="pre">-setup</span> <span class="pre">-fp</span> <span class="pre">-place</span> <span class="pre">-cts</span> <span class="pre">-route</span></code></li>
+<li>在ICC_&lt;timestamp&gt;目录下自动运行指定的icc的某一个或某几个阶段</li>
+<li>icc运行的结果保存在指定的目录ICC_&lt;timestamp&gt;下</li>
+</ul>
+</li>
+<li>在自动创建的新目录下运行icc的指定阶段：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">icc</span> <span class="pre">-setup</span> <span class="pre">-fp</span> <span class="pre">-place</span> <span class="pre">-cts</span> <span class="pre">-route</span> <span class="pre">-gen_tcl</span> <span class="pre">-s</span> <span class="pre">SRC</span></code></li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">icc</span> <span class="pre">-gen_tcl</span> <span class="pre">-s</span> <span class="pre">SRC</span></code> 只创建$PROJ_ROOT/flow/icc/icc_&lt;timestamp&gt;目录后产生tcl，不运行icc</li>
+<li>自动创建$PROJ_ROOT/flow/icc/icc_&lt;timestamp&gt;目录，在该目录下运行指定的icc的某些阶段</li>
+<li>-s为可选参数，用来指定一个包含cfg、template和plug的src目录，默认为$PROJ_ROOT/flow/icc/src目录</li>
+<li>-s指定目录下的plug文件内容根据实际运行模块进行修改</li>
+<li>icc运行的结果保存在自动创建的目录$PROJ_ROOT/flow/icc/icc_&lt;timestamp&gt;下</li>
+</ul>
+</li>
+<li>在指定目录或新创建目录下运行icc所有阶段：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">icc</span> <span class="pre">-d</span> <span class="pre">ICC_&lt;timestamp&gt;</span> <span class="pre">-all</span></code> 或 <code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">icc</span> <span class="pre">-gen_tcl</span> <span class="pre">-all</span></code></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="cdc">
+<h3>子命令cdc<a class="headerlink" href="#cdc" title="Permalink to this headline">¶</a></h3>
+<p>cdc是方便用户完成跨时钟域检查的基础自动化流程：</p>
+<ul class="simple">
+<li>查看子命令icc的全部参数：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cdc</span> <span class="pre">-h</span></code></li>
+</ul>
+</li>
+</ul>
+<p>配置cdc.cfg：</p>
+<ul class="simple">
+<li>打开$PROJ_ROOT/flow/cdc/src/cdc.cfg文件完成配置<ul>
+<li>其中的err_str是提供进行compile结果检查的标志字符</li>
+</ul>
+</li>
+<li>配置格式与case.cfg格式相同，详见 <a class="reference internal" href="config.html#config"><span class="std std-ref">配置文件使用手册</span></a></li>
+</ul>
+<p>配置waiver.cfg：</p>
+<ul class="simple">
+<li>打开$PROJ_ROOT/flow/cdc/src/waiver.cfg文件完成配置<ul>
+<li>section的名字为user name，表示用户check in的waiver，供cdc reviewer查看</li>
+<li>sp|ep必须按照startpoint|endpoint的格式给出，否则会给出warning</li>
+<li>type/startpoint/endpoint中均可以使用通配符*</li>
+</ul>
+</li>
+</ul>
+<p>使用pj跑cdc flow：</p>
+<ul class="simple">
+<li>根据配置的flist和design top运行cdc：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">cdc</span> <span class="pre">-s</span> <span class="pre">SRC</span></code></li>
+<li>-s可以指定一个包含运行cdc需要的cfg和tcl的目录，默认为$PROJ_ROOT/flow/cdc/src</li>
+<li>cdc运行的结果保存在目录$PROJ_ROOT/flow/cdc/cdc_&lt;timestamp&gt;下</li>
+<li>cdc运行完后对cdc_detail.rpt进行检查，将沒有waive掉的Violation写入$PROJ_ROOT/flow/cdc/cdc_&lt;timestamp&gt;/post_waiver.rpt文件</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div class="section" id="id4">
 <h2>平台目录结构<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>这里主要介绍和平台有关的目录结构</p>
-<div class="section" id="proj-root-share-cmn-config">
-<h3>PROJ_ROOT/share/cmn/config/<a class="headerlink" href="#proj-root-share-cmn-config" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="proj-root-share-config">
+<h3>PROJ_ROOT/share/config/<a class="headerlink" href="#proj-root-share-config" title="Permalink to this headline">¶</a></h3>
 <p>proj.cfg所在目录</p>
 </div>
 <div class="section" id="proj-root-verification-module">
@@ -579,7 +879,7 @@ Global options:
 │       ├── 91185
 │       └── 979315
 ├── reg                       # reg相关文件
-├── scr                       # custom script相关文件
+├── upf                       # low power upf相关文件
 ├── tb                        # tb所有文件
 └── vplan                     # vplan相关文件
 </pre></div>
@@ -619,7 +919,7 @@ Global options:
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
     </div>
   </body>
 </html>

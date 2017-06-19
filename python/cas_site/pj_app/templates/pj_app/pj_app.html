@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+All Flow Info 
+{% endblock %}
+
+{% block content %}
+<div id="container_st" class="clearfix" style="width: 1300px; padding-bottom: 370px;">
+  <div class="content" style="height:auto; width: 1290px; margin: 0px auto;">
+    <div id="pj_flows">
+      <h1> There are ASIC Flows  Using Pj tool to run and analyse below:</h1>
+      <div id="pj_tab_info" style="width: 820px; margin-bottom: 100px;">  
+        <table id="pj_tab" class="display" cellpadding="10">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Pj Flow</th>
+              <th>Run Time</th>
+              <th>Users</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </tfoot>
+        </table>  
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+function format (d) {
+    if(d.run_time.time1 == undefined && d.users.user1 == undefined) {
+      d.run_time.time1 = "NA";
+      d.users.user1 = "NA";
+    }
+    if(d.run_time.time2 == undefined && d.users.user2 == undefined) {
+      d.run_time.time2 = "NA";
+      d.users.user2 = "NA";
+    }
+  return '<table cellpadding="5" cellspacing="0" border="0" >' +
+         '<tr>' +
+            '<td>' + 'Recent twice run time and users: ' + '</td>'+
+         '<tr>' +
+         '<tr>'  +
+            '<td>' + d.run_time.time1 + '</td>'+
+            '<td>' +d.users.user1 + '</td>'+
+         '</tr>' +
+         '<tr>'  +
+            '<td>' + d.run_time.time2 + '</td>'+
+            '<td>' + d.users.user2 + '</td>'+
+         '</tr>' +
+      '</table>';          
+}
+$(function() {
+  var table = $("#pj_tab").DataTable({
+    "ajax": "{% url 'pj_app:pj_ajax_info' %}",
+    "columns": [
+        {
+          "className": 'details-control',
+          "orderable": false,
+          "data":null,
+          "defaultContent":''
+        },
+        { "data": "pj_flow",
+          "render": function(data, type, full, meta) {
+            return '<a href="'+ data  + "/" + '" target="_blank">' + data + '</a>';            
+          },
+          "createdCell": function (tr, cellData, rowData, row, col) {
+                $(tr).css('background', "rgba(170, 164, 166, 0.52)");
+          }          
+        },
+        { "data": "run_time.time0",
+          "render": function(data, type, full, meta) {
+              if(!data) {
+                return "NA";
+              } else {
+                return data;
+              }
+          }
+        },
+        { "data": "users.user0",
+          "render": function(data, type, full, meta) {
+              if(!data) {
+                return "NA";
+              } else {
+                return data;
+              }
+          }        
+        }
+    ],
+    "order": [[1, 'desc']],
+    // "scrollY": "230px",
+    "deferRender": true,
+    "lengthChange": false,
+    "bPaginate": true, //翻页功能
+    "searching": false,
+  });
+  $('#pj_tab tbody').on('click', 'td.details-control', function() {
+      var tr = $(this).closest('tr');
+      var row = table.row(tr);
+
+      if(row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+      } else {
+        row.child( format(row.data()) ).show();
+        tr.addClass('shown');
+      }
+  });
+});
+</script>
+{% endblock %}

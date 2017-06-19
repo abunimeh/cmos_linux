@@ -1,0 +1,69 @@
+{% extends 'user_info/user_info_base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+Svn-add
+{% endblock %}
+
+{% block userinfo %}
+<!-- start content -->
+<div id = "userinfo">
+    {% if add_sucs %}
+        <p>The user {{add_name}} was added successfully. You may add another user below.</p>
+    {% endif %}
+    <div class="userborder">
+        <h1 class="form-title">Add user</h1>
+        <form class="svn-form" action="" method="POST" >
+            {% csrf_token %}
+            {{ form.non_field_errors }}                    
+            <div class=" form-row field-name">
+                {{ form.name.errors }}
+                {{ form.name.label_tag }}
+                <span class="form-span name-span">
+                    {{ form.name }}
+                </span>                        
+            </div>
+            <div class="form-row field-repos">
+                {{ form.repos.errors }}
+                {{ form.repos.label_tag }}
+                <span class="form-span repos-span">
+                    {{ form.repos }}
+<!--                             <a title="add another proj" onclick="window.open('{% url 'user_info:svn_items_add_update' "pk" form.repos.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+-->                        </span>                        
+            </div>
+
+            <div class="form-row field-proj">
+                {{ form.proj.errors }}
+                {{ form.proj.label_tag }}
+                <span class="form-span proj-span">
+                    {{ form.proj }}
+<!--                             <a title="add another proj" onclick="window.open('{% url 'user_info:svn_items_add_update' "pk" form.proj.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+-->                        </span>                        
+            </div>
+            <div class="form-row field-level">
+                {{ form.level.errors }}
+                {{ form.level.label_tag }}
+                <span class="form-span level-span">
+                    {{ form.level }}
+<!--                             <a href="#" title="add another level" onclick="window.open('{% url 'user_info:svn_items_add_update' "pk" form.level.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+-->                        </span>                        
+            </div>
+            <div class="form-row field-group">
+                {{ form.group.errors }}
+                {{ form.group.label_tag }}
+                <span class="form-span group-span">
+                    {{ form.group }}
+                    <a href="#" title="add another group" onclick="window.open('{% url 'user_info:svn_items_add_update' "pk" form.group.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+                </span>                        
+            </div>
+            <div class="submit-row">
+              <input id="add_another" type="submit" value="Save and add another" name="add_another"> 
+              <input id="editing" type="submit" value="Save and continue editing" name="editing"> 
+              <input id="edit_save" type="submit" value="Save" name="edit_save"> 
+            </div>
+        </form>
+    </div>            
+</div>
+<!-- end content -->
+{% endblock %}

@@ -1,98 +1,119 @@
-# Author: Guanyu Yi @ CPU Verification Platform Group
-# Email: yigy@cpu.com.cn
-# Description: EnvBooter class for booting inital env variables
+"""
+Author: Guanyu Yi @ CPU Verification Platform Group
+Email: yigy@cpu.com.cn
+Description: EnvBooter class for booting inital env variables
+"""
 
-### modules
-import pcom
 import os
 import datetime as dt
 import subprocess
 import copy
+import pcom
 
-### functions
+LOG = pcom.gen_logger(__name__)
+
 def find_proj_root(path_str):
-    if path_str == '/':
+    """to find project root directory according to specified file"""
+    if path_str == "/":
         raise Exception("it's not in a working copy from a project repository")
-    elif os.path.isfile(path_str+os.sep+'.cas_proj_root_flg'):
+    elif os.path.isfile(f"{path_str}{os.sep}{pcom.FLAG_FILE}"):
         return path_str
     else:
         return find_proj_root(os.path.dirname(path_str))
 
 def find_module_dir(ced, cfg_dic, module):
-    for module_dir in pcom.find_iter(ced['PROJ_VERIF'], module, True):
-        if os.path.isdir(module_dir+os.sep+'config'):
+    """to find verification module dir according to their subdir config"""
+    for module_dir in pcom.find_iter(ced["PROJ_VERIF"], module, True):
+        if os.path.isdir(f"{module_dir}{os.sep}config"):
             return module_dir
-            break
-    else:
-        tree_ignore_str = '|'.join(pcom.rd_cfg(
-            cfg_dic['proj'], 'proj', 'tree_ignore'))
-        run_str = 'tree -d -I "(|{0}|)" {1}'.format(
-            tree_ignore_str, ced['PROJ_VERIF'])
-        tree_str = subprocess.run(run_str, shell=True, check=True,
-                                  stdout=subprocess.PIPE).stdout.decode()
-        raise Exception("module {0} is NA; the possible module is {1}{2}"
-                        "".format(module, os.linesep, tree_str))
+    tree_ignore_str = "|".join(pcom.rd_cfg(cfg_dic["proj"], "proj", "tree_ignore"))
+    run_str = f"tree -d -I '(|{tree_ignore_str}|)' {ced['PROJ_VERIF']}"
+    tree_str = subprocess.run(
+        run_str, shell=True, check=True, stdout=subprocess.PIPE).stdout.decode()
+    raise Exception(f"module {module} is NA; the possible module is {os.linesep}{tree_str}")
 
-def boot_env():
-    os.environ['PROJ_ROOT'] = find_proj_root(os.getcwd())
-    ced = {'PROJ_ROOT': os.environ['PROJ_ROOT'],
-           'TIME': dt.datetime.now(),
-           'USER_NAME': os.environ['USER']}
-    proj_cfg = os.path.expandvars('$PROJ_ROOT/share/config/proj.cfg')
-    if not os.path.isfile(proj_cfg):
-        raise Exception("proj config file {0} is NA".format(proj_cfg))
-    cfg_dic = {'proj': pcom.gen_cfg([proj_cfg])}
-    for env_key, env_value in cfg_dic['proj']['boot_env'].items():
-        os.environ[env_key] = os.path.expandvars(env_value)
-        ced[env_key] = os.path.expandvars(env_value)
-    return (ced, cfg_dic)
-
-def module_env(LOG, sim_module, x86_ins_flg=False,
-               x86_ins_num=None, x86_ins_groups=None):
-    LOG = LOG if LOG else pcom.gen_logger()
-    ced, cfg_dic = boot_env()
-    os.environ['MODULE'] = sim_module
-    ced['MODULE'] = sim_module
-    module_dir = find_module_dir(ced, cfg_dic, sim_module)
-    os.environ['PROJ_MODULE'] = module_dir
-    ced['PROJ_MODULE'] = module_dir
-    for env_key, env_value in cfg_dic['proj']['module_env'].items():
-        os.environ[env_key] = os.path.expandvars(env_value)
-        ced[env_key] = os.path.expandvars(env_value)
-    if x86_ins_flg:
-        x86_ins_num = (int(
-            pcom.rd_cfg(cfg_dic['proj'], 'x86_ins', 'default_ins_num')[0]) if
-                       x86_ins_num == None else x86_ins_num)
-        x86_ins_groups = (
-            pcom.rd_cfg(cfg_dic['proj'], 'x86_ins', 'case_group') if
-            x86_ins_groups == None else x86_ins_groups)
-        scr_xi_dir = ced['SHARE_SCRIPTS']+os.sep+'X86_INS'
-        case_gen_file = scr_xi_dir+os.sep+'case_gen.py'
+class EnvBooter(object):
+    """environment booter for pj"""
+    def __init__(self, eb_dic=None):
+        self.ced = {}
+        self.cfg_dic = {}
+        self.eb_dic = eb_dic if eb_dic else {
+            "x86_ins_flg": False, "x86_ins_num": None, "x86_ins_groups": None}
+    def boot_env(self):
+        """to boot top environments used only by pj"""
+        os.environ["PROJ_ROOT"] = find_proj_root(os.getcwd())
+        self.ced = {
+            "PROJ_ROOT": os.environ["PROJ_ROOT"],
+            "TIME": dt.datetime.now(),
+            "USER_NAME": os.environ["USER"]}
+        proj_cfg = os.path.expandvars("$PROJ_ROOT/share/config/proj.cfg")
+        if not os.path.isfile(proj_cfg):
+            raise Exception(f"proj config file {proj_cfg} is NA")
+        self.cfg_dic = {"proj": pcom.gen_cfg([proj_cfg])}
+        for env_key, env_value in (
+                self.cfg_dic["proj"]["boot_env"] if "boot_env" in self.cfg_dic["proj"]
+                else {}).items():
+            os.environ[env_key] = os.path.expandvars(env_value)
+            self.ced[env_key] = os.path.expandvars(env_value)
+        return self.ced, self.cfg_dic
+    def x86_env(self):
+        """to generate x86 instructions case configs"""
+        self.eb_dic["x86_ins_num"] = (
+            int(pcom.rd_cfg(self.cfg_dic["proj"], "x86_ins", "default_ins_num", True))
+            if self.eb_dic["x86_ins_num"] is None else self.eb_dic["x86_ins_num"])
+        self.eb_dic["x86_ins_groups"] = (
+            pcom.rd_cfg(self.cfg_dic["proj"], "x86_ins", "case_group")
+            if self.eb_dic["x86_ins_groups"] is None else self.eb_dic["x86_ins_groups"])
+        scr_xi_dir = f"{self.ced['SHARE_SCRIPTS']}{os.sep}X86_INS"
+        case_gen_file = f"{scr_xi_dir}{os.sep}case_gen.py"
         if not os.path.isfile(case_gen_file):
-            raise Exception("case_gen.py file {0} is NA".format(case_gen_file))
+            raise Exception(f"case_gen.py file {case_gen_file} is NA")
         os.sys.path.append(scr_xi_dir)
         import case_gen
-        for cg_name in x86_ins_groups:
-            case_gen_inst = case_gen.CaseGen(
-                ced['MODULE'], cg_name, x86_ins_num, ced['MODULE_CONFIG'])
-            case_gen_inst.gen_case()
-    simv_cfg = ced['MODULE_CONFIG']+os.sep+'simv.cfg'
-    if not os.path.isfile(simv_cfg):
-        raise Exception("simv config file {0} is NA".format(case_cfg))
-    cfg_dic['simv'] = pcom.gen_cfg([simv_cfg])
-    case_cfg = ced['MODULE_CONFIG']+os.sep+'case.cfg'
-    if not os.path.isfile(case_cfg):
-        raise Exception("case config file {0} is NA".format(case_cfg))
-    case_cfg_lst = [case_cfg]
-    for cfg_file in pcom.find_iter(ced['MODULE_CONFIG'], 'case_*.cfg'):
-        LOG.info("more case config file {0}".format(cfg_file))
-        case_cfg_lst.append(cfg_file)
-    case_cfg_lst.reverse()
-    cfg_dic['case'] = pcom.gen_cfg(case_cfg_lst)
-    simv_module_env = copy.copy(cfg_dic['proj']['env_simv'])
-    case_module_env = copy.copy(cfg_dic['proj']['env_case'])
-    simv_module_env.update(cfg_dic['simv']['DEFAULT'])
-    case_module_env.update(cfg_dic['case']['DEFAULT'])
-    cfg_dic['simv']['DEFAULT'] = simv_module_env
-    cfg_dic['case']['DEFAULT'] = case_module_env
-    return (ced, cfg_dic)
+        for cg_name in self.eb_dic["x86_ins_groups"]:
+            case_gen.CaseGen(
+                self.ced["MODULE"], cg_name, self.eb_dic["x86_ins_num"],
+                self.ced["MODULE_CONFIG"]).gen_case()
+    def module_env(self, sim_module):
+        """to boot verification module level environments used only by pj"""
+        self.boot_env()
+        self.ced["MODULE"] = os.environ["MODULE"] = sim_module
+        self.ced["PROJ_MODULE"] = os.environ["PROJ_MODULE"] = find_module_dir(
+            self.ced, self.cfg_dic, sim_module)
+        for env_key, env_value in (
+                self.cfg_dic["proj"]["module_env"] if "module_env" in self.cfg_dic["proj"]
+                else {}).items():
+            os.environ[env_key] = os.path.expandvars(env_value)
+            self.ced[env_key] = os.path.expandvars(env_value)
+        if self.eb_dic["x86_ins_flg"]:
+            self.x86_env()
+        c_cfg = f"{self.ced['MODULE_CONFIG']}{os.sep}c.cfg"
+        if not os.path.isfile(c_cfg):
+            c_cfg = ""
+        self.cfg_dic["c"] = pcom.gen_cfg([c_cfg])
+        simv_cfg = f"{self.ced['MODULE_CONFIG']}{os.sep}simv.cfg"
+        if not os.path.isfile(simv_cfg):
+            raise Exception(f"simv config file {simv_cfg} is NA")
+        self.cfg_dic["simv"] = pcom.gen_cfg([simv_cfg])
+        case_cfg = f"{self.ced['MODULE_CONFIG']}{os.sep}case.cfg"
+        if not os.path.isfile(case_cfg):
+            raise Exception(f"case config file {case_cfg} is NA")
+        case_cfg_lst = [case_cfg]
+        for cfg_file in pcom.find_iter(self.ced["MODULE_CONFIG"], "case_*.cfg"):
+            LOG.info("more case config file %s", cfg_file)
+            case_cfg_lst.append(cfg_file)
+        case_cfg_lst.reverse()
+        self.cfg_dic["case"] = pcom.gen_cfg(case_cfg_lst)
+        c_module_env = copy.copy(
+            self.cfg_dic["proj"]["env_c"] if "env_c" in self.cfg_dic["proj"] else {})
+        simv_module_env = copy.copy(
+            self.cfg_dic["proj"]["env_simv"] if "env_simv" in self.cfg_dic["proj"] else {})
+        case_module_env = copy.copy(
+            self.cfg_dic["proj"]["env_case"] if "env_case" in self.cfg_dic["proj"] else {})
+        c_module_env.update(self.cfg_dic["c"]["DEFAULT"])
+        simv_module_env.update(self.cfg_dic["simv"]["DEFAULT"])
+        case_module_env.update(self.cfg_dic["case"]["DEFAULT"])
+        self.cfg_dic["c"]["DEFAULT"] = c_module_env
+        self.cfg_dic["simv"]["DEFAULT"] = simv_module_env
+        self.cfg_dic["case"]["DEFAULT"] = case_module_env
+        return self.ced, self.cfg_dic

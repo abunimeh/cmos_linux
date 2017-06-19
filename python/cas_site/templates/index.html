@@ -6,45 +6,19 @@
 INDEX
 {% endblock %}
 
-<!-- start content -->
 {% block content %}
-  <div id="container_st" class="clearfix" style="padding-top: 182px;">
+<!-- start content -->
+  {% csrf_token %}
+  <div id="container_st" class="clearfix" style="padding-top: 210px;">
     <div class="content" style="margin-top: 0px;">
       <div id="slideshow">
-        <div id="slider">
-          <h3 class="text_1_1">Platform Document</h3>
-          <p class="text_1_2 large"> This app describes our platform in detail---<a href="/static/doc/_build/html/index.html">learn more</a></p>
-        </div>
-        <!-- end slider -->
-      </div>
-      <!-- end slideshow -->
-      <div id="quote" class="clear">
-        <div class="coda-slider-wrapper">
-          <div class="coda-slider preload" id="coda-slider-1">
-            <div class="panel">
-              <div class="panel-wrapper">
-                <div class="logos alignleft"><img src="{% static 'images/logos/verification_platform.png' %}"  /></div>
-                <div class="quote">
-                  <p class="quoter">Verification Platform</p>
-                  <p>This site targets at public service interface of Verification Platform</p>
-                   <br />
-                   <br />
-               </div>
-              </div>
-            </div>
-            <!-- end panel -->
-          </div>
+        <div>
+           <img src="{% static 'images/logos/cpu_m_os_bg_950.png' %}">
         </div>
       </div>
-      <!-- end quote -->
     </div>
   </div>
 <!-- end content -->
-{% endblock %}
-
-
-{% block js %}
-
 {% endblock%}
 
 

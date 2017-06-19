@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load pj_app_extras %}
+
+{% block title %}
+  Dc time rpt
+{% endblock %}
+
+{% block content %}
+<div id="container_st" class="clearfix" style="width: 1315px; padding-bottom: 138px;">
+  <div class="content" style="height:auto; width: 1290px; margin: 0px auto;">
+    <div class="ref-tar">
+      <span>Timing Report Summary:</span>        
+    </div>
+    <div id="show_tab1">  
+      <table id="tab1" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>Run Time</th>
+            <th>Violated Sum</th>
+            {% for gplv in rpt_data.lv_gp.gp.keys %}
+            <th>{{gplv}} Sum</th>
+            {% endfor %}
+            {% for gpnlv in rpt_data.nlv_gp.gp.keys %}
+            <th>{{gpnlv}} Sum</th>
+            {% endfor %} 
+            <th>Log Path</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th></th>
+            <th></th>
+            {% for gplv in rpt_data.lv_gp.gp.keys %}
+            <th></th>
+            {% endfor %}
+            {% for gpnlv in rpt_data.nlv_gp.gp.keys %}
+            <th></th>
+            {% endfor %}
+            <th></th>
+          </tr>
+        </tfoot>
+        <tbody>
+          <tr>
+            <td>{{ref_tm}}</td>
+            <td>{{rpt_data.gp_sum|default:"NA"}}</td>
+            {% for gplv in rpt_data.lv_gp.gp.values %}
+            <td>{{gplv}}</td>
+            {% endfor %}
+            {% for gpnlv in rpt_data.nlv_gp.gp.values %}
+            <td>{{gpnlv}}</td>
+            {% endfor %}
+            {% if rpt_data.log_path %}            
+              <td><a href="{% url 'pj_app:dc_detail_loginfo' rpt_data.log_path %}" target='_blank' >{{rpt_data.log_path}}</a></td>
+            {% else %}
+              <td>NA</td>
+            {% endif %}
+          </tr>
+        </tbody>
+      </table>  
+    </div> 
+    <div class="ref-tar">
+      <span>Path Groups no grade: </span>        
+      <span class="unit">Unit: ps</span>        
+    </div>    
+    <div id="show_tab2">  
+      <table id="tab2" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>Path Group</th>
+            <th>Startpoint</th>
+            <th>Endpoint</th>
+            <th>Sum</th>
+            <th>(-100,0)</th>
+            <th>(-300,-100)</th>
+            <th>(-500,-300)</th>
+            <th>(-1000,-500)</th>
+            <th>(~,-1000)</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+        <tbody>
+          {% for nlv_gp, nlv_intv in rpt_data.nlv_gp.items %}
+            {% if nlv_gp != "gp" %}
+              <tr>
+                {% for nlv in nlv_gp|split:"**" %}
+                  <td>{{nlv}}</td>
+                {% endfor%}
+                <td>{{nlv_intv.gse_sum}}</td>
+                {% for num in nlv_intv.slk_num %}
+                  <td>{{num}}</td>
+                {% endfor %}
+              </tr>
+            {% endif %}
+          {% empty %}
+            <td>NA</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>NA</td>
+          {% endfor %}
+        </tbody>
+      </table>  
+    </div>
+    <div class="ref-tar">
+      <span>Path Groups grade: </span>        
+      <span class="unit">Unit: ps</span>        
+    </div>    
+    <div id="level_selt">
+      <select>
+        <option>Level 1</option>
+        <option>Level 2</option>
+        <option>Level 3</option>
+        <option>Level 4</option>
+        <option>Level 5</option>
+      </select>        
+    </div>              
+    <div id="show_tab3">  
+      <table id="tab3" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>Path Group</th>
+            <th>Startpoint</th>
+            <th>Endpoint</th>
+            <th>Sum</th>
+            <th>(-100,0)</th>
+            <th>(-300,-100)</th>
+            <th>(-500,-300)</th>
+            <th>(-1000,-500)</th>
+            <th>(~,-1000)</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+        <tbody>
+          {% for lv_gp, lv_intv in rpt_data.lv_gp.items %}
+            {% if lv_gp != "gp" %}
+              <tr>
+                {% for lv in lv_gp|split:"**" %}
+                  <td>{{lv}}</td>
+                {% endfor%}
+                <td>{{lv_intv.gse_sum}}</td>
+                {% for num in lv_intv.slk_num %}
+                  <td>{{num}}</td>
+                {% endfor %}
+              </tr>
+            {% endif %}
+          {% empty %}
+            <tr>
+              <td>NA</td>
+              <td>NA</td>
+              <td>NA</td>
+              <td>NA</td>
+              <td>NA</td>
+              <td>NA</td>
+              <td>NA</td>
+              <td>NA</td>
+              <td>NA</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>  
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+function time_tab(select) {
+  $(select).DataTable({
+    "deferRender": true,
+    "destroy": true,
+    "lengthChange": true,
+    "lengthMenu": [
+      [5, 50, 100, -1],
+      [5, 50, 100, "All"]],
+    "bPaginate": true,
+    "searching": true,
+    "order":false,
+    "scrollx": true,
+  });  
+}
+  $(function() {
+    $("#tab1").DataTable({
+        "deferRender": true,
+        "lengthChange": false,
+        "bPaginate": false, //翻页功能
+        "searching": false,
+        "bSort":false,
+        "bInfo": false,
+        "order":false,
+    });
+    time_tab("#tab2");
+    time_tab("#tab3");
+    $("#level_selt select").change(function(){
+      var level = $(this).val();
+      var user_info = {{user_info|safe}};
+      $.ajax({
+        type: "GET",
+        url:"{% url 'pj_app:dc_get_tminfo' %}",
+        data: {"user": user_info["user"], 
+               "proj": user_info["proj"], 
+               "module": user_info["module"], 
+               "time":user_info["ref_tm"], 
+               "level": level},
+        success: function(data) {
+          $("#show_tab3").empty();
+          $("#show_tab3").append('<table id="tab3" class="display" cellspacing="0" width="100%"><thead><tr><th>Path Group</th><th>Startpoint</th><th>Endpoint</th><th>Sum</th><th>(-100,0)</th><th>(-300,-100)</th><th>(-500,-300)</th><th>(-1000,-500)</th><th>(~,-1000)</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot><tbody></tbody></table>');
+          $.each(data.lv_gp, function(gp, slk_obj){
+            if(gp != "gp") {
+              var gp_lst = gp.split("**");
+              var tr_html = "<tr>";
+              for (var i = 0; i < gp_lst.length; i++) {
+                tr_html += "<td>"+ gp_lst[i] + "</td>";
+              }
+                tr_html += "<td>" + slk_obj.gse_sum + "</td>";
+              for (var i = 0; i < slk_obj.slk_num.length ; i++) {
+                tr_html += "<td>" + slk_obj.slk_num[i] + "</td>";
+              }
+              tr_html += "</tr>";
+              $("#tab3").append(tr_html);
+            }
+          });
+         time_tab("#tab3");
+        }        
+      });  
+    });    
+  });
+</script>
+{% endblock%}

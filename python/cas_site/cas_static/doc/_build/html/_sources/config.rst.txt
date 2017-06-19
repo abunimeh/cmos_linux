@@ -9,7 +9,7 @@
 
 平台在项目中有三种配置文件：
 
-- PROJ_ROOT/share/cmn/config/proj.cfg
+- PROJ_ROOT/share/config/proj.cfg
 
   + 项目唯一
   + 配置文件覆盖优先级低

@@ -1,0 +1,31 @@
+{% extends 'user_info/user_info_base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+Svn-delete
+{% endblock %}
+
+{% block userinfo %}
+<!-- start content -->
+<div id = "userinfo">
+    <div class="userborder">
+        <div class="delete-user">
+            <h1>Are you sure ?</h1>
+            <p>"Are you sure you want to delete the user "{{del_user}}" ? All of the following related items will be deleted:"</p>
+            <ul>
+                <span>Objects:</span>
+                <li>user:  {{del_user}}</li>
+            </ul>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="submit-row">
+                  <input id="editing" type="submit" value="Yes, I'm sure!" name="delete"> 
+                  <input id="edit_save" type="submit" value="No, take me back" name="no_delete"> 
+                </div>
+            </form>                
+        </div>
+    </div>            
+</div>
+<!-- end content -->
+{% endblock %}

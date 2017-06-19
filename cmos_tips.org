@@ -159,6 +159,29 @@ perl Makefile.PL PREFIX=<local_dir>
 make
 make install
 
+* makefile
+CC = g++
+CFLAGS = -c -Wall -g -Os -fPIC
+LDFLAGS = -l${TARGET} -L./
+TARGET = cmos
+TARGET_LIB = libcmos.so
+OBJECTS = ${patsubst %.c, %.c.o, ${wildcard *.c}}
+OBJECTS += ${patsubst %.cpp, %.cpp.o, ${shell find ./ -type f -iname "*.cpp"}}
+${info $$OBJECTS is [${OBJECTS}]}
+all: $(TARGET)
+${TARGET}: ${TARGET_LIB}
+	${CC} -o $@ $^
+${TARGET_LIB}: ${OBJECTS}
+        ${CC} -shared -o $@ $^
+%.c.o: %.c
+        ${CC} ${CFLAGS} -o $@ $^
+%.cpp.o: %.cpp
+        ${CC} ${CFLAGS} -o $@ $^
+run: ${TARGET}
+	@export LD_LIBRARY_PATH=./:${LD_LIBRARY_PATH} && ./$<
+clean:
+        rm ${TARGET} ${TARGET_LIB} ${OBJECTS}
+
 * sed
 sed -i -E "s/<regex>/<string>/g" <files>
 
@@ -235,6 +258,11 @@ man <prog>
 make
 make test
 make install
+
+* other lib version local installation
+export LD_LIBRARY_PATH
+export LD_RUN_PATH
+./configure LDFLAGS="-L<path>" CPPFLAGS="-I<include_path>" --prefix=<local_path>
 
 * smb
 smb://<ip_addr>

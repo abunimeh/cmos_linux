@@ -25,7 +25,7 @@ ${OUTPUT_SIMV}/{{case_dic.simv}}/simv \
 ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{file_name}} \
 {%-endfor%}
 ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl
-{%-if c_lst%}
+{%-if clib_flg%}
 	export LD_LIBRARY_PATH=${OUTPUT_CLIB}:${LD_LIBRARY_PATH} && \
 {%-endif%}
 {%-for pre_cmd in case_dic.pre_cmd_lst%}
@@ -52,10 +52,10 @@ ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl:
 	@echo fsdbDumpfile {{case_dic.name}}__{{case_dic.seed}}.fsdb >> $@
 	@echo fsdbDumpvars 0 {{case_dic.tb_top}} >> $@
 {%-if case_dic.wave_mem%}
-	@echo fsdbDumpMDA
+	@echo fsdbDumpMDA >> $@
 {%-endif%}
 {%-if case_dic.wave_glitch%}
-	@echo fsdbDumpon +glitch
+	@echo fsdbDumpon +glitch >> $@
 {%-endif%}
 {%-endif%}
 {%-endif%}

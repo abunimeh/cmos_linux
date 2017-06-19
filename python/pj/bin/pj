@@ -1,852 +1,471 @@
 #! /usr/bin/env python3
+"""
+Author: Guanyu Yi @ CPU Verification Platform Group
+Email: yigy@cpu.com.cn
+Description: verification platform main entrence
+"""
 
-# Author: Guanyu Yi @ CPU Verification Platform Group
-# Email: yigy@cpu.com.cn
-# Description: verification platform main entrence
-
-##### modules
-import pcom
-import env_booter
-import makefile_gen
-import filelst_gen
-import log_parser
-import fpga_signals_gen
-import vplan_proc
 import os
 import argparse
-import subprocess
-import shutil
-import datetime as dt
-import texttable
-import json
-import re
+import pcom
+import im_runner
+import init_runner
+import sr_runner
+import cov_runner
+import vplan_runner
+import reg_runner
+import doc_runner
+import clean_runner
+import gen_runner
+import leda_runner
+import ac_runner
+import dc_runner
+import tm_runner
+import fm_runner
+import icc_runner
+import cdc_runner
 
-##### functions
-def gen_args_top():
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-    h_str = ("input log name <MUST come first>")
-    parser.add_argument('-l', dest='log', help=h_str)
+LOG = pcom.gen_logger(__name__)
 
-    h_str = ("sub cmd about running simulation and regression")
-    run_parser = subparsers.add_parser('run', help=h_str)
-    run_gg_group = run_parser.add_mutually_exclusive_group()
-    h_str = ("input run module")
-    run_parser.add_argument('-m', dest='run_module', default='', help=h_str)
-    h_str = ("toggle to elaborate all case simvs")
-    run_parser.add_argument('-comp', dest='run_comp', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to compile c code for module")
-    run_parser.add_argument('-cc', dest='run_cc', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to list all cases in module")
-    run_parser.add_argument('-list', dest='run_list', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to run all cases of module")
-    run_parser.add_argument('-all', dest='run_all', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("input simulation case")
-    run_parser.add_argument('-c', dest='run_case_lst', default=[], nargs='+',
-                            help=h_str)
-    h_str = ("input regression type")
-    run_parser.add_argument('-t', dest='regr_type_lst', default=[], nargs='+',
-                            help=h_str)
-    h_str = ("input run case seed")
-    run_parser.add_argument('-seed', dest='run_seed', default='', help=h_str)
-    h_str = ("toggle to dump simulation waveform")
-    run_parser.add_argument('-wave', dest='run_wave', default=None, nargs='*',
-                            choices=['mem', 'glitch'], help=h_str)
-    h_str = ("toggle to kick off verdi to open simulation waveform")
-    run_parser.add_argument('-verdi', dest='run_verdi', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to kick off GUI during simulation")
-    run_parser.add_argument('-gui', dest='run_gui', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("input run random times")
-    run_parser.add_argument('-rt', dest='run_rt', default='', help=h_str)
-    h_str = ("toggle to collect coverage in running")
-    run_parser.add_argument('-cov', dest='run_cov', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("input type to do simulation profiling")
-    run_parser.add_argument('-prof', dest='run_prof', default=[], nargs='+',
-                            choices=['time', 'mem'], help=h_str)
-    h_str = ("toggle to dump data for FPGA")
-    run_parser.add_argument('-fpga', dest='run_fpga', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("input analysis options")
-    run_parser.add_argument('-A', dest='run_ana_opts', default='', help=h_str)
-    h_str = ("input elaboration options")
-    run_parser.add_argument('-E', dest='run_elab_opts', default='', help=h_str)
-    h_str = ("input simulation options")
-    run_parser.add_argument('-S', dest='run_simu_opts', default='', help=h_str)
-    h_str = ("input custom C options")
-    run_parser.add_argument('-CC', dest='run_cc_opts', default='', help=h_str)
-    h_str = ("toggle to compilation from fresh")
-    run_parser.add_argument('-fresh', dest='run_fresh', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to run in failed mode")
-    run_parser.add_argument('-fm', dest='run_failed_mode', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to perform x86 instruction generation before")
-    run_parser.add_argument('-x86_ins', dest='run_x86_ins', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("input x86 instruction generation number")
-    run_parser.add_argument('-x86_ins_num', dest='run_x86_ins_num', type=int,
-                            default=None, help=h_str)
-    h_str = ("input x86 instruction generation groups")
-    run_parser.add_argument('-x86_ins_groups', dest='run_x86_ins_groups',
-                            default=None, nargs='+', help=h_str)
-    run_gg_group.add_argument('-leda_gen_log', dest='run_leda_gen_log', default=False,
-                               action='store_true', help=h_str)
-    h_str = ("input black box flist files")
-    run_parser.add_argument('-leda_bbf', dest='run_leda_bb_flist', default=[],
-                             nargs='+', help=h_str)
-    h_str = ("input base rtl top module")
-    run_parser.add_argument('-leda_top', dest='run_leda_top', default='', help=h_str)
-    h_str = ("toggle to kick off leda gui")
-    run_gg_group.add_argument('-leda_gui', dest='run_leda_gui', default=False,
-                             action='store_true', help=h_str)
+def gen_im_parser(subparsers):
+    """to generate im parser"""
+    im_parser = subparsers.add_parser(
+        "im",
+        help="sub cmd about running pj instance messager")
+    im_parser.set_defaults(func=main_im)
+
+def main_im(args):
+    """im sub cmd top function"""
+    im_runner.run_im(args)
+
+def gen_init_parser(subparsers):
+    """to generate init parser"""
+    init_parser = subparsers.add_parser(
+        "init",
+        help="sub cmd about generating initial svn directories")
+    init_parser.add_argument(
+        "-proj", dest="proj_name", default=False,
+        help="input the proj name which will be check out from repository")
+    init_parser.add_argument(
+        "-dir", dest="sub_dir", default=[], nargs="+",
+        help="input the directory name from repository")
+    init_parser.set_defaults(func=main_init)
+
+def main_init(args):
+    """init sub cmd top function"""
+    init_runner.run_init(args)
+
+def gen_run_parser(subparsers):
+    """to generate run parser"""
+    run_parser = subparsers.add_parser(
+        "run",
+        help="sub cmd about running simulation and regression")
+    run_parser.add_argument(
+        "-m", dest="run_module", default="",
+        help="input run module")
+    run_parser.add_argument(
+        "-comp", dest="run_comp", default=False, action="store_true",
+        help="toggle to elaborate all case simvs")
+    run_parser.add_argument(
+        "-clib", dest="run_clib", default=False, action="store_true",
+        help="toggle to compile c lib for simulation")
+    run_parser.add_argument(
+        "-csrc", dest="run_csrc", default=False, action="store_true",
+        help="toggle to run c src built exec file for module")
+    run_parser.add_argument(
+        "-list", dest="run_list", default=False, action="store_true",
+        help="toggle to list all cases in module")
+    run_parser.add_argument(
+        "-all", dest="run_all", default=False, action="store_true",
+        help="toggle to run all cases of module")
+    run_parser.add_argument(
+        "-c", dest="run_case_lst", default=[], nargs="+",
+        help="input simulation case")
+    run_parser.add_argument(
+        "-t", dest="regr_type_lst", default=[], nargs="+",
+        help="input regression type")
+    run_parser.add_argument(
+        "-seed", dest="run_seed", default="",
+        help="input run case seed")
+    run_parser.add_argument(
+        "-wave", dest="run_wave", default=None, nargs="*", choices=["mem", "glitch"],
+        help="toggle to dump simulation waveform")
+    run_parser.add_argument(
+        "-verdi", dest="run_verdi", default=False, action="store_true",
+        help="toggle to kick off verdi to open simulation waveform")
+    run_parser.add_argument(
+        "-gui", dest="run_gui", default=False, action="store_true",
+        help="toggle to kick off GUI during simulation")
+    run_parser.add_argument(
+        "-rt", dest="run_rt", default="",
+        help="input run random times")
+    run_parser.add_argument(
+        "-cov", dest="run_cov", default=False, action="store_true",
+        help="toggle to collect coverage in running")
+    run_parser.add_argument(
+        "-upf", dest="run_upf", default=False, action="store_true",
+        help="toggle to run low power simulation with upf")
+    run_parser.add_argument(
+        "-prof", dest="run_prof", default=[], nargs="+", choices=["time", "mem"],
+        help="input type to do simulation profiling")
+    run_parser.add_argument(
+        "-fpga", dest="run_fpga", default=False, action="store_true",
+        help="toggle to dump data for FPGA")
+    run_parser.add_argument(
+        "-CLIBC", dest="run_lib_comp_opts", default="",
+        help="input custom C lib compilation options for simulation")
+    run_parser.add_argument(
+        "-CSRCC", dest="run_src_comp_opts", default="",
+        help="input custom C src compilation options for building exec file")
+    run_parser.add_argument(
+        "-CSRCR", dest="run_src_run_opts", default="",
+        help="input custom C src runtime options for exec file")
+    run_parser.add_argument(
+        "-DA", dest="run_dut_ana_opts", default="",
+        help="input DUT analysis options")
+    run_parser.add_argument(
+        "-TA", dest="run_tb_ana_opts", default="",
+        help="input TB analysis options")
+    run_parser.add_argument(
+        "-E", dest="run_elab_opts", default="",
+        help="input elaboration options")
+    run_parser.add_argument(
+        "-S", dest="run_simu_opts", default="",
+        help="input simulation options")
+    run_parser.add_argument(
+        "-fresh", dest="run_fresh", default=False, action="store_true",
+        help="toggle to compilation from fresh")
+    run_parser.add_argument(
+        "-fm", dest="run_failed_mode", default=False, action="store_true",
+        help="toggle to run in failed mode")
+    run_parser.add_argument(
+        "-x86_ins", dest="run_x86_ins", default=False, action="store_true",
+        help="toggle to perform x86 instruction generation before")
+    run_parser.add_argument(
+        "-x86_ins_num", dest="run_x86_ins_num", type=int, default=None,
+        help="input x86 instruction generation number")
+    run_parser.add_argument(
+        "-x86_ins_groups", dest="run_x86_ins_groups", default=None, nargs="+",
+        help="input x86 instruction generation groups")
     run_parser.set_defaults(func=main_run)
 
-    h_str = ("sub cmd about merging and analyzing coverage")
-    cov_parser = subparsers.add_parser('cov', help=h_str)
-    h_str = ("input coverage merge modules")
-    cov_parser.add_argument('-m', dest='cov_module', default='', help=h_str)
-    h_str = ("toggle to merge coverage together")
-    cov_parser.add_argument('-merge', dest='cov_merge', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to generate coverage report")
-    cov_parser.add_argument('-rpt', dest='cov_rpt', default=False,
-                            action='store_true', help=h_str)
-    h_str = ("toggle to kick off verdi to analyze coverage")
-    cov_parser.add_argument('-verdi', dest='cov_verdi', default=False,
-                            action='store_true', help=h_str)
+def main_run(args):
+    """run sub cmd top function"""
+    sr_runner.run_sr(args)
+
+def gen_cov_parser(subparsers):
+    """to generate cov parser"""
+    cov_parser = subparsers.add_parser(
+        "cov",
+        help="sub cmd about merging and analyzing coverage")
+    cov_parser.add_argument(
+        "-m", dest="cov_module", default="",
+        help="input coverage merge modules")
+    cov_parser.add_argument(
+        "-merge", dest="cov_merge", default=False, action="store_true",
+        help="toggle to merge coverage together")
+    cov_parser.add_argument(
+        "-rpt", dest="cov_rpt", default=False, action="store_true",
+        help="toggle to generate coverage report")
+    cov_parser.add_argument(
+        "-verdi", dest="cov_verdi", default=False, action="store_true",
+        help="toggle to kick off verdi to analyze coverage")
     cov_parser.set_defaults(func=main_cov)
 
-    h_str = ("sub cmd about processing vplan")
-    vplan_parser = subparsers.add_parser('vplan', help=h_str)
-    h_str = ("input vplan module")
-    vplan_parser.add_argument('-m', dest='vplan_module', default='',
-                              help=h_str)
-    h_str = ("toggle to generating or annotating vplan according to cfg files")
-    vplan_parser.add_argument('-proc', dest='vplan_proc', default=False,
-                              action='store_true', help=h_str)
-    h_str = ("input vplan case passing rate query dates")
-    vplan_parser.add_argument('-d', dest='vplan_days', type=int, default=1,
-                              help=h_str)
+def main_cov(args):
+    """cov sub cmd top function"""
+    cov_runner.run_cov(args)
+
+def gen_vplan_parser(subparsers):
+    """to generate vplan parser"""
+    vplan_parser = subparsers.add_parser(
+        "vplan",
+        help="sub cmd about processing vplan")
+    vplan_parser.add_argument(
+        "-m", dest="vplan_module", default="",
+        help="input vplan module")
+    vplan_parser.add_argument(
+        "-proc", dest="vplan_proc", default=False, action="store_true",
+        help="toggle to generating or annotating vplan according to cfg files")
+    vplan_parser.add_argument(
+        "-d", dest="vplan_days", type=int, default=1,
+        help="input vplan case passing rate query dates")
     vplan_parser.set_defaults(func=main_vplan)
 
-    h_str = ("sub cmd about generating auto reg")
-    reg_parser = subparsers.add_parser('reg', help=h_str)
-    h_str = ("input reg module")
-    reg_parser.add_argument('-m', dest='reg_module', default='',
-                            help=h_str)
-    h_str = ("toggle to generate auto reg files")
-    reg_parser.add_argument('-gen', dest='reg_gen', default=False,
-                            action='store_true', help=h_str)
+def main_vplan(args):
+    """vplan sub cmd top function"""
+    vplan_runner.run_vplan(args)
+
+def gen_reg_parser(subparsers):
+    """to generate reg parser"""
+    reg_parser = subparsers.add_parser(
+        "reg",
+        help="sub cmd about generating auto reg")
+    reg_parser.add_argument(
+        "-m", dest="reg_module", default="",
+        help="input reg module")
+    reg_parser.add_argument(
+        "-gen", dest="reg_gen", default=False, action="store_true",
+        help="toggle to generate auto reg files")
     reg_parser.set_defaults(func=main_reg)
 
-    h_str = ("sub cmd about generating natural docs")
-    doc_parser = subparsers.add_parser('doc', help=h_str)
-    h_str = ("input doc module")
-    doc_parser.add_argument('-m', dest='doc_module', default='',
-                            help=h_str)
-    h_str = ("input doc path")
-    doc_parser.add_argument('-p', dest='doc_path', default='',
-                            help=h_str)
-    h_str = ("toggle to generate natural docs")
-    doc_parser.add_argument('-gen', dest='doc_gen', default=False,
-                            action='store_true', help=h_str)
+def main_reg(args):
+    """reg sub cmd top function"""
+    reg_runner.run_reg(args)
+
+def gen_doc_parser(subparsers):
+    """to generate doc parser"""
+    doc_parser = subparsers.add_parser(
+        "doc",
+        help="sub cmd about generating natural docs")
+    doc_parser.add_argument(
+        "-m", dest="doc_module", default="",
+        help="input doc module")
+    doc_parser.add_argument(
+        "-p", dest="doc_path", default="",
+        help="input doc path")
+    doc_parser.add_argument(
+        "-gen", dest="doc_gen", default=False, action="store_true",
+        help="toggle to generate natural docs")
     doc_parser.set_defaults(func=main_doc)
 
-    h_str = ("sub cmd about cleaning output")
-    clean_parser = subparsers.add_parser('clean', help=h_str)
-    h_str = ("input clean module")
-    clean_parser.add_argument('-m', dest='clean_module', default='',
-                              help=h_str)
-    h_str = ("input clean case output")
-    clean_parser.add_argument('-c', dest='clean_case_lst', default=[],
-                              nargs='+', help=h_str)
-    h_str = ("toggle to clean module output all case dir")
-    clean_parser.add_argument('-case', dest='clean_case', default=False,
-                              action='store_true', help=h_str)
-    h_str = ("toggle to clean module output coverage dir")
-    clean_parser.add_argument('-cov', dest='clean_cov', default=False,
-                              action='store_true', help=h_str)
-    h_str = ("toggle to clean module output dir")
-    clean_parser.add_argument('-output', dest='clean_output', default=False,
-                              action='store_true', help=h_str)
-    h_str = ("toggle to clean and REVERT module tb dir (CAUTION!!!)")
-    clean_parser.add_argument('-tb', dest='clean_tb', default=False,
-                              action='store_true', help=h_str)
-    h_str = ("toggle to clean and REVERT module config dir (CAUTION!!!)")
-    clean_parser.add_argument('-config', dest='clean_config', default=False,
-                              action='store_true', help=h_str)
-    h_str = ("toggle to clean leda dir")
-    clean_parser.add_argument('-leda', dest='clean_leda', default=False,
-                              action='store_true', help=h_str)
+def main_doc(args):
+    """doc sub cmd top function"""
+    doc_runner.run_doc(args)
+
+def gen_clean_parser(subparsers):
+    """to generate clean parser"""
+    clean_parser = subparsers.add_parser(
+        "clean",
+        help="sub cmd about cleaning output")
+    clean_parser.add_argument(
+        "-m", dest="clean_module", default="",
+        help="input clean module")
+    clean_parser.add_argument(
+        "-c", dest="clean_case_lst", default=[], nargs="+",
+        help="input clean case output")
+    clean_parser.add_argument(
+        "-case", dest="clean_case", default=False, action="store_true",
+        help="toggle to clean module output all case dir")
+    clean_parser.add_argument(
+        "-cov", dest="clean_cov", default=False, action="store_true",
+        help="toggle to clean module output coverage dir")
+    clean_parser.add_argument(
+        "-output", dest="clean_output", default=False, action="store_true",
+        help="toggle to clean module output dir")
+    clean_parser.add_argument(
+        "-tb", dest="clean_tb", default=False, action="store_true",
+        help="toggle to clean and REVERT module tb dir (CAUTION!!!)")
+    clean_parser.add_argument(
+        "-config", dest="clean_config", default=False, action="store_true",
+        help="toggle to clean and REVERT module config dir (CAUTION!!!)")
     clean_parser.set_defaults(func=main_clean)
 
-    h_str = ("sub cmd about generating environments")
-    gen_parser = subparsers.add_parser('gen', help=h_str)
-    h_str = ("input gen module")
-    gen_parser.add_argument('-m', dest='gen_module', default='', help=h_str)
-    h_str = ("input gen module dir")
-    gen_parser.add_argument('-d', dest='gen_module_dir', default='',
-                            help=h_str)
+def main_clean(args):
+    """clean sub cmd top function"""
+    clean_runner.run_clean(args)
+
+def gen_gen_parser(subparsers):
+    """to generate gen parser"""
+    gen_parser = subparsers.add_parser(
+        "gen",
+        help="sub cmd about generating environments")
+    gen_parser.add_argument(
+        "-m", dest="gen_module", default="",
+        help="input gen module")
+    gen_parser.add_argument(
+        "-d", dest="gen_module_dir", default="",
+        help="input gen module dir")
     gen_parser.set_defaults(func=main_gen)
 
-    h_str = ("sub cmd about leda flow")
-    leda_parser = subparsers.add_parser('leda', help=h_str)
+def main_gen(args):
+    """gen sub cmd top function"""
+    gen_runner.run_gen(args)
+
+def gen_leda_parser(subparsers):
+    """to generate leda parser"""
+    leda_parser = subparsers.add_parser(
+        "leda",
+        help="sub cmd about leda flow")
     leda_gg_group = leda_parser.add_mutually_exclusive_group()
-    h_str = ("toggle to generate leda logs")
-    leda_gg_group.add_argument('-gen_log', dest='leda_gen_log', default=False,
-                             action='store_true', help=h_str)
-    h_str = ("input base rtl flist files")
-    leda_parser.add_argument('-f', dest='leda_flist_lst', default=[],
-                             nargs='+', help=h_str)
-    h_str = ("input black box flist files")
-    leda_parser.add_argument('-bbf', dest='leda_bb_flist_lst', default=[],
-                             nargs='+', help=h_str)
-    h_str = ("input base rtl top module")
-    leda_parser.add_argument('-t', dest='leda_top', default='', help=h_str)
-    h_str = ("toggle to kick off leda gui")
-    leda_gg_group.add_argument('-gui', dest='leda_gui', default=False,
-                             action='store_true', help=h_str)
+    leda_gg_group.add_argument(
+        "-gen_log", dest="leda_gen_log", default=False, action="store_true",
+        help="toggle to generate leda logs")
+    leda_parser.add_argument(
+        "-f", dest="leda_flist_lst", default=[], nargs="+",
+        help="input base rtl flist files")
+    leda_parser.add_argument(
+        "-t", dest="leda_top", default="",
+        help="input base rtl top module")
+    leda_parser.add_argument(
+        "-bbf", dest="leda_bb_flist_lst", default=[], nargs="+",
+        help="input black box flist files")
+    leda_parser.add_argument(
+        "-c", dest="leda_cfg_file", default="",
+        help="input leda cfg file")
+    leda_parser.add_argument(
+        "-w", dest="leda_waiver_flist", default=[], nargs="+",
+        help="input leda_waiver files")
+    leda_gg_group.add_argument(
+        "-gui", dest="leda_gui", default=False, action="store_true",
+        help="toggle to kick off leda gui")
     leda_parser.set_defaults(func=main_leda)
 
+def main_leda(args):
+    """leda sub cmd top function"""
+    leda_runner.run_leda(args)
+
+def gen_ac_parser(subparsers):
+    """to generate ac parser"""
+    ac_parser = subparsers.add_parser(
+        "ac",
+        help="sub cmd about auto connect flow")
+    ac_parser.add_argument(
+        "-d", dest="ac_dir", default=os.getcwd(),
+        help="input directory to generate auto connected verilog files")
+    ac_parser.set_defaults(func=main_ac)
+
+def main_ac(args):
+    """ac sub cmd top function"""
+    ac_runner.run_ac(args)
+
+def gen_dc_parser(subparsers):
+    """to generate dc parser"""
+    dc_parser = subparsers.add_parser(
+        "dc",
+        help="sub cmd about run dc")
+    dc_parser.add_argument(
+        "-gen_tcl", dest="dc_gen_tcl", default=False, action="store_true",
+        help="toggle to generate dc tcl files")
+    dc_parser.add_argument(
+        "-d", dest="dc_dir", default="",
+        help="input existed dc directory")
+    dc_parser.add_argument(
+        "-run", dest="dc_run", default=False, action="store_true",
+        help="toggle to run dc")
+    dc_parser.add_argument(
+        "-topo", dest="dc_topo", default=False, action="store_true",
+        help="toggle to run dc in topographical mode")
+    dc_parser.add_argument(
+        "-s", dest="dc_src", default="",
+        help="input dc source files directory")
+    dc_parser.add_argument(
+        "-tm", dest="dc_tm_flg", default=False, action="store_true",
+        help="toggle to parse dc timing report automatically")
+    dc_parser.add_argument(
+        "-l", dest="dc_tm_level", type=int, default=1,
+        help="input the statistics level to parse dc timing report")
+    dc_parser.add_argument(
+        "-fm", dest="dc_formality", default=False, action="store_true",
+        help="toggle to run formality automatically")
+    dc_parser.set_defaults(func=main_dc)
+
+def main_dc(args):
+    """dc sub cmd top function"""
+    dc_runner.run_dc(args)
+
+def gen_tm_parser(subparsers):
+    """to generate tm parser"""
+    tm_parser = subparsers.add_parser(
+        "tm",
+        help="sub cmd about parsing the timing report")
+    tm_parser.add_argument(
+        "-f", dest="tm_report_file", default=False,
+        help="input timing report file")
+    tm_parser.add_argument(
+        "-l", dest="tm_hier_level", type=int, default=1,
+        help="input the statistics hierarchy level")
+    tm_parser.set_defaults(func=main_tm)
+
+def main_tm(args):
+    """tm sub cmd top function"""
+    tm_runner.run_tm(args)
+
+def gen_fm_parser(subparsers):
+    """to generate fm parser"""
+    fm_parser = subparsers.add_parser(
+        "fm",
+        help="sub cmd about run formality")
+    fm_parser.add_argument(
+        "-ref", dest="fm_ref_file", default=False,
+        help="input formality ref file")
+    fm_parser.add_argument(
+        "-imp", dest="fm_imp_file", default=False,
+        help="input formality imp file")
+    fm_parser.add_argument(
+        "-s", dest="fm_src", default="",
+        help="input formality source files directory")
+    fm_parser.set_defaults(func=main_fm)
+
+def main_fm(args):
+    """fm sub cmd top function"""
+    fm_runner.run_fm(args)
+
+def gen_icc_parser(subparsers):
+    """to generate icc parser"""
+    icc_parser = subparsers.add_parser(
+        "icc",
+        help="sub cmd about run icc")
+    icc_parser.add_argument(
+        "-stage", dest="icc_stage", default=[], nargs="+",
+        help="input run icc stage")
+    icc_parser.add_argument(
+        "-s_stage", dest="icc_start_stage", default="",
+        help="input run icc start stage")
+    icc_parser.add_argument(
+        "-s", dest="icc_src", default="",
+        help="input icc source files directory")
+    icc_parser.add_argument(
+        "-d", dest="icc_time_dir", default="",
+        help="input existed icc directory")
+    icc_parser.set_defaults(func=main_icc)
+
+def main_icc(args):
+    """icc sub cmd top function"""
+    icc_runner.run_icc(args)
+
+def gen_cdc_parser(subparsers):
+    """to generate cdc parser"""
+    cdc_parser = subparsers.add_parser(
+        "cdc",
+        help="sub cmd about run cdc")
+    cdc_parser.add_argument(
+        "-s", dest="cdc_src", default="",
+        help="input cdc source files directory")
+    cdc_parser.set_defaults(func=main_cdc)
+
+def main_cdc(args):
+    """cdc sub cmd top function"""
+    cdc_runner.run_cdc(args)
+
+def gen_args_top():
+    """to generate top args help for pj"""
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+    gen_im_parser(subparsers)
+    gen_init_parser(subparsers)
+    gen_run_parser(subparsers)
+    gen_cov_parser(subparsers)
+    gen_vplan_parser(subparsers)
+    gen_reg_parser(subparsers)
+    gen_doc_parser(subparsers)
+    gen_clean_parser(subparsers)
+    gen_gen_parser(subparsers)
+    gen_leda_parser(subparsers)
+    gen_ac_parser(subparsers)
+    gen_dc_parser(subparsers)
+    gen_tm_parser(subparsers)
+    gen_fm_parser(subparsers)
+    gen_icc_parser(subparsers)
+    gen_cdc_parser(subparsers)
     return parser.parse_args()
 
-def rmtree(path_lst):
-    for path in path_lst:
-        if path in os.getcwd():
-            raise Exception("it is in dir {0}, please cd out from {0} since "
-                            "it will be cleaned".format(path))
-    rm_rsp = input("{0} will be cleaned {1}--> yes or no? "
-                   "".format(path_lst, os.linesep))
-    if rm_rsp.strip() in ('yes', 'y'):
-        for path in path_lst:
-            shutil.rmtree(path, ignore_errors=True)
-            LOG.info("cleaning {0} dir done".format(path))
-    else:
-        LOG.info("canceled")
-
-def run_leda(cmd_dic):
-    if not shutil.which('leda'):
-        raise Exception("leda is not available")
-    ced, cfg_dic = env_booter.boot_env()
-    leda_dir = cmd_dic['leda_dir'] if cmd_dic['leda_dir'] else ced['FLOW_LEDA']
-    os.makedirs(leda_dir, exist_ok=True)
-    log_dir_lst = pcom.rd_cfg(cfg_dic['proj'], 'leda', 'log_directory_name')
-    log_file_lst = pcom.rd_cfg(cfg_dic['proj'], 'leda', 'log_file_name')
-    error_str = '|'.join([re.escape(cc) for cc in pcom.rd_cfg(
-        cfg_dic['proj'], 'leda', 'error_string')])
-    str_pat = re.compile(error_str)
-    log_dir = log_dir_lst[0] if log_dir_lst else 'leda-logs'
-    log_file = log_file_lst[0] if log_file_lst else 'leda.log'
-    leda_log_dir = leda_dir+os.sep+log_dir
-    leda_log = leda_log_dir+os.sep+log_file
-    err_log = leda_log_dir+os.sep+'leda_error.log'
-    wl_file = leda_dir+os.sep+'leda_on_off_warning.log'
-    if not cmd_dic['leda_dir'] and cmd_dic['leda_flist_lst']:
-        flist_file = leda_dir+os.sep+'leda.flist'
-        for leda_flist in cmd_dic['leda_flist_lst']:
-            if not os.path.isfile(leda_flist):
-                raise Exception(
-                    "base flist file {0} is NA".format(leda_flist))
-        df_tup = filelst_gen.FilelstGen(
-            LOG).gen_file_lst(cmd_dic['leda_flist_lst'])
-        dir_lst, verilog_lst, vhdl_lst = df_tup
-        with open(flist_file, 'w') as lf:
-            for lf_line in verilog_lst+vhdl_lst:
-                lf.write(lf_line+os.linesep)
-            for ld_line in dir_lst:
-                lf.write(ld_line+os.linesep)
-    else:
-        flist_file = cmd_dic['leda_flist']
-    if cmd_dic['gen_log'] and flist_file:
-        with open(flist_file) as f, open(wl_file, 'w') as wf:
-            for line in f:
-                line = line.strip()
-                if line.startswith('+incdir'):
-                    continue
-                if not os.path.isfile(line):
-                    raise Exception(
-                        "rtl file {0} is NA".format(line))
-                with open(line, errors='replace') as vf:
-                    vf_con = vf.read()
-                if 'leda off' in vf_con:
-                    wline = "leda off in file {0}".format(line)
-                    LOG.warning(wline)
-                    wf.write(wline)
-                if 'leda on' in vf_con:
-                    wline = "leda on in file {0}".format(line)
-                    LOG.warning(wline)
-                    wf.write(wline)
-        bb_str = ''
-        if cmd_dic['bb_flist_lst']:
-            bb_con = ''
-            for leda_bb_flist in cmd_dic['bb_flist_lst']:
-                if not os.path.isfile(leda_bb_flist):
-                    raise Exception(
-                        "black box flist file {0} is NA".format(leda_bb_flist))
-                with open(leda_bb_flist) as bf:
-                    bb_con += bf.read()+os.linesep
-            bb_flist_file = leda_dir+os.sep+'leda_bb.flist'
-            with open(bb_flist_file, 'w') as lbf:
-                lbf.write(bb_con)
-            bb_str = '-bbox_file {0} '.format(bb_flist_file)
-        leda_opts = ' '.join(pcom.rd_cfg(cfg_dic['proj'], 'leda', 'opts'))
-        top_str = cmd_dic['leda_top'] if cmd_dic['leda_top'] else pcom.rd_cfg(
-            cfg_dic['proj'], 'proj', 'rtl_top')[0]
-        leda_str = 'cd {0} && leda {1} -config {2} -f {3} {4} -top {5}'.format(
-            leda_dir, leda_opts, leda_dir+os.sep+'leda.tcl',
-            flist_file, bb_str, top_str)
-        with open(leda_dir+os.sep+'leda_cmd', 'w') as lcf:
-            lcf.write(leda_str+os.linesep)
-        subprocess.run(leda_str, shell=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        leda_error_flg = False
-        with open(leda_log, errors='replace') as f, open(err_log, 'w') as elf:
-            for line in f:
-                line = line.strip()
-                m = pcom.REOpter(line)
-                if m.search(str_pat):
-                    elf.write(line+os.linesep)
-                    leda_error_flg = True
-        if leda_error_flg:
-            LOG.warning("ERRORs raised in the process of leda")
-    elif cmd_dic['leda_gui']:
-        leda_str = 'cd {0} && leda +gui -config {1} -l {2}'.format(
-            leda_dir, leda_dir+os.sep+'leda.tcl',
-            leda_log)
-        subprocess.run(leda_str, shell=True)
-
-def main_run(args):
-    if args.run_module or args.run_case_lst or args.regr_type_lst:
-        run = Run(args.run_module,
-                  args.run_case_lst,
-                  args.regr_type_lst,
-                  args.run_all,
-                  args.run_comp,
-                  args.run_cc,
-                  args.run_list,
-                  args.run_wave,
-                  args.run_verdi,
-                  args.run_gui,
-                  args.run_rt,
-                  args.run_cov,
-                  args.run_prof,
-                  args.run_fpga,
-                  args.run_fresh,
-                  args.run_failed_mode,
-                  args.run_x86_ins,
-                  args.run_x86_ins_num,
-                  args.run_x86_ins_groups,
-                  args.run_seed,
-                  args.run_ana_opts,
-                  args.run_elab_opts,
-                  args.run_simu_opts,
-                  args.run_cc_opts,
-                  args.run_leda_gen_log,
-                  args.run_leda_bb_flist,
-                  args.run_leda_top,
-                  args.run_leda_gui)
-        run.run()
-        LOG.info("running module {0} done".format(
-            args.run_module))
-    else:
-        raise Exception("missing main arguments")
-
-def main_cov(args):
-    if args.cov_module and (args.cov_merge or args.cov_rpt or args.cov_verdi):
-        ced, cfg_dic = env_booter.module_env(LOG, args.cov_module)
-        ef_str = ''
-        for ef in pcom.find_iter(ced['MODULE_CONFIG'], '*.el'):
-            ef_str += '-elfile {0} '.format(ef)
-        cov_merge_vdb = ced['COV_MERGE']+os.sep+ced['MODULE']+'_merge.vdb'
-        cd_str = 'cd {0} && '.format(os.path.dirname(cov_merge_vdb))
-        cov_str = ''
-        if args.cov_merge:
-            vdb_lst = list(pcom.find_iter(ced['COV_CM'], '*.vdb', True))
-            if not vdb_lst:
-                raise Exception("no coverage data found")
-            merge_lst_file = ced['COV_MERGE']+os.sep+'merge_lst'
-            os.makedirs(os.path.dirname(merge_lst_file), exist_ok=True)
-            with open(merge_lst_file, 'w') as mf:
-                for vdb_dir in vdb_lst:
-                    mf.write(vdb_dir+os.linesep)
-                    if os.path.isdir(cov_merge_vdb):
-                        mf.write(cov_merge_vdb)
-            cov_str = ('{0} urg -full64 -f {1} -dbname {2} -noreport {3}'
-                       ''.format(cd_str, merge_lst_file,
-                                 os.path.basename(cov_merge_vdb), ef_str))
-            subprocess.run(cov_str, shell=True, check=True)
-            for cc_dir in pcom.find_iter(ced['COV_CM'], 'testdata', True):
-                shutil.rmtree(cc_dir, ignore_errors=True)
-        if args.cov_rpt:
-            if not os.path.isdir(cov_merge_vdb):
-                raise Exception("coverage merge dir {0} is NA".format(
-                    cov_merge_vdb))
-            cov_str = '{0} urg -full64 -dir {1} {2} -format both'.format(
-                cd_str, cov_merge_vdb, ef_str)
-            subprocess.run(cov_str, shell=True)
-        if args.cov_verdi:
-            if not os.path.isdir(cov_merge_vdb):
-                raise Exception("coverage merge dir {0} is NA".format(
-                    cov_merge_vdb))
-            cov_str = '{0} verdi -cov -covdir {1} {2} &'.format(
-                cd_str, cov_merge_vdb, ef_str)
-            subprocess.run(cov_str, shell=True)
-        LOG.info("running coverage of {0} module done".format(args.cov_module))
-    else:
-        raise Exception("missing main arguments")
-
-def main_vplan(args):
-    if args.vplan_module and args.vplan_proc:
-        ced, cfg_dic = env_booter.module_env(LOG, args.vplan_module)
-        vplan = vplan_proc.VPlanProc(LOG, ced, cfg_dic, args.vplan_days)
-        vplan.proc_vplan()
-        LOG.info("processing vplan of {0} module done".format(
-            args.vplan_module))
-    else:
-        raise Exception("missing main arguments")
-
-def main_reg(args):
-    if args.reg_module and args.reg_gen:
-        ced, cfg_dic = env_booter.module_env(LOG, args.reg_module)
-        tb_top_lst = pcom.rd_cfg(cfg_dic['simv'], 'DEFAULT', 'tb_top')
-        tb_top = tb_top_lst[0] if tb_top_lst else 'test_top'
-        reg_str_lst = []
-        for reg_file in pcom.find_iter(ced['MODULE_REG'], '*.ralf'):
-            reg_str_lst.append('ralgen -full64 -t {0} -uvm -c F -a {1} '
-                               ''.format(tb_top, reg_file))
-        subprocess.run(' && '.join(reg_str_lst), shell=True)
-    else:
-        raise Exception("missing main arguments")
-
-def main_doc(args):
-    if not shutil.which('NaturalDocs'):
-        raise Exception("NaturalDocs is not available")
-    if args.doc_module and args.doc_gen:
-        ced, cfg_dic = env_booter.module_env(LOG, args.doc_module)
-        os.makedirs(ced['MODULE_DOC'], exist_ok=True)
-        doc_str = ('NaturalDocs -i ${PROJ_MODULE} -o HTML ${MODULE_DOC} '
-                   '-p ${MODULE_DOC}')
-        subprocess.run(doc_str, shell=True)
-    elif args.doc_path and args.doc_gen:
-        if not os.path.isdir(args.doc_path):
-            raise Exception("doc path {0} is NA".format(args.doc_path))
-        doc_dir = args.doc_path+os.sep+'doc'
-        os.makedirs(doc_dir, exist_ok=True)
-        doc_str = 'NaturalDocs -i {0} -o HTML {1} -p {1}'.format(
-            args.doc_path, doc_dir)
-        subprocess.run(doc_str, shell=True)
-    else:
-        raise Exception("missing main arguments")
-
-def main_clean(args):
-    if args.clean_module and (
-            args.clean_case_lst or args.clean_case or args.clean_cov or
-            args.clean_output or args.clean_tb or args.clean_config):
-        module_name = (args.clean_case_lst[0].split('__')[0] if not
-                       args.clean_module else args.clean_module)
-        if not module_name:
-            raise Exception(
-                "case {0} is not in standard format <module__case>, "
-                "so module name must be specified".format(
-                    args.clean_case_lst[0]))
-        ced, cfg_dic = env_booter.module_env(LOG, module_name)
-        clean_lst = []
-        if args.clean_case_lst:
-            clean_lst.extend([ced['MODULE_OUTPUT']+os.sep+cc for
-                              cc in args.clean_case_lst if cc])
-        if args.clean_case:
-            for case_dir in pcom.find_iter(
-                    ced['MODULE_OUTPUT'], '*', True, True):
-                base_case_dir = os.path.basename(case_dir)
-                if not (base_case_dir.startswith('__') and
-                        base_case_dir.endswith('__')):
-                    clean_lst.append(case_dir)
-        if args.clean_cov:
-            clean_lst.append(ced['OUTPUT_COV'])
-        if args.clean_output:
-            clean_lst.append(ced['MODULE_OUTPUT'])
-        if args.clean_tb:
-            LOG.info(
-                'CAUTION!!! you are reverting {0} directory, in which all '
-                'modified/private files/directories will be removed!!!'
-                ''.format(ced['MODULE_TB']))
-            svn_tb_ver = pcom.gen_svn_ver(ced['MODULE_TB'])
-            clean_lst.append(ced['MODULE_TB'])
-        if args.clean_config:
-            LOG.info(
-                'CAUTION!!! you are reverting {0} directory, in which all '
-                'modified/private files/directories will be removed!!!'
-                ''.format(ced['MODULE_CONFIG']))
-            svn_cfg_ver = pcom.gen_svn_ver(ced['MODULE_CONFIG'])
-            clean_lst.append(ced['MODULE_CONFIG'])
-        rmtree(clean_lst)
-        if args.clean_tb:
-            subprocess.run(
-                'svn up {0} -{1}'.format(ced['MODULE_TB'], svn_tb_ver),
-                shell=True, check=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if args.clean_config:
-            subprocess.run(
-                'svn up {0} -{1}'.format(ced['MODULE_CONFIG'], svn_cfg_ver),
-                shell=True, check=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    elif args.clean_leda:
-        rm_rsp = input("leda dir will be cleaned, except leda.tcl{0}"
-                       "--> yes or no? ".format(os.linesep))
-        if rm_rsp.strip() in ('yes', 'y'):
-            ced, cfg_dic = env_booter.boot_env()
-            for dir_name in pcom.find_iter(ced['FLOW_LEDA'], '*', True):
-                shutil.rmtree(dir_name, ignore_errors=True)
-            for file_name in pcom.find_iter(
-                    ced['FLOW_LEDA'], 'leda*', i_str='leda.tcl'):
-                os.remove(file_name)
-        else:
-             LOG.info("canceled")
-    else:
-        raise Exception("missing main arguments")
-
-def main_gen(args):
-    if args.gen_module:
-        ced, cfg_dic = env_booter.boot_env()
-        module_dir = (args.gen_module_dir if
-                      args.gen_module_dir else ced['PROJ_VERIF'])
-        module_path = os.path.expandvars(module_dir+os.sep+args.gen_module)
-        if os.path.isdir(module_path):
-            raise Exception("module path you typed {0} has already existed"
-                            "".format(module_path))
-        shutil.copytree(ced['PJ_TEMPLATES']+os.sep+'module', module_path)
-        LOG.info(
-            "module {0} env is generated, and its path is {1}."
-            "{2}{2}It is necessary to modify the following files according to "
-            "pj doc (//http://172.51.13.205:8000/static/doc/_build/html/"
-            "index.html) to make it work:{2}{3}{2}{4}{2}{5}{2}{6}{2}{2}"
-            "It is optional to modify the following files according to "
-            "pj doc to make it work:{2}{7}{2}".format(
-                args.gen_module, module_path, os.linesep,
-                module_path+os.sep+'config'+os.sep+'case.cfg',
-                module_path+os.sep+'config'+os.sep+'simv.cfg',
-                module_path+os.sep+'flist'+os.sep+'rtl.flist',
-                module_path+os.sep+'flist'+os.sep+'tb.flist',
-                module_path+os.sep+'flist'+os.sep+'bfm.flist'))
-    else:
-        raise Exception("missing main arguments")
-
-def main_leda(args):
-    if args.leda_gen_log and args.leda_flist_lst or args.leda_gui:
-        cmd_dic = {'leda_dir': '',
-                   'gen_log': args.leda_gen_log,
-                   'leda_flist_lst': args.leda_flist_lst,
-                   'leda_flist': '',
-                   'leda_top': args.leda_top,
-                   'leda_gui': args.leda_gui,
-                   'bb_flist_lst': args.leda_bb_flist_lst}
-        run_leda(cmd_dic)
-    else:
-        raise Exception("missing main arguments")
-
-##### classes
-class Run(object):
-    def __init__(self, run_module,
-                 run_case_lst,
-                 regr_type_lst,
-                 run_all,
-                 run_comp,
-                 run_cc,
-                 run_list,
-                 run_wave,
-                 run_verdi,
-                 run_gui,
-                 run_rt,
-                 run_cov,
-                 run_prof,
-                 run_fpga,
-                 run_fresh,
-                 run_failed_mode,
-                 run_x86_ins,
-                 run_x86_ins_num,
-                 run_x86_ins_groups,
-                 run_seed,
-                 run_ana_opts,
-                 run_elab_opts,
-                 run_simu_opts,
-                 run_cc_opts,
-                 run_leda_gen_log,
-                 run_leda_bb_flist,
-                 run_leda_top,
-                 run_leda_gui):
-        self.run_module = run_module
-        self.run_case_lst = [cc.split('.')[0] for cc in run_case_lst if cc]
-        self.regr_type_lst = regr_type_lst
-        self.regr_flg = True if regr_type_lst else False
-        self.std = subprocess.PIPE if self.regr_flg else None
-        if not run_module:
-            self.run_module = run_case_lst[0].split('__')[0]
-        if not self.run_module:
-            raise Exception(
-                "case {0} is not in standard format <module__case>, so "
-                "module name must be specified".format(self.run_case_lst[0]))
-        self.run_all = run_all
-        self.run_comp = run_comp
-        self.run_cc = run_cc
-        self.run_list = run_list
-        self.run_wave = run_wave
-        self.run_verdi = run_verdi
-        self.run_fpga = run_fpga
-        self.run_fresh = run_fresh
-        self.run_failed_mode = run_failed_mode
-        self.run_x86_ins = run_x86_ins
-        self.run_seed = run_seed
-        self.run_cc_opts = run_cc_opts
-        self.run_leda_gen_log = run_leda_gen_log
-        self.run_leda_bb_flist = run_leda_bb_flist
-        self.run_leda_top = run_leda_top
-        self.run_leda_gui = run_leda_gui
-        self.ow_dic = {'ae': {}, 'su': {}}
-        if run_seed:
-            self.ow_dic['su']['seed'] = run_seed.strip()
-        if run_ana_opts:
-            self.ow_dic['ae']['custom_ana_opts'] = run_ana_opts.strip()
-        if run_elab_opts:
-            self.ow_dic['ae']['custom_elab_opts'] = run_elab_opts.strip()
-        if run_simu_opts:
-            self.ow_dic['su']['custom_simu_opts'] = run_simu_opts.strip()
-        if run_wave != None:
-            self.ow_dic['ae']['wave'] = 'on'
-            self.ow_dic['su']['wave'] = 'on'
-            if 'mem' in run_wave:
-                self.ow_dic['su']['wave_mem'] = 'on'
-            if 'glitch' in run_wave:
-                self.ow_dic['su']['wave_glitch'] = 'on'
-        if run_verdi:
-            self.ow_dic['ae']['wave'] = 'on'
-            self.ow_dic['su']['wave'] = 'on'
-        if run_gui:
-            self.ow_dic['ae']['gui'] = 'on'
-            self.ow_dic['su']['gui'] = 'on'
-        if run_rt:
-            self.ow_dic['su']['random_times'] = run_rt.strip()
-        if run_cov:
-            self.ow_dic['ae']['cov'] = 'on'
-            self.ow_dic['su']['cov'] = 'on'
-        if run_prof:
-            self.ow_dic['ae']['prof'] = 'on'
-            if 'time' in run_prof:
-                self.ow_dic['su']['prof_time'] = 'on'
-            if 'mem' in run_prof:
-                self.ow_dic['su']['prof_mem'] = 'on'
-        if run_fpga:
-            self.ow_dic['ae']['fpga'] = 'on'
-        self.ced, self.cfg_dic = env_booter.module_env(
-            LOG, self.run_module, self.run_x86_ins,
-            run_x86_ins_num, run_x86_ins_groups)
-        if self.run_list:
-            self.run_x86_ins = False
-    def update_status(self, case_dic):
-        if (case_dic['simu_status'] == 'passed' and
-            case_dic['elab_status'] == 'passed' and
-            case_dic['tb_ana_status'] == 'passed' and
-            case_dic['dut_ana_status'] == 'passed'):
-            case_dic['status'] = case_dic['simu_status']
-            case_dic['estage'] = 'NA'
-            case_dic['einfo'] = case_dic['simu_error']
-        elif case_dic['elab_status'] == 'passed':
-            case_dic['status'] = case_dic['simu_status']
-            case_dic['estage'] = 'simulation'
-            case_dic['einfo'] = case_dic['simu_error']
-        elif case_dic['tb_ana_status'] == 'passed':
-            case_dic['status'] = case_dic['elab_status']
-            case_dic['estage'] = 'elaboration'
-            case_dic['einfo'] = case_dic['elab_error']
-        elif case_dic['dut_ana_status'] == 'passed':
-            case_dic['status'] = case_dic['tb_ana_status']
-            case_dic['estage'] = 'tb analysis'
-            case_dic['einfo'] = case_dic['tb_ana_error']
-        else:
-            case_dic['status'] = case_dic['rlt_ana_status']
-            case_dic['estage'] = 'dut analysis'
-            case_dic['einfo'] = case_dic['dut_ana_error']
-        return case_dic
-    def gen_x86_ins(self):
-        scr_xi_dir = self.ced['SHARE_SCRIPTS']+os.sep+'X86_INS'
-        ins_gen_file = scr_xi_dir+os.sep+'ins_gen.py'
-        if not os.path.isfile(ins_gen_file):
-            raise Exception("ins_gen.py file {0} is NA".format(ins_gen_file))
-        test_gen_file = scr_xi_dir+os.sep+'test_gen.pl'
-        if not os.path.isfile(test_gen_file):
-            raise Exception("test_gen.pl file {0} is NA".format(test_gen_file))
-        cfg_lst = list(pcom.find_iter(self.ced['MODULE_CONFIG'], 'case_*.cfg'))
-        input_seed = self.ow_dic['su'].get('seed', '')
-        seed_str = input_seed if input_seed.isdigit() else 'random'
-        os.sys.path.append(scr_xi_dir)
-        import ins_gen
-        x86_ins_seed_dic = ins_gen.InsGen(
-            LOG, cfg_lst, self.run_case_lst, seed=seed_str,
-            path=self.ced['PROJ_MODULE'],
-            regr_types=self.regr_type_lst).gen_ins()
-        subprocess.run(
-            'perl {0} test_name={1} seed={2} inst_mod={3} sfile_type={4} '
-            'input={5} output={5}'.format(
-                test_gen_file, '', '1', '16', 'asm',
-                self.ced['MODULE_OUTPUT']), shell=True, check=True)
-        return x86_ins_seed_dic
-    def run(self):
-        if self.regr_flg:
-            subprocess.run('cd ${PROJ_ROOT} && svn up', shell=True, check=True,
-                           stdout=self.std, stderr=self.std)
-            LOG.info("updating svn to latest version done")
-        mg = makefile_gen.MakefileGen(
-            LOG, self.ced, self.cfg_dic, self.ow_dic, self.run_cc_opts,
-            self.regr_flg, self.run_fresh)
-        case_dic_dic = mg.gen_case_dic_dic()
-        if self.run_list:
-            str_lst = ["all cases of module {0}".format(self.ced['MODULE'])]
-            str_lst.append('*'*30)
-            str_lst += list(case_dic_dic)
-            str_lst.append('*'*30)
-            LOG.info(os.linesep.join(str_lst))
-            return None
-        if self.run_all or self.regr_flg:
-            self.run_case_lst = list(case_dic_dic)
-        mk_dir, mk_file = mg.gen_makefile()
-        mk_tar = ''
-        if self.run_cc:
-            mk_tar += 'compile_c '
-        if mk_tar:
-            mk_str = 'cd {0} && make -f {1} {2}'.format(
-                mk_dir, mk_file, mk_tar)
-            subprocess.run(mk_str, shell=True, check=True,
-                           stdout=self.std, stderr=self.std)
-            LOG.info("compiling c code done")
-            return None
-        simv_dic_dic = mg.gen_simv_dic_dic()
-        for simv, simv_dic in simv_dic_dic.items():
-            ms_dir, ms_file = mg.gen_simv_makefile(simv_dic)
-            ms_tar = ''
-            if self.run_comp:
-                ms_tar += self.ced['OUTPUT_SIMV']+os.sep+simv+os.sep+'simv '
-            if self.run_verdi and not self.run_case_lst:
-                ms_tar += 'verdi_{0} '.format(simv)
-            if not (ms_tar or self.run_case_lst):
-                ms_tar = self.ced['OUTPUT_SIMV']+os.sep+simv+os.sep+'.dut_ana '
-            ms_str = 'cd {0} && make -f {1} {2}'.format(
-                ms_dir, ms_file, ms_tar)
-            subprocess.run(ms_str, shell=True, check=True,
-                           stdout=self.std, stderr=self.std)
-            flist_file = self.ced['OUTPUT_SIMV']+os.sep+simv+os.sep+'dut.flist'
-            if self.run_leda_gen_log and os.path.isfile(
-                    flist_file) or self.run_leda_gui:
-                cmd_dic = {'leda_dir': self.ced['OUTPUT_LEDA'],
-                           'leda_flist_lst': '',
-                           'leda_flist': flist_file,
-                           'gen_log': self.run_leda_gen_log,
-                           'bb_flist_lst': self.run_leda_bb_flist,
-                           'leda_top': self.run_leda_top,
-                           'leda_gui': self.run_leda_gui}
-                run_leda(cmd_dic)
-        if self.run_case_lst:
-            if self.run_x86_ins:
-                x86_ins_seed_dic = self.gen_x86_ins()
-            if self.run_fpga:
-                fsg = fpga_signals_gen.FPGASignalsGen(self.ced)
-                fsg.gen_h_lst()
-            rpt_rows = [['Case Name', 'Case Simv', 'SVN CL', 'Seed', 'Status',
-                         'Error Stage', 'CPU Time']]
-            rpt_dic_lst = []
-            rpt_file = self.ced['MODULE_OUTPUT']+os.sep+'run_rpt'
-            rpt_jf = self.ced['MODULE_OUTPUT']+os.sep+'run_status.json'
-            for case in self.run_case_lst:
-                if case not in case_dic_dic:
-                    continue
-                case_dic = case_dic_dic[case]
-                if self.regr_flg:
-                    if not any([cc in case_dic['regr_type_lst'] for
-                                cc in self.regr_type_lst if cc]):
-                        continue
-                if self.run_x86_ins and case in x86_ins_seed_dic:
-                    case_dic['seed_set'] = {x86_ins_seed_dic[case]}
-                for seed in case_dic['seed_set']:
-                    seed = str(seed)
-                    if self.run_failed_mode:
-                        if os.path.isfile(os.path.join(self.ced[
-                                'MODULE_OUTPUT'], case, seed, 'case_passed')):
-                            continue
-                    case_dic['seed'] = seed
-                    mc_dir, mc_file = mg.gen_case_makefile(case_dic)
-                    mc_tar = 'run_simv_{0}__{1} '.format(
-                        case_dic['name'], seed)
-                    if self.run_verdi:
-                        verdi_tar = 'verdi_{0}__{1} '.format(
-                            case_dic['name'], seed)
-                        mc_tar = (mc_tar+verdi_tar if
-                                  self.run_wave != None else verdi_tar)
-                    mc_str = 'cd {0} && make -f {1} {2}'.format(
-                        mc_dir, mc_file, mc_tar)
-                    if self.regr_flg:
-                        subprocess.run(mc_str, shell=True, check=True,
-                                       stdout=self.std, stderr=self.std)
-                    else:
-                        proc = subprocess.Popen(mc_str, shell=True)
-                        try:
-                            proc.communicate()
-                        except KeyboardInterrupt:
-                            proc.communicate()
-                            break
-                    cvsr_tup = (
-                        case, case_dic['simv'], seed, self.regr_type_lst)
-                    if self.run_fpga:
-                        fsg.gen_fpga_signals(cvsr_tup)
-                    case_log_dic = self.update_status(log_parser.LogParser(
-                        LOG, self.ced, self.cfg_dic, cvsr_tup).parse_log())
-                    if self.regr_flg:
-                        log_str = (
-                            "Case Name: {1}{0}Seed: {2}{0}Status: "
-                            "{3}{0}Error Stage: {4}".format(
-                                os.linesep+' '*16, case_log_dic['c_name'],
-                                case_log_dic['seed'], case_log_dic['status'],
-                                case_log_dic['estage']))
-                        if case_log_dic['status'] == 'passed':
-                            LOG.info(log_str)
-                        else:
-                            LOG.error(log_str)
-                    rpt_rows.append([case_log_dic['c_name'],
-                                     case_log_dic['v_name'],
-                                     case_log_dic['proj_cl'],
-                                     case_log_dic['seed'],
-                                     case_log_dic['status'],
-                                     case_log_dic['estage'],
-                                     case_log_dic['simu_cpu_time']+'s'])
-                    rpt_dic_lst.append({'case': case_log_dic['c_name'],
-                                        'seed': case_log_dic['seed'],
-                                        'status': case_log_dic['status']})
-            table = texttable.Texttable()
-            table.set_cols_width([30,7,7,7,7,7,7])
-            table.add_rows(rpt_rows)
-            sim_table = table.draw()
-            LOG.info("run report table:"+os.linesep+sim_table)
-            with open(rpt_file, 'w') as rf:
-                rf.write(sim_table)
-            with open(rpt_jf, 'w')  as jf:
-                json.dump(rpt_dic_lst, jf)
-            LOG.info("run report file {0}".format(rpt_file))
-
-##### main
 def main():
+    """pj top function"""
     args = gen_args_top()
-    global LOG
-    LOG = pcom.gen_logger(file_log=args.log)
     LOG.info("commence...")
     args.func(args)
     LOG.info("complete")
 
-if __name__ == '__main__':
-    try:
-        main()
-    except Exception as ex:
-        LOG.exception(ex)
+if __name__ == "__main__":
+    main()

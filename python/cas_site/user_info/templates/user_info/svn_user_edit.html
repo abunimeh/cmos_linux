@@ -1,0 +1,125 @@
+{% extends 'user_info/user_info_base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+Svn-edit
+{% endblock %}
+
+{% block userinfo %}
+<!-- start content -->
+<div id = "userinfo">
+    {% if chg_sucs %}
+        <p>The user was changed successfully. You may edit it again below.</p>
+    {% endif %}        
+    <div class="userborder">
+        <h1 class="form-title">Change user</h1>
+        <form class="svn-form" action="" method="POST" >
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class=" form-row field-name">
+                {{ form.name.errors }}
+                {{ form.name.label_tag }}
+                <span class="form-span name-span">
+                    {{ form.name }}
+                </span>                        
+            </div>
+            <div class="form-row field-repos">
+                {{ form.repos.errors }}
+                {{ form.repos.label_tag }}
+                <span class="form-span repos-span">
+                    {{ form.repos }}
+<!--                             <a title="change selected proj" class="change_proj" data-href-template="{% url 'user_info:svn_items_add_update' "__pk__" form.repos.label %}" onclick="return false;"><img src="{% static 'images/form/icon-changelink.svg' %}" /></a>                    
+                    <a title="add another proj" onclick="window.open('{% url 'user_info:svn_items_add_update'  "pk" form.repos.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+-->                        </span>                        
+            </div>
+            <div class="form-row field-proj">
+                {{ form.proj.errors }}
+                {{ form.proj.label_tag }}
+                <span class="form-span proj-span">
+                    {{ form.proj }}
+<!--                             <a title="change selected proj" class="change_proj" data-href-template="{% url 'user_info:svn_items_add_update' "__pk__" form.proj.label %}" onclick="return false;"><img src="{% static 'images/form/icon-changelink.svg' %}" /></a>                    
+                    <a title="add another proj" onclick="window.open('{% url 'user_info:svn_items_add_update'  "pk" form.proj.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+-->                        </span>                        
+            </div>
+            <div class="form-row field-level">
+                {{ form.level.errors }}
+                {{ form.level.label_tag }}
+                <span class="form-span level-span">
+                    {{ form.level }}
+<!--                             <a href="#" title="change selected level" class="change_level" data-href-template="{% url 'user_info:svn_items_add_update' "__pk__" form.level.label %}" onclick="return false;"><img src="{% static 'images/form/icon-changelink.svg' %}" /></a>                    
+                    <a href="#" title="add another level" onclick="window.open('{% url 'user_info:svn_items_add_update' "pk" form.level.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+-->                        </span>                        
+            </div>
+            <div class="form-row field-group">
+                {{ form.group.errors }}
+                {{ form.group.label_tag }}
+                <span class="form-span group-span">
+                    {{ form.group }}
+                    <a href="#" title="change selected group" class="change_group" data-href-template="{% url 'user_info:svn_items_add_update' "__pk__" form.group.label %}" onclick="return false;"><img src="{% static 'images/form/icon-changelink.svg' %}" /></a>                    
+                    <a href="#" title="add another group" onclick="window.open('{% url 'user_info:svn_items_add_update' "pk" form.group.label %}', window, 'width=1000, height=600');"><img src="{% static 'images/form/icon-addlink.svg' %}" /></a>                    
+                </span>                        
+            </div>
+            <div class="submit-row">
+              <p style="float: left;"><a class="delete-form" href="{% url 'user_info:svn_user_delete' user_pk %}"> Delete</a></p>
+              <input id="add_another" type="submit" value="Save and add another" name="add_another"> 
+              <input id="editing" type="submit" value="Save and continue editing" name="editing"> 
+              <input id="edit_save" type="submit" value="Save" name="edit_save"> 
+            </div>
+        </form>
+    </div>            
+</div>
+<!-- end content -->
+{% endblock %}  
+
+
+{% block infojs %}
+<script type="text/javascript">
+function hrefInital(sel_id, item_obj) {
+    var item_pk = $('option:selected')[sel_id].value;
+    var item_href_temp = item_obj.attr('data-href-template');
+    var item_href = item_href_temp.replace('__pk__', item_pk);
+    item_obj.attr("href", item_href);
+    return item_href;
+};  
+$(document).ready(function() {
+    // var proj_href = hrefInital(0, $('.change_proj'));
+    // var level_href = hrefInital(1, $('.change_level'));
+    var group_href = hrefInital(2, $('.change_group'));
+
+    // $('.svn-form #id_proj').change(function(){
+    //     var opt_val = $(this).val();
+    //     var item_href_temp = $('.change_proj').attr('data-href-template');
+    //     var item_href = item_href_temp.replace('__pk__', opt_val);
+    //     $('.change_proj').attr("href", item_href);
+    //     proj_href = item_href;
+    // });
+    // $('.svn-form #id_level').change(function(){
+    //     var opt_val = $(this).val();
+    //     var item_href_temp = $('.change_level').attr('data-href-template');
+    //     var item_href = item_href_temp.replace('__pk__', opt_val);
+    //     $('.change_level').attr("href", item_href);
+    //     level_href = item_href;
+    // });
+    $('.svn-form #id_group').change(function(){
+        var opt_val = $(this).val();
+        var item_href_temp = $('.change_group').attr('data-href-template');
+        var item_href = item_href_temp.replace('__pk__', opt_val);
+        $('.change_group').attr("href", item_href);
+        group_href = item_href;
+    });
+
+    // $('.change_proj').click(function(){
+    //     window.open(proj_href, window, 'width=1000, height=600');
+    // });
+    // $('.change_level').click(function(){
+    //     window.open(level_href, window, 'width=1000, height=600');
+    // });
+    $('.change_group').click(function(){
+        window.open(group_href, window, 'width=1000, height=600');
+    });
+
+
+});  
+</script>
+{% endblock %}

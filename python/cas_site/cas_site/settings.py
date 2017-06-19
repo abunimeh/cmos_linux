@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import ldap
+from django_auth_ldap.config import LDAPSearch, PosixGroupType
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +27,7 @@ SECRET_KEY = '^kv&9cx(^v@jlxz$*86hty=f5kj6c^x*c68!pt0ty@p6034-l2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'regr.apps.RegrConfig',
+    'pj_app.apps.PjAppConfig',
+    'user_info.apps.UserInfoConfig',
 ]
 
 MIDDLEWARE = [
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,18 +77,14 @@ WSGI_APPLICATION = 'cas_site.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cpudb',
-        'USER': 'cpudb',
-        'PASSWORD': 'cpudbcpudbcpudb',
-        'HOST': 'platform',
-        'PORT': '5432',
+        'USER': 'admin',
+        'HOST': '127.0.0.1',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -128,3 +128,52 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'cas_static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#ldap auth
+AUTHENTICATION_BACKENDS = {
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+}
+
+AUTH_LDAP_SERVER_URI = 'ldap://ldap1:1389'
+AUTH_LDAP_BIND_DN = 'cn=Manager,dc=sari,dc=com'
+AUTH_LDAP_BIND_PASSWORD = 'sarildap'
+OU = 'ou=People,dc=sari,dc=com'
+AUTH_LDAP_USER_SEARCH = LDAPSearch(OU, ldap.SCOPE_SUBTREE, "(&(objectClass=person)(uid=%(user)s))")
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail"
+}
+
+AUTH_LDAP_GROUP_TYPE = PosixGroupType(name_attr="cn")
+OUG = 'ou=Group,dc=sari,dc=com'
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch(OUG, ldap.SCOPE_SUBTREE, "(objectClass=posixGroup)")
+AUTH_LDAP_MIRROR_GROUPS = True
+AUTH_LDAP_ALWAYS_UPDATE_USER = True
+AUTH_LDAP_FIND_GROUP_PERMS = True
+AUTH_LDAP_CACHE_GROUPS = True
+AUTH_LDAP_GROUP_CACHE_TIMEOUT = 3600
+
+#auth system
+
+#email config
+
+EMAIL_HOST = '172.51.13.25'
+# EMAIL_HOST_USER = 'chenh@cpu.com.cn'
+# EMAIL_HOST_PASSWORD = 'Aa123456'
+# EMAIL_USE_TLS = True
+
+#asic flow index show how many run time and users
+PJ_TIMES = 3
+
+#Each asic flow has default select user and team in pj app
+REGR_USER = "jenkins"
+REGR_TEAM = "infra"
+DC_USER = "qianxf"
+DC_TEAM = "hsbe"
+FM_USER = "qianxf"
+FM_TEAM = "hsbe"
+MP_USER = "yangnx"
+MP_TEAM = "vf2"
