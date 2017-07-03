@@ -560,3 +560,9 @@ crontab -e
 * android
 ** nexus
 sed -i 's/ro.setupwizard.network_required=true/ro.setupwizard.network_required=false/g' /system/build.prop
+* prosody
+admins = { "yigy@platform.sari.com" }
+VirtualHost "platform.sari.com"
+Component "conference.sari.com" "muc"
+    restrict_room_creation = "admin"
+prosodyctl cert generate platform.sari.com
