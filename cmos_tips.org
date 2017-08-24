@@ -21,7 +21,7 @@ blender, cinelerra-cv, subtitleeditor, audacity, puddletag
 ttf-arphic, unifont, adobe-source-han-sans-cn-fonts
 ibus, ibus-sunpinyin
 ** python
-beautifulsoup4, diff-match-patch, Django, djangorestframework, httpie, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, jupyter, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, cython, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, setuptools_scm, sympy, uwsgi, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, XlsxWriter, astropy, texttable, nested-dict, gitpython, line_profiler, memory_profiler, pycurl, flask, paramiko, psutil, virtualenv, tox
+beautifulsoup4, diff-match-patch, Django, djangorestframework, httpie, django-bootstrap3, django-ckeditor, django-registration-redux, django-reversion, ipython, jupyter, Jinja2, matplotlib, networkx, nltk, numpy, openpyxl, cython, pandas, Pillow, pip, psycopg2, mysqlclient, pytz, pyverilog, scikit-learn, scipy, setuptools, setuptools_scm, sympy, uwsgi, wheel, xlrd, xlutils, xlwt, sphinx, jieba, SQLAlchemy, texttable, nested-dict, gitpython, line_profiler, memory_profiler, pycurl, flask, paramiko, psutil, virtualenv, tox, pylint, pylint-django
 ** emacs
 ascii-art-to-unicode, auctex, gnugo, paredit
 ** web static
