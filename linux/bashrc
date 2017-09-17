@@ -9,6 +9,7 @@
 PS1='[\u@\h: $(pwd)]\$ '
 export TERM=linux
 export EDITOR='emacsclient -c -a emacs'
+export WINEARCH=win32
 
 complete -cf sudo
 
@@ -19,3 +20,5 @@ alias ec='emacsclient -c -a emacs'
 alias ls='ls --color'
 alias ll='ls -al'
 alias grep='grep --color'
+alias winew3='wine ~/.wine/drive_c/Program\ Files/Warcraft\ III/Warcraft\ III.exe -opengl'
+alias wined2='wine ~/.wine/drive_c/Program\ Files/Diablo\ II/Diablo\ II.exe -opengl -w'

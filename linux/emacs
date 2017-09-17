@@ -50,7 +50,8 @@
 (setq ediff-split-window-function 'split-window-horizontally)
 (setq make-backup-files nil)
 (setq confirm-kill-emacs 'yes-or-no-p)
-(setq python-shell-interpreter "python3")
+(setq python-shell-interpreter "ipython")
+(setq python-shell-interpreter-args "--simple-prompt")
 (setq org-todo-keywords
       '((sequence "TODO(t)" "DOING(i!)" "PENDING(p!)" "|" "DONE(d!)" "CANCELLED(c!)")))
 (setq org-use-sub-superscripts '{})
