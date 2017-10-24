@@ -66,6 +66,9 @@ M-x shell in tramp
 methods include ftp, ssh, rlogin, telnet
 ** batch mode
 emacs --batch <file> --eval "(setq make-backup-files nil)" -f verilog-pretty-expr -f save-buffer
+** rectangle
+M-x rectangle-number-lines
+C-u M-x rectangle-number-lines
 
 * python
 ** pre compilation
