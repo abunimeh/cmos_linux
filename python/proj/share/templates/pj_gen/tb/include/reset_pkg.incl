@@ -1,0 +1,6 @@
+import reset_config::*;
+`include "reset_transaction.sv"
+`include "reset_sequencer.sv"
+`include "reset_driver.sv"
+`include "reset_agent.sv"
+`include "{{module_name}}_reset_sequence_library.sv"

@@ -1,0 +1,144 @@
+<top_flow name="lcrm_icc">
+    <join_task name="all">
+        <step>rm_icc</step>
+    </join_task>
+    <join_task name="implementation">
+        <step>rm_icc</step>
+    </join_task>
+    <tool_task name="chip_finish_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/chip_finish_icc.tcl</script_file>
+        <src>route_opt_icc</src>
+        <dst>chip_finish_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="clock_opt_cts_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_scripts/clock_opt_cts_icc.tcl</script_file>
+        <src>place_opt_icc</src>
+        <dst>clock_opt_cts_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="clock_opt_psyn_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/clock_opt_psyn_icc.tcl</script_file>
+        <src>clock_opt_cts_icc</src>
+        <dst>clock_opt_psyn_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="clock_opt_route_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/clock_opt_route_icc.tcl</script_file>
+        <src>clock_opt_psyn_icc</src>
+        <dst>clock_opt_route_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="flat_dp">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_dp_scripts/flat_dp.tcl</script_file>
+        <src>init_design_icc</src>
+        <dst>flat_dp</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="fm">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_scripts/fm.tcl</script_file>
+        <src>init_design_icc</src>
+        <dst>outputs_icc</dst>
+        <tool>fm</tool>
+        <must_have_list>
+            <must_have regexp="Verification SUCCEEDED" severity="error"></must_have>
+        </must_have_list>
+    </tool_task>
+    <tool_task name="in-design_rail_analysis">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_scripts/in-design_rail_analysis.tcl</script_file>
+        <src>place_opt_icc</src>
+        <dst>in-design_rail_analysis</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="init_design_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_scripts/init_design_icc.tcl</script_file>
+        <src>init_design_icc</src>
+        <dst>init_design_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="metal_fill_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/metal_fill_icc.tcl</script_file>
+        <src>signoff_opt_icc</src>
+        <dst>metal_fill_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="outputs_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/outputs_icc.tcl</script_file>
+        <src>metal_fill_icc</src>
+        <dst>outputs_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="place_opt_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_scripts/place_opt_icc.tcl</script_file>
+        <src>init_design_icc</src>
+        <dst>place_opt_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="route_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/route_icc.tcl</script_file>
+        <src>clock_opt_route_icc</src>
+        <dst>route_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="route_opt_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/route_opt_icc.tcl</script_file>
+        <src>route_icc</src>
+        <dst>route_opt_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="signoff_opt_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_zrt_scripts/signoff_opt_icc.tcl</script_file>
+        <src>chip_finish_icc</src>
+        <dst>signoff_opt_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <edges>
+        <edge from="chip_finish_icc" to="signoff_opt_icc"></edge>
+        <edge from="clock_opt_cts_icc" to="clock_opt_psyn_icc"></edge>
+        <edge from="clock_opt_psyn_icc" to="clock_opt_route_icc"></edge>
+        <edge from="clock_opt_route_icc" to="route_icc"></edge>
+        <edge from="fm" to="all"></edge>
+        <edge from="init_design_icc" to="flat_dp"></edge>
+        <edge from="init_design_icc" to="place_opt_icc"></edge>
+        <edge from="metal_fill_icc" to="outputs_icc"></edge>
+        <edge from="outputs_icc" to="fm"></edge>
+        <edge from="outputs_icc" to="implementation"></edge>
+        <edge from="place_opt_icc" to="clock_opt_cts_icc"></edge>
+        <edge from="place_opt_icc" to="in-design_rail_analysis"></edge>
+        <edge from="route_icc" to="route_opt_icc"></edge>
+        <edge from="route_opt_icc" to="chip_finish_icc"></edge>
+        <edge from="signoff_opt_icc" to="metal_fill_icc"></edge>
+    </edges>
+    <graph grid_width="454" grid_height="1123">
+        <node name="all" x="198" y="735"></node>
+        <node name="implementation" x="27" y="737"></node>
+        <node name="chip_finish_icc" x="34" y="529"></node>
+        <node name="clock_opt_cts_icc" x="28" y="278"></node>
+        <node name="clock_opt_psyn_icc" x="24" y="327"></node>
+        <node name="clock_opt_route_icc" x="21" y="380"></node>
+        <node name="flat_dp" x="258" y="178"></node>
+        <node name="fm" x="198" y="678"></node>
+        <node name="in-design_rail_analysis" x="208" y="228"></node>
+        <node name="init_design_icc" x="38" y="178"></node>
+        <node name="metal_fill_icc" x="38" y="628"></node>
+        <node name="outputs_icc" x="42" y="679"></node>
+        <node name="place_opt_icc" x="38" y="228"></node>
+        <node name="route_icc" x="49" y="431"></node>
+        <node name="route_opt_icc" x="38" y="482"></node>
+        <node name="signoff_opt_icc" x="32" y="578"></node>
+    </graph>
+</top_flow>

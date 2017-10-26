@@ -1,0 +1,8 @@
+./addpp32.v
+./cla.v
+./csa.v
+./genpp32.v
+./gpr.v
+./InstDecode.v
+./mult3232.v
+./ChipTop.v

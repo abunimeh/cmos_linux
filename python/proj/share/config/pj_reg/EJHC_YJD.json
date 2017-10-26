@@ -1,0 +1,726 @@
+{
+    "L2_CUIF_Debug": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h50",
+        "local_address": "11'h50",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[3]": {
+                "RW": "NA",
+                "definition": "Disable_CUIF_CMD_Bypass",
+                "description": "当该位设置，则不允许C2U请求的旁过，即所有请求均需要先进入C2U请求FIFO.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "Disable_PREF_FIFO",
+                "description": "当该位设置，则使Prefetch FIFO失效，这样预取请求也要进入read FIFO.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8:6]": {
+                "RW": "NA",
+                "definition": "read_pref_sched_fifo_tuning",
+                "description": "当read FIFO和prefetch FIFO里面均有请求时，该值定义了调度预取请求之前需要已调度多少条读请求，默认值为4.",
+                "reset_value": "3'h4",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "L2_PREF_Debug": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5c",
+        "local_address": "11'h5c",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "PREF_DISABLE",
+                "description": "当设置时，L2的预取器被关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "RD_TRAIN_DISABLE",
+                "description": "当设置时，停止L1D RD请求在流预取器中的training.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "RFO_TRAIN_DISABLE",
+                "description": "当设置时，停止RFO请求在流预取器中的training.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "IFU_TRAIN_DISABLE",
+                "description": "当设置时，停止IFU请求在流预取器中的training.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "SPATIAL_DISABLE",
+                "description": "当设置时，关闭L2空间预取器.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "STREAMER_DISABLE",
+                "description": "当设置时，关闭L2流预取器.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12:8]": {
+                "RW": "NA",
+                "definition": "MIN_PF_DISTANCE",
+                "description": "流预取器的最小动态预取距离.",
+                "reset_value": "5'h2",
+                "ucode_reset_value": "NA"
+            },
+            "[17:13]": {
+                "RW": "NA",
+                "definition": "MAX_PF_DISTANCE",
+                "description": "流预取器的最大动态预取距离.",
+                "reset_value": "5'h0f",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "L2_PREF_TUNING0": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5d",
+        "local_address": "11'h5d",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "NA",
+                "definition": "FWD_TRIGGER_THRESHOLD",
+                "description": "前向预取阈值：即判断为前向预取所需的前向命中次数.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[5:3]": {
+                "RW": "NA",
+                "definition": "BWD_TRIGGER_THRESHOLD",
+                "description": "后向预取阈值：即判断为后向预取所需的后向命中次数.",
+                "reset_value": "3'h1",
+                "ucode_reset_value": "NA"
+            },
+            "[10:6]": {
+                "RW": "NA",
+                "definition": "INC_DIST_RQ_THRESHOLD",
+                "description": "动态预取距离增加阈值.",
+                "reset_value": "5'h8",
+                "ucode_reset_value": "NA"
+            },
+            "[15:11]": {
+                "RW": "NA",
+                "definition": "DEC_DIST_RQ_THRESHOLD",
+                "description": "动态预取距离减小阈值.",
+                "reset_value": "5'h14",
+                "ucode_reset_value": "NA"
+            },
+            "[20:16]": {
+                "RW": "NA",
+                "definition": "FWD_FAR_RANGE",
+                "description": "最大前向距离.",
+                "reset_value": "5'h1f",
+                "ucode_reset_value": "NA"
+            },
+            "[25:21]": {
+                "RW": "NA",
+                "definition": "BWD_FAR_RANGE",
+                "description": "最大后向距离.",
+                "reset_value": "5'h1f",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "L2_PREF_TUNING1": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5e",
+        "local_address": "11'h5e",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[4:0]": {
+                "RW": "NA",
+                "definition": "RESET_PF_DISTANCE_THRESHOLD",
+                "description": "动态预取距离重置阈值",
+                "reset_value": "5'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[9:5]": {
+                "RW": "NA",
+                "definition": "BLOCK_DISPATCH_THRESHOLD",
+                "description": "输出队列截止阈值(统计RQ中的pending的项).",
+                "reset_value": "5'h3",
+                "ucode_reset_value": "NA"
+            },
+            "[14:10]": {
+                "RW": "NA",
+                "definition": "DROP_SPATIAL_THRESHOLD",
+                "description": "空间预取请求丢弃阈值(统计RQ中发生L2 miss的项).",
+                "reset_value": "5'h7",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "PREFETCH_CTL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h1b4",
+        "local_address": "11'h74",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "L2_Streamer_prefetch_disable",
+                "description": "若设置，则将L2流预取器关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "L2_Spatial_prefetch_disable",
+                "description": "若设置，则将L2空间预取器关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "L2_RQ_Debug": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h79",
+        "local_address": "11'h79",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[3]": {
+                "RW": "NA",
+                "definition": "ONE_RQ_ENTRY_MODE",
+                "description": "若设置，只允许使用请求队列项0.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "DISABLE_RQ_ENTRIES_0to3",
+                "description": "若设置，只允许使用请求队列项0到3.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "DISABLE_RQ_ENTRIES_4to7",
+                "description": "若设置，只允许使用请求队列项4到7.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "DISABLE_RQ_ENTRIES_8to11",
+                "description": "若设置，只允许使用请求队列项8到11.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "DISABLE_RQ_ENTRIES_12to15",
+                "description": "若设置，只允许使用请求队列项12到15.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "FILLS_HIGH_PRIORITY",
+                "description": "若设置，则在L2访问仲裁中，FillFIFO的优先级高于RQFIFO.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "BLOCK_SQFIFOS",
+                "description": "若设置，则不再从RQFIFO和FillFIFO取出请求且这些请求也不能赢得L2访问仲裁.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "CONVERT_ITOM_TO_RFO",
+                "description": "若设置，则将ITOM请求转换为RFO请求.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "DISABLE_L2_WB_WBMtoI",
+                "description": "若设置，则L2踢出请求将忽略BI的结果，即均已WBMtoE的形式写回.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[22]": {
+                "RW": "NA",
+                "definition": "ENABLE_RQFSM_WAKEUP_ALWAYS",
+                "description": "若设置，则所有rejected的请求均不进入RQWait状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "L2_Cache_Debug": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h7a",
+        "local_address": "11'h7a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[1]": {
+                "RW": "NA",
+                "definition": "DATA_ECC_SAFE_MODE",
+                "description": "若设置，所有从L2缓存读出的数据均需要ECC校验后，再返回L1D/L1I.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "L2_NOFILL",
+                "description": "若该位设置，所有请求均不会fill L2 Cache.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "SET_MATCH_NOFILL_EN",
+                "description": "若该位设置，则任何请求的SET地址与SET_MATCH_NOFILL_MASK比较匹配后，则设置为NOFILL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16:8]": {
+                "RW": "NA",
+                "definition": "SET_MATCH_NOFILL_MASK",
+                "description": "用于指定SET_MATCH_NOFILL机制的MASK.",
+                "reset_value": "9'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[25:17]": {
+                "RW": "NA",
+                "definition": "SET_MATCH_NOFILL_MATCH",
+                "description": "用于指定SET_MATCH_NOFILL机制的set地址.",
+                "reset_value": "9'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[26]": {
+                "RW": "NA",
+                "definition": "FORCE_VICTIM_WAY_EN",
+                "description": "若该位设置，则发生L2 Fill时，只能Fill进由FORCE_VICTIM_WAY指定的way.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+           "[29:27]": {
+                "RW": "NA",
+                "definition": "FORCE_VICTIM_WAY",
+                "description": "指定L2的way.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "L2_SnoopQ_Debug": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h7b",
+        "local_address": "11'h7b",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2]": {
+                "RW": "NA",
+                "definition": "SINGLE_CREDIT_SNPQ_ENABLE",
+                "description": "若设置，则只允许发送一个SnoopQ Credit到Uncore.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "ALL_SNOOPS_GO2I_ENABLE",
+                "description": "若设置，所有的侦听均变为Snp_Inv.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+           "[14]": {
+                "RW": "NA",
+                "definition": "SNPQ_DISPATCH_DISABLE",
+                "description": "若设置，则停止侦听的分发.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+           "[15]": {
+                "RW": "NA",
+                "definition": "SNPQ_BYPASS_DISABLE",
+                "description": "若设置，则不允许外部侦听的Bypass.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "L2_Cache_Reset": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h7d",
+        "local_address": "11'h7d",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "Reset_L2",
+                "description": "若设置，则只允许发送一个SnoopQ Credit到Uncore.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "Reset_L2_Done",
+                "description": "该位置1表示L2的重置已经完成.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "IA32_PERFEVTSEL<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h186", "step": "1"},
+        "global_address": {"base": "11'h61a", "step": "2"},
+        "local_address": {"base": "11'h652", "step": "2"},
+        "local_address_hi": {"base": "11'h653", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,3",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	}
+    },     
+ "IA32_MISC_ENABLE": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h1a0",
+        "global_address": "11'h362",
+        "local_address": "11'h54c",
+        "local_address_hi": "11'h54d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "fast_string_en",
+                "description": "快速字符串使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+
+            "[7]": {
+                "RW": "R",
+                "definition": "pmu_available",
+                "description": "PMU可用信号.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+  },
+
+  "MC3_CTL": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h40c",
+        "global_address": "11'h1a8",
+        "local_address": "11'h1a8",
+        "local_address_hi": "11'h1a9",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "L2_Tag_Error",
+                "description": "若设置，允许记录不可纠正的标签ECC错误.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "L2_Data_Error",
+                "description": "若设置，允许记录不可纠正的数据ECC错误.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "L2_CUIF_Parity_Error",
+                "description": "若设置，允许记录CUIF奇偶校验错误.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "mc3_status": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h40d",
+        "global_address": "11'h1aa",
+        "local_address": "11'h1aa",
+        "local_address_hi": "11'h1ab",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "RO",
+                "definition": "MCA_ERR_CODE",
+                "description": "Mache Check错误编码.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "16'h0"
+            },
+            "[31:16]": {
+                "RW": "RO",
+                "definition": "Model_Specific_ERR_CODE",
+                "description": "模型特定的错误编码.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "16'h0"
+            },
+            "[52:38]": {
+                "RW": "RO",
+                "definition": "CECNT",
+                "description": "可纠正L1D错误的计数器.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[53]": {
+                "RW": "RO",
+                "definition": "BITFIX_FILTER_ALLOC",
+                "description": "表示可纠正错误是否分配进BITFIX过滤器。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[54]": {
+                "RW": "RO",
+                "definition": "BITFIX_FILTER_OVER",
+                "description": "表示分配进BITFIX过滤器。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[57]": {
+                "RW": "RO",
+                "definition": "PCC",
+                "description": "处理器上下文环境污染标志位，设置为1时表明处理器的状态被发生的MCA事件影响了，软件无法安全的进行重启。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[58]": {
+                "RW": "RO",
+                "definition": "ADDRV",
+                "description": "MC1_ADDR寄存器的使能位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[59]": {
+                "RW": "RO",
+                "definition": "MISCV",
+                "description": "表示MC1_MISC是否有效,由于L1D未实现MC1_MISC，该位一直置0。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[60]": {
+                "RW": "RO",
+                "definition": "EN",
+                "description": "错误使能标志位，记录发生的MCA错误是否被CTL寄存器使能。设置为1时，表明该MCA错误在CTL寄存器中是使能的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[61]": {
+                "RW": "RO",
+                "definition": "UC",
+                "description": "不可纠正错误标志位，设置为1时，表明发生的MCA错误是不可纠正的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[62]": {
+                "RW": "RO",
+                "definition": "OVER",
+                "description": "设置为1时，表明一个新的MCA错误发生时，之前发生的一个旧的MCA错误还没有处理完毕，其信息仍然保存在status中。 新的MCA错误可能会覆盖旧的MCA错误，具体覆盖规则详见manual。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[63]": {
+                "RW": "RO",
+                "definition": "VAL",
+                "description": "状态寄存器的使能位，表明status中的信息是有效的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "mc3_addr": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h40e",
+        "global_address": "11'h1ac",
+        "local_address": "11'h1ac",
+        "local_address_hi": "11'h1ad",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[47:0]": {
+                "RW": "RO",
+                "definition": "ADDR",
+                "description": "出现错误的请求的地址.",
+                "reset_value": "48'h0",
+                "ucode_reset_value": "48'h0"
+            }
+         }
+      },
+  "mc3_misc": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h40f",
+        "global_address": "11'h1ae",
+        "local_address": "11'h1ae",
+        "local_address_hi": "11'h1af",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[6:0]": {
+                "RW": "RO",
+                "definition": "Opcode",
+                "description": "发生错误请求的Opcode.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[10:7]": {
+                "RW": "RO",
+                "definition": "RQID",
+                "description": "发生错误的请求的RQID.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[13:11]": {
+                "RW": "RO",
+                "definition": "Way",
+                "description": "发生错误的请求所访问的缓存的way.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[14]": {
+                "RW": "RO",
+                "definition": "Thread",
+                "description": "线程号.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      },
+  "mc3_ctl2": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h283",
+        "global_address": "11'h18a",
+        "local_address": "11'h18a",
+        "local_address_hi": "11'h18b",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[14:0]": {
+                "RW": "RW",
+                "definition": "corrected_err_thrsh",
+                "description": "可纠正错误计数阈值.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[30]": {
+                "RW": "RW",
+                "definition": "corrected_err_en",
+                "description": "可纠正错误的CMCI中断使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      }
+
+}

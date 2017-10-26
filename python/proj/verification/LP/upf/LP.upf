@@ -1,0 +1,248 @@
+## CREATE POWER DOMAIS
+######################
+create_power_domain TOP
+create_power_domain MULT  -elements Multiplier
+create_power_domain INST  -elements InstDecode
+create_power_domain GPRS  -elements GPRs
+create_power_domain GENPP -elements Multiplier/GENPP
+
+
+## TOPLEVEL CONNECTIONS
+#######################
+# VDD
+create_supply_port VDD 
+create_supply_net  VDD   -domain TOP
+create_supply_net  VDD   -domain GENPP -reuse
+connect_supply_net VDD   -ports VDD
+
+
+# VSS
+create_supply_port VSS 
+create_supply_net  VSS   -domain TOP
+create_supply_net  VSS   -domain INST -reuse
+create_supply_net  VSS   -domain GPRS -reuse
+create_supply_net  VSS   -domain MULT -reuse
+create_supply_net  VSS   -domain GENPP -reuse
+connect_supply_net VSS   -ports VSS
+
+
+# VDDI
+create_supply_port VDDI
+create_supply_net  VDDI   -domain TOP
+create_supply_net  VDDI   -domain INST -reuse
+connect_supply_net VDDI   -ports VDDI
+create_supply_net  VDDIS  -domain TOP
+create_supply_net  VDDIS  -domain INST -reuse
+
+
+# VDDG
+create_supply_port VDDG 
+create_supply_net  VDDG   -domain TOP
+create_supply_net  VDDG   -domain GPRS -reuse
+connect_supply_net VDDG   -ports VDDG
+create_supply_net  VDDGS  -domain GPRS
+
+
+# VDDM
+create_supply_port VDDM 
+create_supply_net  VDDM   -domain TOP
+create_supply_net  VDDM   -domain MULT -reuse
+connect_supply_net VDDM   -ports VDDM
+create_supply_net  VDDMS  -domain MULT
+
+
+## PRIMARY POWER NETS
+#####################
+set_domain_supply_net TOP   -primary_power_net VDD   -primary_ground_net VSS
+set_domain_supply_net INST  -primary_power_net VDDIS -primary_ground_net VSS
+set_domain_supply_net GPRS  -primary_power_net VDDGS -primary_ground_net VSS
+set_domain_supply_net MULT  -primary_power_net VDDMS -primary_ground_net VSS
+set_domain_supply_net GENPP -primary_power_net VDD   -primary_ground_net VSS
+
+
+## INST SETUP
+#############
+# SWITCH
+create_power_switch inst_sw \
+  -domain TOP \
+  -input_supply_port {in VDDI} \
+  -output_supply_port {out VDDIS}\
+  -control_port {inst_on inst_on}\
+  -on_state {state2001 in  {!inst_on}}
+
+
+# ISO
+set_isolation inst_iso_in \
+  -domain INST \
+  -isolation_power_net VDD -isolation_ground_net VSS \
+  -clamp_value 1 \
+  -applies_to inputs
+
+set_isolation_control inst_iso_in \
+  -domain INST \
+  -isolation_signal inst_iso_in \
+  -isolation_sense high \
+  -location parent
+
+set_isolation inst_iso_out \
+  -domain INST \
+  -isolation_power_net VDD -isolation_ground_net VSS \
+  -clamp_value 1 \
+  -applies_to outputs
+
+set_isolation_control inst_iso_out \
+  -domain INST \
+  -isolation_signal inst_iso_out \
+  -isolation_sense low \
+  -location parent
+
+set_isolation inst_iso_in_reset \
+  -domain INST \
+  -elements InstDecode/reset \
+  -applies_to inputs \
+  -no_isolation
+
+# RETAIN
+set_retention inst_ret -domain INST \
+  -retention_power_net VDDI -retention_ground_net VSS
+
+set_retention_control inst_ret -domain INST \
+  -save_signal {inst_save high} \
+  -restore_signal {inst_nrestore low}
+
+
+
+## GPRS SETUP
+#############
+# SWITCH
+create_power_switch gprs_sw \
+  -domain GPRS \
+  -input_supply_port {in VDDG} \
+  -output_supply_port {out VDDGS} \
+  -control_port {gprs_on gprs_on} \
+  -on_state {state2002 in {!gprs_on}}
+
+
+# ISO
+set_isolation gprs_iso_in \
+  -domain GPRS \
+  -isolation_power_net VDD -isolation_ground_net VSS \
+  -clamp_value 1 \
+  -applies_to inputs
+
+set_isolation_control gprs_iso_in \
+  -domain GPRS \
+  -isolation_signal gprs_iso_in \
+  -isolation_sense high \
+  -location parent
+
+set_isolation gprs_iso_out \
+  -domain GPRS \
+  -isolation_power_net VDD -isolation_ground_net VSS \
+  -clamp_value 1 \
+  -applies_to outputs
+
+set_isolation_control gprs_iso_out \
+  -domain GPRS \
+  -isolation_signal gprs_iso_out \
+  -isolation_sense low \
+  -location parent
+
+set_isolation gprs_iso_in_reset \
+  -domain GPRS \
+  -applies_to inputs \
+  -elements GPRs/reset \
+  -no_isolation
+
+# RETAIN
+set_retention gprs_ret -domain GPRS \
+  -retention_power_net VDDG -retention_ground_net VSS
+
+set_retention_control gprs_ret -domain GPRS \
+  -save_signal {gprs_save high} \
+  -restore_signal {gprs_nrestore low}
+
+
+## MULT SETUP
+#############
+# SWITCH
+create_power_switch mult_sw \
+  -domain MULT \
+  -input_supply_port {in VDDM} \
+  -output_supply_port {out VDDMS} \
+  -control_port {mult_on mult_on} \
+  -on_state {state2003 in {!mult_on}}
+
+# ISO
+set_isolation mult_iso_out \
+  -domain MULT \
+  -isolation_power_net VDD -isolation_ground_net VSS \
+  -clamp_value 1 \
+  -applies_to outputs 
+
+set_isolation_control mult_iso_out \
+  -domain MULT \
+  -isolation_signal mult_iso_out \
+  -isolation_sense high \
+  -location parent
+
+
+## GENPP SETUP
+##############
+set_isolation mult_iso_in \
+  -domain GENPP \
+  -isolation_power_net VDD -isolation_ground_net VSS \
+  -clamp_value 1 \
+  -applies_to inputs \
+
+set_isolation_control mult_iso_in \
+  -domain GENPP \
+  -isolation_signal mult_iso_in \
+  -isolation_sense high \
+  -location self
+
+set_isolation mult_iso_in_isoen \
+  -domain GENPP \
+  -elements Multiplier/GENPP/iso_in \
+  -applies_to inputs \
+  -no_isolation
+
+
+# ADD PORT STATE INFO
+#####################
+add_port_state VDD   -state {HV  1.08}
+
+add_port_state VDDI  -state {HV  1.08}\
+	             -state {LV  0.864}
+
+add_port_state inst_sw/out -state {HV  1.08}\
+	                   -state {LV  0.864}\
+		           -state {OFF off}
+
+add_port_state VDDG  -state {HV  1.08}\
+	             -state {LV  0.864}
+
+add_port_state gprs_sw/out -state {HV  1.08}\
+	                   -state {LV  0.864}\
+		           -state {OFF off}
+
+add_port_state VDDM  -state {HV  1.08}
+
+add_port_state mult_sw/out -state {HV  1.08}\
+                           -state {OFF off}
+
+
+## CREATE PST
+#############
+create_pst chiptop_pst -supplies         {VDD VDDI VDDIS VDDG VDDGS VDDM VDDMS}
+add_pst_state s0  -pst chiptop_pst -state {HV  HV   HV    HV   HV    HV   HV}
+add_pst_state s01 -pst chiptop_pst -state {HV  HV   OFF   HV   HV    HV   HV}
+add_pst_state s02 -pst chiptop_pst -state {HV  HV   HV    HV   OFF   HV   HV}
+add_pst_state s03 -pst chiptop_pst -state {HV  HV   HV    HV   HV    HV   OFF}
+add_pst_state s1  -pst chiptop_pst -state {HV  LV   LV    LV   LV    HV   HV}
+add_pst_state s11 -pst chiptop_pst -state {HV  LV   OFF   LV   LV    HV   HV}
+add_pst_state s12 -pst chiptop_pst -state {HV  LV   LV    LV   OFF   HV   HV}
+add_pst_state s13 -pst chiptop_pst -state {HV  LV   LV    LV   LV    HV   OFF}
+
+
+

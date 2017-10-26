@@ -1,0 +1,308 @@
+{
+    "MicroArch": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h99",
+        "local_address": "11'h99",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[3:2]": {
+                "RW": "NA",
+                "definition": "FbPrefThres",
+                "description": "硬件预取器分发的阀值，包括1,2,4,6.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7:6]": {
+                "RW": "NA",
+                "definition": "HwPrefDispatch",
+                "description": "硬件预取器的分发模式: 00表示正常模式；01表示空模式(预取FIFO只写不读)；10表示失效模式(预取FIFO清除，不写).",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "L1DDefeature": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h9a",
+        "local_address": "11'h9a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "DisNTPref",
+                "description": "该位设置后，则将所有的NTPrefetch微操作视为空操作.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "DisNTPrefL1",
+                "description": "该位设置后，则将所有的L1Prefetch微操作视为空操作.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "DisNTPrefL2",
+                "description": "该位设置后，则将所有的L2Prefetch微操作视为空操作.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "DisORFO",
+                "description": "该位设置后，乱序RFO机制将被关闭，则所有WB类型的Store操作进GO队列时，直接设置InOrder位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "DisCrossTFwd",
+                "description": "该位设置后，则load操作命中对方线程的FB项，则一定要被阻塞.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "DisCrossTComb",
+                "description": "该位设置后，则store操作命中对方线程的FB项，需要被取消.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "BiasedLRU",
+                "description": "当该位设置后，NT Prefetch请求将会设置LRULock位，后续对该set的LRU不能更新，直到该set上发生新的load或者store miss.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10]": {
+                "RW": "NA",
+                "definition": "DisLRULock",
+                "description": "该位设置后,LRULock位即使被设置，也失效，即LRU更新不受影响.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "DisNTLoad",
+                "description": "该位设置后，将WC类型的load视为UC类型的load进行处理.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "DisIPP",
+                "description": "该位设置后，将IP预取器关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "DisWCMode",
+                "description": "该位设置后，所有的WC Store分配FB项时，不设置WCMode.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "DisStrmPref",
+                "description": "该位设置后，将流预取器关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "DisAnyTFwd",
+                "description": "该位设置后，则所有的load操作均不能从FB项中forwarding数据.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[17]": {
+                "RW": "NA",
+                "definition": "EnFwdFromLock",
+                "description": "若对方线程在某个set上存在正在处理的缓存锁，通常会阻塞本线程的load操作，若该位设置，则允许从该set上forwarding数据.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18]": {
+                "RW": "NA",
+                "definition": "SplitLockDis",
+                "description": "该位设置后，所有的跨line的锁操作视为正常的不带锁的操作，包括load_lock和store_unlock操作.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[24]": {
+                "RW": "NA",
+                "definition": "DisFBRsrv",
+                "description": "该位设置后，将FB项的预留机制关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "PREFETCH_CTL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h1b4",
+        "local_address": "11'h9c",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2]": {
+                "RW": "NA",
+                "definition": "Streamer_Prefetch_Disable",
+                "description": "该位设置后，将流预取器关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "IP_Prefetch_Disable",
+                "description": "该位设置后，将IP预取器关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "L1DTestMode": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h97",
+        "local_address": "11'h97",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "ReplaceFreeze",
+                "description": "该位设置后，替换功能被冻结，即FB项发起替换请求均会被mask.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "ReplaceDisable",
+                "description": "该位设置后，则替换功能被关闭，即cacheable的load/store分配FB项后，RepEn位直接置0.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "DirectMapMode",
+                "description": "该位设置后，L1D缓存变成直接映射，只使用way0.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "OneFBMode",
+                "description": "该位设置后，只允许使用一个FB项，该位需要与OneFBSel一起使用.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7:4]": {
+                "RW": "NA",
+                "definition": "OneFBSel",
+                "description": "与OneFBMode一起使用，用于指定使用的FB项.",
+                "reset_value": "4'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "CacheDisableMode",
+                "description": "该位设置后，所有的访问均为当作uncacheable..",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "IA32_PERFEVTSEL<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h186", "step": "1"},
+        "global_address": {"base": "11'h61a", "step": "2"},
+        "local_address": {"base": "11'h6a2", "step": "2"},
+        "local_address_hi": {"base": "11'h68d", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,3",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	  }
+    }  
+
+
+}

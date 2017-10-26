@@ -1,0 +1,1519 @@
+{
+    "UC_FAST_STRING_THRESHOLD": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h20",
+        "local_address": "11'h20",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[7:0]": {
+                "RW": "NA",
+                "definition": "MOVS",
+                "description": "保存MOVS快速字符串操作的循环计数触发阈值.",
+                "reset_value": "8'h4",
+                "ucode_reset_value": "NA"
+            },
+            "[15:8]": {
+                "RW": "NA",
+                "definition": "STOS",
+                "description": "保存STOS快速字符串操作的循环计数触发阈值.",
+                "reset_value": "8'h4",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC_PATCH_DATA_ADDRESS": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h22",
+        "local_address": "11'h22",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[9:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "保存补丁行数据待写入的RAM地址（10位）.",
+                "reset_value": "10'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   
+    "UC_PATCH_DATA0": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h24",
+        "local_address": "11'h24",
+        "local_address_hi": "11'h25",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "保存待写入的补丁行数据.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC_PATCH_DATA1": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h26",
+        "local_address": "11'h26",
+        "local_address_hi": "11'h27",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "保存待写入的补丁行数据.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC_PATCH_DATA2": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h28",
+        "local_address": "11'h28",
+        "local_address_hi": "11'h29",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "保存待写入的补丁行数据.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC_PATCH_DATA3": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h2a",
+        "local_address": "11'h2a",
+        "local_address_hi": "11'h2b",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "保存待写入的补丁行数据.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC_PATCH_DATA4": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h2c",
+        "local_address": "11'h2c",
+        "local_address_hi": "11'h2d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "保存待写入的补丁行数据.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC_PATCH_CAM_DAT<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h400", "step": "1"},
+        "local_address": {"base": "11'h400", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,127",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "valid",
+                "description": "补丁有效位.",
+                "reset_value": "1'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[15:1]": {
+                "RW": "NA",
+                "definition": "PatchUCip",
+                "description": "待打补丁的UCip.",
+                "reset_value": "15'h7ff",
+                "ucode_reset_value": "NA"
+            },
+            "[30:16]": {
+                "RW": "NA",
+                "definition": "TargetUCip",
+                "description": "补丁目标的UCip.",
+                "reset_value": "15'h7ff",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC_VMX_EXIT_CONTROL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h544",
+        "local_address": "11'h544",
+        "local_address_hi": "11'h545",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "SAVE_CR0_CR4",
+                "description": "VMX退出保存CR0和CR4.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "SAVE_CR3",
+                "description": "VMX退出保存CR3.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "SAVE_DEBUG_CONTROLS",
+                "description": "VMX退出保存DEBUG_CONTROLS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "SAVE_SEG_REG",
+                "description": "VMX退出保存段寄存器.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "SAVE_ESP_EIP_EFLAGS",
+                "description": "VMX退出保存ESP、EIP和EFLAGS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "SAVE_PND_DBG_EXC",
+                "description": "VMX退出保存PND_DBG_EXC.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "SAVE_INTER_STATE",
+                "description": "VMX退出保存INTER STATE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "SAVE_ACTIVITY_STATE",
+                "description": "VMX退出保存ACTIVITY_STATE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "SAVE_VMCS_WP",
+                "description": "VMX退出保存VMCS_WP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "HOST_ADDR_SIZE",
+                "description": "HOST_ADDR_SIZE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[10]": {
+                "RW": "NA",
+                "definition": "LOAD_CR0_CR4",
+                "description": "VMX退出装载CR0和CR4.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "LOAD_CR3",
+                "description": "VMX退出装载CR3.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "LOAD_HOST_PERF_CTL_MSR",
+                "description": "VMX退出装载HOST_PERF_CTL_MSR.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "LOAD_SEG_REG",
+                "description": "VMX退出装载段寄存器.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "LOAD_ESP_EIP",
+                "description": "VMX退出装载ESP和EIP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "ACK_INTR_ON_EXIT",
+                "description": "VMX退出控制位ACK_INTR_ON_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "SAVE_SYSENTER_MSRS",
+                "description": "VMX退出控制位SAVE_SYSENTER_MSRS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[17]": {
+                "RW": "NA",
+                "definition": "LOAD_SYSENTER_MSRS",
+                "description": "VMX退出控制位LOAD_SYSENTER_MSRS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[18]": {
+                "RW": "NA",
+                "definition": "SAVE_GUEST_PAT",
+                "description": "VMX退出控制位SAVE_GUEST_PAT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[19]": {
+                "RW": "NA",
+                "definition": "LOAD_HOST_PAT",
+                "description": "VMX退出控制位LOAD_HOST_PAT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[20]": {
+                "RW": "NA",
+                "definition": "SAVE_GUEST_EFER",
+                "description": "VMX退出控制位SAVE_GUEST_EFER.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[21]": {
+                "RW": "NA",
+                "definition": "LOAD_HOST_EFER",
+                "description": "VMX退出控制位LOAD_HOST_EFER.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[22]": {
+                "RW": "NA",
+                "definition": "SAVE_PREEMPTION_TIMER",
+                "description": "VMX退出控制位SAVE_PREEMPTION_TIMER.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[32]": {
+                "RW": "NA",
+                "definition": "SMI_BLOCKING",
+                "description": "VMX退出控制位SMI_BLOCKING.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[33]": {
+                "RW": "NA",
+                "definition": "NMI_BLOCKING",
+                "description": "VMX退出控制位NMI_BLOCKING.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[34]": {
+                "RW": "NA",
+                "definition": "STM_CONFIGURATION",
+                "description": "VMX退出控制位STM_CONFIGURATION.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[36]": {
+                "RW": "NA",
+                "definition": "LEVEL_SKIPPING_VMEXIT",
+                "description": "VMX退出控制位LEVEL_SKIPPING_VMEXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[37]": {
+                "RW": "NA",
+                "definition": "DO_MSR_LOAD_LOOP",
+                "description": "VMX退出控制位DO_MSR_LOAD_LOOP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[38]": {
+                "RW": "NA",
+                "definition": "DO_MSR_SAVE_LOOP",
+                "description": "VMX退出控制位DO_MSR_SAVE_LOOP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[39]": {
+                "RW": "NA",
+                "definition": "SHADOWING_VIOLATION_DETECTED",
+                "description": "VMX退出控制位SHADOWING_VIOLATION_DETECTED.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[41]": {
+                "RW": "NA",
+                "definition": "SAVE_VIRT_NMI_INHIBIT",
+                "description": "VMX退出控制位SAVE_VIRT_NMI_INHIBIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[42]": {
+                "RW": "NA",
+                "definition": "HOST_CR4_PAE",
+                "description": "VMX退出控制位HOST_CR4_PAE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[43]": {
+                "RW": "NA",
+                "definition": "VPID_ENABLED_IN_GUEST",
+                "description": "VMX退出控制位VPID_ENABLED_IN_GUEST.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+            
+        }
+    },
+  
+    "UC_VMX_ENTRY_CONTROL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h546",
+        "local_address": "11'h546",
+        "local_address_hi": "11'h547",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "LOAD_CR0_CR4",
+                "description": "VMX进入控制位LOAD_CR0_CR4.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "LOAD_CR3",
+                "description": "VMX进入控制位LOAD_CR3.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "LOAD_DEBUG_CONTROLS",
+                "description": "VMX进入控制位LOAD_DEBUG_CONTROLS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "LOAD_SEGMENT_REG",
+                "description": "VMX进入控制位LOAD_SEGMENT_REG.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "LOAD_ESP_EIP_EFLAGS",
+                "description": "VMX进入控制位LOAD_ESP_EIP_EFLAGS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "LOAD_PND_DBG_EXC",
+                "description": "LOAD_PND_DBG_EXC.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "LOAD_INTER_STATE",
+                "description": "VMX进入控制位LOAD_INTER_STATE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "LOAD_ACTIVITY_STATE",
+                "description": "VMX进入控制位LOAD_ACTIVITY_STATE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "LOAD_VMCS_WP",
+                "description": "VMX进入控制位LOAD_VMCS_WP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "LONG_MODE_GUEST",
+                "description": "VMX进入控制位LONG_MODE_GUEST.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[10]": {
+                "RW": "NA",
+                "definition": "ENTRY_TO_SMM",
+                "description": "VMX进入控制位ENTRY_TO_SMM.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "TEAR_DOWN_SMM_MONITOR",
+                "description": "VMX进入控制位TEAR_DOWN_SMM_MONITOR.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "DEASSERT_SMMEM",
+                "description": "DEASSERT_SMMEM.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "LOAD_GUEST_PERF_CONTROL_MSR",
+                "description": "LOAD_GUEST_PERF_CONTROL_MSR.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "LOAD_GUEST_PAT",
+                "description": "VMX进入控制位LOAD_GUEST_PAT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "LOAD_GUEST_EFER",
+                "description": "VMX进入控制位LOAD_GUEST_EFER.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[32]": {
+                "RW": "NA",
+                "definition": "LOAD_HOST_PERF_CTL_MSR_EXIT_CONTROL",
+                "description": "VMX进入控制位LOAD_HOST_PERF_CTL_MSR_EXIT_CONTROL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[33]": {
+                "RW": "NA",
+                "definition": "LOAD_HOST_PAT_EXIT_CONTROL",
+                "description": "VMX进入控制位LOAD_HOST_PAT_EXIT_CONTROL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[34]": {
+                "RW": "NA",
+                "definition": "HOST_ADDR_SIZE_EXIT_CONTROL",
+                "description": "VMX进入控制位HOST_ADDR_SIZE_EXIT_CONTROL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[35]": {
+                "RW": "NA",
+                "definition": "LOAD_HOST_EFER_EXIT_CONTROL",
+                "description": "VMX进入控制位LOAD_HOST_EFER_EXIT_CONTROL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[0]": {
+                "RW": "NA",
+                "definition": "LOAD_CR0_CR4",
+                "description": "VMX进入控制位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[36]": {
+                "RW": "NA",
+                "definition": "ENABLE_EPT_GUEST_EXE_CONTROL",
+                "description": "VMX进入控制位ENABLE_EPT_GUEST_EXE_CONTROL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[37]": {
+                "RW": "NA",
+                "definition": "ENABLE_VPID_GUEST_EXE_CONTROL",
+                "description": "VMX进入控制位ENABLE_VPID_GUEST_EXE_CONTROL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[56]": {
+                "RW": "NA",
+                "definition": "PRESERVE_DEBUG_RESOURCE",
+                "description": "VMX进入控制位PRESERVE_DEBUG_RESOURCE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[57]": {
+                "RW": "NA",
+                "definition": "TARGET_SLEEP_STATE_NONZERO",
+                "description": "VMX进入控制位TARGET_SLEEP_STATE_NONZERO.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[58]": {
+                "RW": "NA",
+                "definition": "TARGET_CR4_PAE",
+                "description": "VMX进入控制位TARGET_CR4_PAE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[59]": {
+                "RW": "NA",
+                "definition": "GUEST_SEGMENT_STATE_CACHED",
+                "description": "VMX进入控制位GUEST_SEGMENT_STATE_CACHED.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[62]": {
+                "RW": "NA",
+                "definition": "VMENTRY_TO_GUEST",
+                "description": "VMX进入控制位VMENTRY_TO_GUEST.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+    "UC_VMX_EXE_CONTROL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h548",
+        "local_address": "11'h548",
+        "local_address_hi": "11'h549",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "SOFT_INT_EXIT",
+                "description": "VMX执行控制位SOFT_INT_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "VMX执行控制位TRIPLE_FLT_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "VMX_INT_PEND",
+                "description": "VMX执行控制位VMX_INT_PEND.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "USE_TSC_OFFSET",
+                "description": "VMX执行控制位USE_TSC_OFFSET.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "TASK_SW_EXIT",
+                "description": "VMX执行控制位TASK_SW_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "CPUID_EXIT",
+                "description": "VMX执行控制位CPUID_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "GETSEC_EXIT",
+                "description": "VMX执行控制位GETSEC_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "HLT_EXIT",
+                "description": "VMX执行控制位HLT_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "INVD_EXIT",
+                "description": "VMX执行控制位INVD_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "INVLPG_EXIT",
+                "description": "VMX执行控制位INVLPG_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10]": {
+                "RW": "NA",
+                "definition": "MWAIT_EXIT",
+                "description": "VMX执行控制位MWAIT_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "RDPMC_EXIT",
+                "description": "VMX执行控制位RDPMC_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "RDTSC_EXIT",
+                "description": "VMX执行控制位RDTSC_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "RSM_EXIT",
+                "description": "VMX执行控制位RSM_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "VM_INST_EXIT",
+                "description": "VMX执行控制位VM_INST_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "CR3_LOAD_EXIT",
+                "description": "VMX执行控制位CR3_LOAD_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "CR3_STORE_EXIT",
+                "description": "VMX执行控制位CR3_STORE_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[17]": {
+                "RW": "NA",
+                "definition": "CR3_GH_MASK",
+                "description": "VMX执行控制位CR3_GH_MASK.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18]": {
+                "RW": "NA",
+                "definition": "CR3_READ_SHADOW",
+                "description": "VMX执行控制位CR3_READ_SHADOW.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[19]": {
+                "RW": "NA",
+                "definition": "CR8_LOAD_EXIT",
+                "description": "VMX执行控制位CR8_LOAD_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[20]": {
+                "RW": "NA",
+                "definition": "CR8_STORE_EXIT",
+                "description": "VMX执行控制位CR8_STORE_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[21]": {
+                "RW": "NA",
+                "definition": "USE_TPR_SHADOW",
+                "description": "VMX执行控制位USE_TPR_SHADOW.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[22]": {
+                "RW": "NA",
+                "definition": "NMI_PEND",
+                "description": "VMX执行控制位NMI_PEND.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[23]": {
+                "RW": "NA",
+                "definition": "MOV_DR_EXIT",
+                "description": "VMX执行控制位MOV_DR_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[24]": {
+                "RW": "NA",
+                "definition": "UNCOND_IO_EXIT",
+                "description": "VMX执行控制位UNCOND_IO_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[25]": {
+                "RW": "NA",
+                "definition": "ACT_IO_BMPS",
+                "description": "VMX执行控制位ACT_IO_BMPS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26]": {
+                "RW": "NA",
+                "definition": "MSR_PROT",
+                "description": "VMX执行控制位MSR_PROT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[27]": {
+                "RW": "NA",
+                "definition": "MONITOR_TF",
+                "description": "VMX执行控制位MONITOR_TF.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[28]": {
+                "RW": "NA",
+                "definition": "USE_MSR_BMP",
+                "description": "VMX执行控制位USE_MSR_BMP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[29]": {
+                "RW": "NA",
+                "definition": "MONITOR_EXIT",
+                "description": "VMX执行控制位MONITOR_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[30]": {
+                "RW": "NA",
+                "definition": "PAUSE_EXIT",
+                "description": "VMX执行控制位PAUSE_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[31]": {
+                "RW": "NA",
+                "definition": "ACT_SEC_EXE_CTL",
+                "description": "VMX执行控制位ACT_SEC_EXE_CTL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[32]": {
+                "RW": "NA",
+                "definition": "INT_APIC_ACCESS",
+                "description": "VMX执行控制位INT_APIC_ACCESS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[33]": {
+                "RW": "NA",
+                "definition": "ENABLE_EPT",
+                "description": "VMX执行控制位ENABLE_EPT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34]": {
+                "RW": "NA",
+                "definition": "DT_EXITING",
+                "description": "VMX执行控制位DT_EXITING.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[35]": {
+                "RW": "NA",
+                "definition": "ENABLE_RDTSCP",
+                "description": "VMX执行控制位ENABLE_RDTSCP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[36]": {
+                "RW": "NA",
+                "definition": "VIRTUALIZE_TPR_MSR",
+                "description": "VMX执行控制位VIRTUALIZE_TPR_MSR.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[37]": {
+                "RW": "NA",
+                "definition": "ENABLE_VPID",
+                "description": "VMX执行控制位ENABLE_VPID.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[38]": {
+                "RW": "NA",
+                "definition": "WBINVD_EXIT",
+                "description": "VMX执行控制位WBINVD_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[48]": {
+                "RW": "NA",
+                "definition": "EXT_INT_EXIT",
+                "description": "VMX执行控制位EXT_INT_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[49]": {
+                "RW": "NA",
+                "definition": "HOST_INT_FLAG",
+                "description": "VMX执行控制位HOST_INT_FLAG.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50]": {
+                "RW": "NA",
+                "definition": "INIT_EXITING",
+                "description": "VMX执行控制位INIT_EXITING.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[51]": {
+                "RW": "NA",
+                "definition": "VMX_NMI_CTL",
+                "description": "VMX执行控制位VMX_NMI_CTL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[52]": {
+                "RW": "NA",
+                "definition": "SIPI_EXIT",
+                "description": "VMX执行控制位SIPI_EXIT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[53]": {
+                "RW": "NA",
+                "definition": "FULL_NMI_CONTROL",
+                "description": "VMX执行控制位FULL_NMI_CONTROL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[54]": {
+                "RW": "NA",
+                "definition": "VMX_PRE_TIMER",
+                "description": "VMX执行控制位VMX_PRE_TIMER.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[62]": {
+                "RW": "NA",
+                "definition": "GUEST_MODE",
+                "description": "VMX执行控制位GUEST_MODE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[63]": {
+                "RW": "NA",
+                "definition": "VM_WP_INVALID",
+                "description": "VM_WP_INVALID.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+
+        }
+    },
+    "UC_MAR_LOAD": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h618",
+        "local_address": "11'h618",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[1:0]": {
+                "RW": "NA",
+                "definition": "SCALE",
+                "description": "保存宏别名的缩放信息.",
+                "reset_value": "2'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "CC",
+                "description": "保存宏别名的CC信息：REP CMPS/SCAS function alias的最低位.",
+                "reset_value": "1'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[8:7]": {
+                "RW": "NA",
+                "definition": "ASIZE",
+                "description": "保存宏别名的地址位宽信息.",
+                "reset_value": "2'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[13:11]": {
+                "RW": "NA",
+                "definition": "DSIZE",
+                "description": "保存宏别名的数据位宽信息.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[17:14]": {
+                "RW": "NA",
+                "definition": "SREG",
+                "description": "保存宏别名的段寄存器信息.",
+                "reset_value": "4'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC_UCODE_STATE": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h54a",
+        "local_address": "11'h54a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "EFER_SCE",
+                "description": "EFER[SCE]位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "POST_VMXON",
+                "description": "机器处于post-VMXON状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "PROBE_MODE_ACTIVE",
+                "description": "指示处于PROBE模式.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[6:3]": {
+                "RW": "NA",
+                "definition": "DATA",
+                "description": "数据位宽.",
+                "reset_value": "4'h0",
+                "ucode_reset_value": "4'h0"
+            }
+        }
+    },
+    "UC_TEST": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h21",
+        "local_address": "11'h21",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[7:1]": {
+                "RW": "NA",
+                "definition": "FORCE_CARRY",
+                "description": "当最低位为1时，高6位定义循环计数器的哪8位进行减1.",
+                "reset_value": "7'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "IGNORE_FLOWEND",
+                "description": "忽略流结束额外功能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "ESP_SYNC",
+                "description": "强制所有ESP偏移非0时插入ESP同步，给DE使用.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "FAST_PREDICT_DISABLE",
+                "description": "禁用微分支快速预测BTB.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "IGNORE_RELEASE_OCCUPY",
+                "description": "忽视RELEASE_OCCUPY额外功能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "IA32_PERF_GLOBAL_CTRL": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h38f",
+        "global_address": "11'h71e",
+        "local_address": "11'h71e",
+        "local_address_hi": "11'h71f",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[3:0]": {
+                "RW": "RW",
+                "definition": "CORE_PERF_CTR_ENABLE",
+                "description": "通用计数器使能位.会刷新TLB",
+                "reset_value": "4'hf",
+                "ucode_reset_value": "4'hf"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "FIXED_COUNTER_ENABLE",
+                "description": "固定计数器使能位.会刷新TLB",
+                "reset_value": "3'h7",
+                "ucode_reset_value": "3'h7"
+            }
+         }
+      },
+    "IA32_PERF_GLOBAL_STATUS": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h38e",
+        "global_address": "11'h71c",
+        "local_address": "11'h71c",
+        "local_address_hi": "11'h71d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[3:0]": {
+                "RW": "RO",
+                "definition": "CORE_PERF_CTR_OVERFLOW",
+                "description": "通用计数器溢出位.会刷新TLB",
+                "reset_value": "4'h0",
+                "ucode_reset_value": "4'h0"
+            },
+            "[34:32]": {
+                "RW": "RO",
+                "definition": "FIXED_COUNTER_OVERFLOW",
+                "description": "固定计数器溢出位.会刷新TLB",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h0"
+            },
+            "[61]": {
+                "RW": "RO",
+                "definition": "UNCORE_OVERFLOW",
+                "description": "UNCORE中计数器溢出位.会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[62]": {
+                "RW": "RO",
+                "definition": "PEBS_OVERFLOW",
+                "description": "PEBS溢出.会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[63]": {
+                "RW": "RO",
+                "definition": "COND_CHANGED",
+                "description": "IA32_MISC_ENABLES.PERFMON_AVAILABLE位变化指示位.会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      },
+    "IA32_PERF_GLOBAL_OVF_CTRL": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h390",
+        "global_address": "11'h720",
+        "local_address": "11'h720",
+        "local_address_hi": "11'h721",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[3:0]": {
+                "RW": "RW",
+                "definition": "CORE_PERF_CTR_OVERFLOW_CLEAR",
+                "description": "清空通用计数器溢出位.会刷新TLB",
+                "reset_value": "4'h0",
+                "ucode_reset_value": "4'hF"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "FIXED_COUNTER_OVERFLOW_CLEAR",
+                "description": "清空固定计数器溢出位.会刷新TLB",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h7"
+            },
+            "[61]": {
+                "RW": "RW",
+                "definition": "UNCORE_OVERFLOW_CLEAR",
+                "description": "清空UNCORE中计数器溢出位.会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b1"
+            },
+            "[62]": {
+                "RW": "RW",
+                "definition": "PEBS_OVERFLOW_CLEAR",
+                "description": "清空PEBS溢出,会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b1"
+            },
+            "[63]": {
+                "RW": "RW",
+                "definition": "COND_CHANGED_CLEAR",
+                "description": "清空IA32_MISC_ENABLES.PERFMON_AVAILABLE位变化指示位.会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b1"
+            }
+         }
+      },
+    "IA32_FIXED_CTR_CTRL": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h38d",
+        "global_address": "11'h71a",
+        "local_address": "11'h71a",
+        "local_address_hi": "11'h71b",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[1:0]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR0_EN",
+             "description": "对固定计数器0进行控制：00：禁用, 01：OS, 10：USER, 11：ALL RING LEVEL; 会刷新TLB",
+                "reset_value": "2'h0",
+                "ucode_reset_value": "2'h0"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR0_ANY",
+                "description": "固定计数器0线程有效指示位：0：对当前线程有,1：对当前core有效; 会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR0_PMI",
+             "description": "指示固定计数器0发生溢出时触发PMI; 会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[5:4]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR1_EN",
+             "description": "对固定计数器1进行控制; 会刷新TLB",
+                "reset_value": "2'h0",
+                "ucode_reset_value": "2'h0"
+            },
+            "[6]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR1_ANY",
+             "description": "固定计数器1线程有效指示位：0：对当前线程有, 1：对当前core有效; 会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[7]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR1_PMI",
+             "description": "指示固定计数器1发生溢出时触发PMI; 会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[9:8]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR2_EN",
+             "description": "对固定计数器2进行控制; 会刷新TLB",
+                "reset_value": "2'h0",
+                "ucode_reset_value": "2'h0"
+            },
+            "[10]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR2_ANY",
+             "description": "固定计数器2线程有效指示位：0：对当前线程有, 1：对当前core有效; 会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "FIXED_CTR2_PMI",
+             "description": "指示固定计数器2发生溢出时触发PMI; 会刷新TLB",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      },
+    "CORE_PERF_CTR<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'hc1", "step": "1"},
+        "global_address": {"base": "11'h782", "step": "2"},
+        "local_address": {"base": "11'h782", "step": "2"},
+        "local_address_hi": {"base": "11'h783", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,3",
+        "ST/MT": "MT",
+        "fields": {
+            "[47:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "通用性能计数器.会刷新TLB",
+                "reset_value": "48'h0",
+                "ucode_reset_value": "48’h0"
+            }
+        }
+    },
+    "IA32_FIXED_CTR<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h309", "step": "1"},
+        "global_address": {"base": "11'h612", "step": "2"},
+        "local_address": {"base": "11'h612", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,2",
+        "ST/MT": "MT",
+        "fields": {
+            "[47:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "固定性能计数器.会刷新TLB",
+                "reset_value": "48'h0",
+                "ucode_reset_value": "48’h0"
+            }
+        }
+    },
+     "IA32_PERFEVTSEL<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h186", "step": "1"},
+        "global_address": {"base": "11'h61a", "step": "2"},
+        "local_address": {"base": "11'h70c", "step": "2"},
+        "local_address_hi": {"base": "11'h70d", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,3",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	  }
+    },	
+  "IA32_DEBUGCTLMSR": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h1d9",
+        "global_address": "11'h1d9",
+        "local_address": "11'h624",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "LBR",
+                "description": "LBR: Last Branch Record.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "BTF",
+                "description": "BTF.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[6]": {
+                "RW": "RW",
+                "definition": "TR",
+                "description": "Branch Trace.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[7]": {
+                "RW": "RW",
+                "definition": "BTS",
+                "description": "Log Branch Trace Message to BTS buffer.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[8]": {
+                "RW": "RW",
+                "definition": "BTINT",
+                "description": "BTINT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "BTS_OFF_OS",
+                "description": "BTS_OFF_OS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[10]": {
+                "RW": "RW",
+                "definition": "BTS_OFF_USER",
+                "description": "BTS_OFF_USER.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "FREEZE_LBR_ON_PMI",
+                "description": "FREEZE_LBR_ON_PMI.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[12]": {
+                "RW": "RW",
+                "definition": "FREEZE_PERFMON_ON_PMI",
+                "description": "FREEZE_PERFMON_ON_PMI.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[13]": {
+                "RW": "RW",
+                "definition": "ENABLE_UNCORE_PMI",
+                "description": "ENABLE_UNCORE_PMI.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[14]": {
+                "RW": "RW",
+                "definition": "FREEZE_WHILE_SMM",
+                "description": "FREEZE_WHILE_SMM.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+
+ "IA32_MISC_ENABLE": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h1a0",
+        "global_address": "11'h362",
+        "local_address": "11'h622",
+        "local_address_hi": "11'h623",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "fast_string_en",
+                "description": "快速字符串使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+
+            "[7]": {
+                "RW": "R",
+                "definition": "pmu_available",
+                "description": "PMU可用信号.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+	   }
+      }
+           
+
+}

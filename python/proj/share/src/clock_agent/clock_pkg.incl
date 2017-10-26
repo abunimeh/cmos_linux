@@ -1,0 +1,7 @@
+// include "clock_if.sv" in the testbench mode
+import clock_config::*;
+`include "clock_transaction.sv"
+`include "clock_driver.sv"
+`include "clock_sequencer.sv"
+`include "clock_agent.sv"
+`include "clock_sequence.sv"

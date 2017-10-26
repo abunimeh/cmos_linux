@@ -1,0 +1,59 @@
+<top_flow name="lcrm_icc_hier">
+    <tool_task name="commit_dp">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_dp_scripts/commit_dp.tcl</script_file>
+        <src>pin_assignment_budgeting_dp</src>
+        <dst>commit_dp</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="create_plangroups_dp">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_dp_scripts/create_plangroups_dp.tcl</script_file>
+        <src>init_design_icc</src>
+        <dst>create_plangroups_dp</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="init_design_icc">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_scripts/init_design_icc.tcl</script_file>
+        <src>init_design_icc</src>
+        <dst>init_design_icc</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="pin_assignment_budgeting_dp">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_dp_scripts/pin_assignment_budgeting_dp.tcl</script_file>
+        <src>routeability_on_plangroups_dp</src>
+        <dst>pin_assignment_budgeting_dp</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="prepare_block_dp">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_dp_scripts/prepare_block_dp.tcl</script_file>
+        <src>commit_dp</src>
+        <dst>prepare_block_dp</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <tool_task name="routeability_on_plangroups_dp">
+        <step>rm_icc</step>
+        <script_file>$SEV(bscript_dir)/rm_icc_dp_scripts/routeability_on_plangroups_dp.tcl</script_file>
+        <src>create_plangroups_dp</src>
+        <dst>routeability_on_plangroups_dp</dst>
+        <tool>icc</tool>
+    </tool_task>
+    <edges>
+        <edge from="commit_dp" to="prepare_block_dp"></edge>
+        <edge from="create_plangroups_dp" to="routeability_on_plangroups_dp"></edge>
+        <edge from="init_design_icc" to="create_plangroups_dp"></edge>
+        <edge from="pin_assignment_budgeting_dp" to="commit_dp"></edge>
+        <edge from="routeability_on_plangroups_dp" to="pin_assignment_budgeting_dp"></edge>
+    </edges>
+    <graph grid_width="454" grid_height="523">
+        <node name="commit_dp" x="85" y="274"></node>
+        <node name="create_plangroups_dp" x="51" y="84"></node>
+        <node name="init_design_icc" x="79" y="25"></node>
+        <node name="pin_assignment_budgeting_dp" x="19" y="211"></node>
+        <node name="prepare_block_dp" x="61" y="337"></node>
+        <node name="routeability_on_plangroups_dp" x="21" y="148"></node>
+    </graph>
+</top_flow>

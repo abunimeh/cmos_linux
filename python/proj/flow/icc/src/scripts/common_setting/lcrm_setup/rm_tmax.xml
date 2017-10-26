@@ -1,0 +1,12 @@
+<top_flow name="lcrm_tmax">
+    <tool_task name="tmax">
+        <step>rm_tmax</step>
+        <script_file>$SEV(bscript_dir)/rm_tmax_scripts/tmax.tcl</script_file>
+        <src>tmax</src>
+        <dst>tmax</dst>
+        <tool>tx</tool>
+    </tool_task>
+    <graph grid_width="556" grid_height="762">
+        <node name="tmax" x="251" y="167"></node>
+    </graph>
+</top_flow>

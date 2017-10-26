@@ -1,0 +1,11 @@
+../tb/include/reset_config.sv
+../tb/include/clock_config.sv
+../tb/include/{{module_name}}_pkg.sv
+../tb/include/global_cfg.sv
+../tb/tests/{{module_name}}_tb_mod.sv
+../tb/hdl/test_top.sv
++incdir+../tb/include
++incdir+../tb/src
++incdir+../tb/env
++incdir+../tb/seqs
++incdir+../tb/tests

@@ -1,0 +1,9 @@
+#icc_shell -f scripts/main_icc_scripts/init_design_icc.tcl | tee -i ./logs/.log
+#icc_shell -f scripts/main_icc_scripts/flat_dp.tcl | tee -i ./logs/data_floorplan.log
+#icc_shell -f scripts/main_icc_scripts/place_opt_icc.tcl | tee -i ./logs/place.log
+#icc_shell -f scripts/main_icc_scripts/clock_opt_cts_icc.tcl | tee -i ./logs/clock_cts.log
+#icc_shell -f scripts/main_icc_scripts/clock_opt_psyn_icc.tcl | tee -i ./logs/clock_psyn.log
+#icc_shell -f scripts/main_icc_scripts/clock_opt_route_icc.tcl | tee -i ./logs/clock_route.log
+#icc_shell -f scripts/main_icc_scripts/route_icc.tcl | tee -i ./logs/route.log
+#icc_shell -f scripts/main_icc_scripts/route_opt_icc.tcl | tee -i ./logs/route_opt.log
+#icc_shell -f scripts/main_icc_scripts/outputs_icc.tcl | tee -i ./logs/output.log

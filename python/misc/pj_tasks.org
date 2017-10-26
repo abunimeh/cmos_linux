@@ -1,0 +1,1029 @@
+* features
+- configurable
+- re-usable
+- extensible
+* ids
+- callback rules
+- MACRO usage rules
+- OBTB details
+- c2silicon toolkit
+- core software hardware combined debug toolkit
+- python test and continuous integration, nose
+* monthly plan
+** 09/16
+1.完成平台目前实现功能的详细文档
+2.完成平台runner(pj)正式版本
+** 10/16
+1.根据模块级验证工程师的反馈和合理需求，在cpu1上完善验证平台
+2.与设计组制定设计平台具体方案
+** 11/16
+1.根据系统级验证工程的需求，拓展验证平台支持系统级验证
+2.平台组对外的issue跟踪流程
+3.开发设计组leda flow
+** 12/16
+1.cpu0上测试验证平台的移植性
+2.根据模块级与系统级验证工程师的反馈和合理需求，在cpu0上完善验证平台
+3.开发设计组的auto wire flow
+** 01/17
+1.根据模块级与系统级验证工程师的反馈和合理需求，在cpu1上完善验证平台
+2.开发设计组的基础dc flow
+** 02/17
+1.平台support
+2.平台backend对autoreg支持
+3.开发设计组的基础dc flow
+** 03/17
+1.平台support
+2.与设计组合作，支持autoreg生成复杂协议的reg model
+3.开发设计组RVP flow
+4.开发设计组的mem bist flow
+** 04/17
+1.平台support
+2.开发设计组的dft compiler flow
+3.平台web报告形式的多样式支持
+** 05/17
+1.平台support
+2.开发设计组的PR
+3.平台web多种导入导出支持
+** 06/17
+1.平台support
+2.开发设计组的PR
+3.开发设计组的基础timing flow
+** 07/17
+1.平台support
+2.开发设计组的基础timing flow
+3.开发平台cosim flow
+** 08/17
+1.平台support
+2.开发平台gate sim flow
+3.开发平台cosim flow
+** 09/17
+1.平台support
+2.开发平台gate sim flow
+3.开发设计组的基础cdc flow
+** 10/17
+1.平台support
+2.开发设计组的基础cdc flow
+3.优化设计组的PR flow
+4.平台支持FPGA
+** 11/17
+1.平台support
+2.优化设计组的PR flow
+3.优化设计组的timing flow
+4.平台支持FPGA
+** 12/17
+1.平台support
+2.优化设计组的timing flow
+3.开发平台UPF low power flow
+** 01/18
+1.平台support
+2.开发平台的emulator flow
+** 02/18
+1.平台support
+2.开发平台的emulator flow
+** 03/18
+1.平台support
+2.数据分析平台开发
+** 04/18
+1.平台support
+2.数据分析平台开发
+** 05/18
+1.平台support
+2.根据cpu0与cpu1积累的数据进行数据分析
+** 06/18
+1.平台support
+2.根据cpu0与cpu1积累的数据进行数据分析
+* RD
+** DONE default regression seed random
+   - State "DONE"       from ""           [2016-09-09 Fri 09:54]
+- proj cfg modification
+** DONE default -verdi behavior to load library only
+   - State "DONE"       from ""           [2016-09-09 Fri 09:55]
+- run subcmd
+** DONE supported rtl.flist only behavior
+   - State "DONE"       from ""           [2016-09-09 Fri 09:55]
+- run subcmd
+** DONE leda splitter according waiver csv file
+   - State "DONE"       from "DONE"       [2016-09-29 Thu 16:11]
+   - State "DONE"       from ""           [2016-09-09 Fri 09:58]
+- tool misc
+- added support for leda log without initial head
+** DONE added flist content dependency checking in Makefile
+   - State "DONE"       from ""           [2016-09-09 Fri 09:55]
+- using pickel to dump and load for file timestamp
+** DONE added tb & vip flist dependency checking in Makefile
+   - State "DONE"       from ""           [2016-09-09 Fri 16:17]
+- find_iter all sv file in MODULE_TB and PROJ_VERIF/vip
+- temp solution
+** DONE verdi not showing design cells and library cells loading library and kdb
+   - State "DONE"       from ""           [2016-09-12 Mon 09:39]
+- using -ssv & -ssy options in verdi
+** DONE using config dir as module checking dir instead of vplan dir
+   - State "DONE"       from ""           [2016-09-12 Mon 14:13]
+** DONE added order_by django filter in view before distinct operation
+   - State "DONE"       from ""           [2016-09-18 Sun 15:33]
+** DONE added linebreaks filter in template for better pretty display
+   - State "DONE"       from ""           [2016-09-18 Sun 15:34]
+** DONE updated cas_site column split symbol to ___ instead of __
+   - State "DONE"       from ""           [2016-09-19 Mon 14:28]
+** DONE added run subcmd case name robust for ext string
+   - State "DONE"       from ""           [2016-09-21 Wed 09:31]
+** DONE added db string length constraint
+   - State "DONE"       from ""           [2016-09-30 Fri 15:23]
+** DONE bpu and all its sub modules using pj
+   - State "DONE"       from ""           [2016-10-10 Mon 16:32]
+** DONE leda splitter using more robust checking rules without matching desc string
+   - State "DONE"       from ""           [2016-10-10 Mon 16:34]
+** DONE fixed ucli sub process unkilled issue
+   - State "DONE"       from ""           [2016-10-14 Fri 14:51]
+** DONE added wave dump simulation options entry for fsdb autoflush feature
+   - State "DONE"       from ""           [2016-10-14 Fri 14:52]
+** DONE added run fresh options to do fresh compilation no matter the compiled db timestamp
+   - State "DONE"       from ""           [2016-10-21 Fri 10:53]
+** DONE fixed random seed duplicated issue
+   - State "DONE"       from ""           [2016-10-21 Fri 14:17]
+** DONE updated tree ignore option for module name checking
+   - State "DONE"       from ""           [2016-10-27 Thu 14:45]
+** DONE split boot_env to boot_env and proj_env for more initial complex conditions
+   - State "DONE"       from ""           [2016-10-27 Thu 14:50]
+** DONE updated leda to support multiple waiver file
+   - State "DONE"       from ""           [2016-10-28 Fri 15:11]
+** DONE removed Cov class to use main_cov function instead to match subcmd scale
+   - State "DONE"       from ""           [2016-11-11 Fri 13:49]
+** DONE aligned pj subcmd necessary args and optional args checking rules
+   - State "DONE"       from ""           [2016-11-11 Fri 13:50]
+** DONE stp_gen flow for FPGA
+   - State "DONE"       from ""           [2016-11-17 Thu 10:48]
+** DONE supported more case_*.cfg files
+   - State "DONE"       from ""           [2016-11-18 Fri 15:06]
+** DONE fixed pcom rd_cfg returned None type issue
+   - State "DONE"       from ""           [2016-11-18 Fri 15:15]
+** DONE fixed case cfg section name non strip issue
+   - State "DONE"       from ""           [2016-11-18 Fri 15:15]
+** DONE fixed vplan desc new line openpyxl write issue
+   - State "DONE"       from ""           [2016-11-22 Tue 16:16]
+** DONE updated pcom to ignore ',' string in _opts options
+   - State "DONE"       from ""           [2016-11-22 Tue 16:17]
+** DONE fixed python shell ucli terminated issue
+   - State "DONE"       from ""           [2016-11-23 Wed 10:55]
+** DONE updated ow_dic behavior to take effects on specified cases only when case_lst exists
+   - State "DONE"       from ""           [2016-11-23 Wed 14:49]
+** DONE stricter checking for log parser in case pass status
+   - State "DONE"       from ""           [2016-11-29 Tue 10:17]
+** DONE moved tool opts from makefile template to proj cfg
+   - State "DONE"       from ""           [2016-11-29 Tue 10:27]
+** DONE added variable support in pre_cmd and post_cmd
+   - State "DONE"       from ""           [2016-11-29 Tue 11:12]
+** DONE moved class init LOG variable as first parameter
+   - State "DONE"       from ""           [2016-12-01 Thu 10:01]
+** DONE integrated x86_ins related features into pj flow
+   - State "DONE"       from ""           [2016-12-02 Fri 08:26]
+** DONE added pj run c compilation stage toggle
+   - State "DONE"       from ""           [2016-12-02 Fri 09:14]
+** DONE added pj run custom c compilation options
+   - State "DONE"       from ""           [2016-12-02 Fri 09:14]
+** DONE updated pj group.cfg to simv.cfg to distinguish with other group concept
+   - State "DONE"       from ""           [2016-12-05 Mon 11:04]
+** DONE updated current pj docs and web app docs
+   - State "DONE"       from "DONE"       [2016-12-23 Fri 14:26]
+   - State "DONE"       from ""           [2016-12-05 Mon 14:40]
+** DONE updated x86_ins interface necessary ins_num arguments
+   - State "DONE"       from ""           [2016-12-06 Tue 07:49]
+** DONE cleaned x86_ins temp file after simulation
+   - State "DONE"       from ""           [2016-12-06 Tue 07:56]
+** DONE moving list_all feature from Makefile to pj main to speed up generation
+   - State "DONE"       from ""           [2016-12-06 Tue 15:58]
+** DONE added regression support for x86_ins generation
+   - State "DONE"       from ""           [2016-12-07 Wed 08:52]
+** DONE added fresh compilation options for pj regression
+   - State "DONE"       from ""           [2016-12-07 Wed 08:52]
+** DONE fixed UVM pkg svh makefile dependency issue
+   - State "DONE"       from ""           [2016-12-07 Wed 15:58]
+** DONE ins_gen.py refactoring
+   - State "DONE"       from ""           [2016-12-13 Tue 13:34]
+** DONE renamed gn to vn for renaming group to simv
+   - State "DONE"       from ""           [2016-12-13 Tue 13:38]
+** DONE updated x86 ins generator to output test_gen stdout
+   - State "DONE"       from ""           [2016-12-13 Tue 13:39]
+** DONE updated env_booter.py to use functions as items instead of class
+   - State "DONE"       from ""           [2016-12-15 Thu 14:04]
+** DONE added x86_ins groups options for simulation and regression
+   - State "DONE"       from ""           [2016-12-15 Thu 14:04]
+** DONE split regression global switchs into simv and case sections for makefile timestamp
+   - State "DONE"       from ""           [2016-12-15 Thu 14:04]
+** DONE added x86_ins regression group support
+   - State "DONE"       from ""           [2016-12-16 Fri 13:55]
+** DONE fixed x86_ins regression random seed missing issue
+   - State "DONE"       from ""           [2016-12-16 Fri 13:55]
+** DONE reused x86_ins guarded block in makefile_gen and env_booter
+   - State "DONE"       from ""           [2016-12-16 Fri 13:55]
+** DONE updated clean sub cmd to support revert tb and config module dir
+   - State "DONE"       from ""           [2016-12-16 Fri 13:55]
+** DONE split huge makefile into tiny simv & case makefiles
+   - State "DONE"       from ""           [2016-12-23 Fri 11:11]
+** DONE merged run & regr sub cmd together by using -t args to toggle regression mode
+   - State "DONE"       from ""           [2016-12-23 Fri 11:11]
+** DONE removed redundant python import head modules
+   - State "DONE"       from ""           [2016-12-23 Fri 11:11]
+** DONE aligned PEP8 coding style rules
+   - State "DONE"       from ""           [2016-12-23 Fri 11:11]
+** DONE added clean all case dir toggle
+   - State "DONE"       from ""           [2016-12-23 Fri 11:11]
+** DONE clean sub cmd only prompt confirmation once
+   - State "DONE"       from ""           [2016-12-23 Fri 11:11]
+** DONE added strip action on pj prompt input for more robust action
+   - State "DONE"       from ""           [2016-12-23 Fri 11:12]
+** DONE utilized makefile variables instead of internal variables for general usage
+   - State "DONE"       from ""           [2016-12-23 Fri 11:12]
+** DONE updated ins_gen for more robust behavior on case name input
+   - State "DONE"       from ""           [2016-12-23 Fri 11:12]
+** DONE test_gen.py feature discussion with verification group 2
+   - State "DONE"       from ""           [2016-12-28 Wed 17:38]
+** DONE updated /tools python main version from 3.5 to 3.6
+   - State "DONE"       from ""           [2017-01-13 Fri 11:21]
+** DONE added pj external executable checking feature
+   - State "DONE"       from ""           [2017-01-13 Fri 11:25]
+** DONE pj updated env naming rules according to unique flow and svn requirements
+   - State "DONE"       from ""           [2017-02-24 Fri 08:45]
+** DONE using unix shell cmd pipe tee to write stdout and log file simultaneously
+   - State "DONE"       from ""           [2017-04-24 Mon 08:57]
+* runner
+** desc
+- 统一的runner入口，提供case、regression、reg等第一级参数控制
+- 兼容两种模式：参数模式，配置模式
+- makefile模板，通过python实现复杂的逻辑控制如case group、option mapping等
+- 每个class负责具体功能，松耦合的模块设计
+- 方便与数据库交互
+- python inc make vs make inc python，make依赖关系，python glue language
+** simulation: run
+*** DONE 支持C/S/M
+    - State "DONE"       from ""           [2016-07-27 Wed 11:28]
+支持三家的simulation tools以及全部options
+*** DONE SQL写database
+    - State "DONE"       from "DOING"      [2016-08-23 Tue 08:08]
+    - State "DOING"      from "DOING"      [2016-08-22 Mon 16:03]
+    - State "DOING"      from "DOING"      [2016-08-05 Fri 13:37]
+    - State "DOING"      from ""           [2016-07-27 Wed 11:28]
+通过sqlalchemy写database，包括case状态信息、log parsing信息等；
+syndrome信息
+- sql engine is ready
+- sql db info security is ready
+- 使用raw sql写database，取代orm，保持table一致性
+*** CANCELLED 脚本去耦合
+    - State "CANCELLED"  from "DONE"       [2016-08-26 Fri 11:28]
+    - State "DONE"       from ""           [2016-07-27 Wed 11:29]
+把现有脚本按功能模块进行分割
+- 平台组件全部重新开发以满足两个验证组统一的目标
+*** DONE 中间步骤简化
+    - State "DONE"       from ""           [2016-07-27 Wed 11:29]
+简化多级步骤为1级
+- 简化bootenv方式
+- 简化c lib编译方式
+- 支持在proj中任意地方运行
+*** DONE makefile生成
+    - State "DONE"       from "DONE"       [2016-08-16 Tue 09:03]
+    - State "DONE"       from ""           [2016-07-27 Wed 11:29]
+利用template生成runner自己的中间makefile，不对用户开发
+- 支持简单cfg，复杂makefile生成
+- 重构makefile template，去除无用的targets，用隐式规则简化make
+- 更新makefile template以支持3-step-flow以及partition compilation
+- 统一化makefile，run/regr无差别
+*** DONE 统一配置文件格式(.cfg)
+    - State "DONE"       from ""           [2016-07-27 Wed 11:30]
+统一全部配置文件格式为unix conf格式
+- 添加全部参数注释
+- 去掉eda.cfg，merge进makefile template
+*** DONE 不同EDA工具版本
+    - State "DONE"       from "DONE"       [2016-08-11 Thu 09:34]
+    - State "DONE"       from "PENDING"    [2016-08-05 Fri 13:36]
+    - State "PENDING"    from "DOING"      [2016-07-28 Thu 20:48]
+    - State "DOING"      from ""           [2016-07-27 Wed 11:30]
+可以配置不同的EDA工具版本；
+- 依赖流程组新的module tool
+- 利用module load自行调整，之后kick off pj
+- 移除makefile template中hard coding tools部分
+*** 多个units并行
+需要LSF
+*** DONE 多级options控制
+    - State "DONE"       from "DONE"       [2016-09-01 Thu 13:47]
+    - State "DONE"       from ""           [2016-07-27 Wed 11:30]
+- 多级option控制过程体系，优先级为cmd opts > case cfg/module cfg > proj cfg
+- 参数优先级从高到低依次覆盖
+- 将pj run所有tools options移到cfg文件中
+- 统一cmd line opts与cfg keys
+*** TODO formal verification
+支持C/S/M的形式化验证工具；
+首先Jasper Gold
+*** DONE 统一中间文件路径
+    - State "DONE"       from ""           [2016-07-27 Wed 11:31]
+不需要checkin的中间文件统一目录管理
+- ${MODULE_OUTPUT}
+- <module>/output
+*** DONE loading verdi pre-compilation
+    - State "DONE"       from "TODO"       [2016-08-12 Fri 13:29]
+compilation同时完成verdi的compilation；
+需要LSF或vcs/verdi shared library支持
+- 利用-kdb实现vcs与verdi共用compilation lib
+*** DONE case group config and compilation
+    - State "DONE"       from ""           [2016-07-27 Wed 09:19]
+每个group单独编译成一套snapshot，同一group无需重复编译
+*** DONE block level verification env bottom-up re-use
+    - State "DONE"       from "DOING"      [2016-09-30 Fri 16:24]
+    - State "DOING"      from "DOING"      [2016-09-28 Wed 13:03]
+    - State "DOING"      from "DOING"      [2016-09-27 Tue 16:42]
+    - State "DOING"      from "DOING"      [2016-09-12 Mon 18:08]
+    - State "DOING"      from "TODO"       [2016-09-09 Fri 10:20]
+支持子模块、模块、子系统、系统、全芯片不同层级可复用，且支持任意配置dut及testbench；
+每个module的cfg支持从block level到top level的复用；
+需testbench配合
+- added support for sub_modules specification
+- updated bpu and 2bc-gskew modules
+- updated all bpu submodules to use pj
+*** DONE DUT multi-level hierarchy auto check
+    - State "DONE"       from ""           [2016-07-27 Wed 09:21]
+支持任意层级的验证环境检测，出错时报告层级关系
+- module名称错误时hierarchy提示
+*** DONE simlation模式random case只跑一个
+    - State "DONE"       from "DONE"       [2016-08-16 Tue 09:02]
+    - State "DONE"       from ""           [2016-07-27 Wed 09:21]
+在simulation模式下，random_times option > 1时，只跑一个case
+- simulation rt > 1可以跑多个case，而且rt优先级高于seed
+*** DONE waveform format specification
+    - State "DONE"       from ""           [2016-07-27 Wed 09:21]
+允许通过cfg配置waveform文件格式
+- default fsdb
+*** DONE 编译动态链接库
+    - State "DONE"       from "DOING"      [2016-08-09 Tue 08:13]
+    - State "DOING"      from ""           [2016-07-27 Wed 09:22]
+trunk下所有模块实现一次性递归编译，不改动，不重复编译，今后固定不动
+- 自动编译相应模块c目录下的所有c，生成模块总体so文件
+*** DONE 支持C/C++ Model和RTL混合编译
+    - State "DONE"       from "DOING"      [2016-08-09 Tue 08:13]
+    - State "DOING"      from ""           [2016-07-27 Wed 09:22]
+执行阶段可任意调用不同的C/C++ function
+- 编译VCS的时候利用-L与-l加载so
+*** 支持汇编指令和RTL混合编译
+执行阶段可动态调用不同汇编指令
+- cpu0 core
+*** DONE top level c pre-processing before simulation
+    - State "DONE"       from "DOING"      [2016-08-09 Tue 09:10]
+    - State "DOING"      from ""           [2016-07-27 Wed 09:23]
+仿真的时候既可以使用sv调用c model，又可以使用预先编译好的core的c model
+- sv调用c model可以自动编译进vcs；预先编译好的需要预执行的可以利用module load与pre cmd功能
+*** DONE VHDL单独编译
+    - State "DONE"       from ""           [2016-07-27 Wed 09:23]
+支持Verilog单独编译，vhdlan与vlogan分开
+*** DONE RTL单独编译，SystemVerilog单独编译
+    - State "DONE"       from ""           [2016-07-27 Wed 09:23]
+设计初期，验证环境初期，rtl与tb 分开
+*** DONE 只做compilation
+    - State "DONE"       from ""           [2016-07-27 Wed 09:24]
+设计初期，comp与sim分开
+*** DONE 可继承的编译
+    - State "DONE"       from ""           [2016-07-27 Wed 09:24]
+大部分testcase继承block_base_test，可任意指定继承关系
+- 利用group
+*** DONE post-processing Mode
+    - State "DONE"       from ""           [2016-07-27 Wed 09:25]
+在Partition Compile的基础上，可一步完成
+*** multicore tech
+使用multicore技术加速编译
+*** DONE Interactive Debug
+    - State "DONE"       from "DOING"      [2016-08-12 Fri 13:04]
+    - State "DOING"      from "DOING"      [2016-08-11 Thu 16:04]
+    - State "DOING"      from "TODO"       [2016-08-05 Fri 17:57]
+自动调起dve，设置断点，单步执行；
+verdi也支持；
+e.g. pj run -c testname -gui
+- 取消dve support，只support verdi
+- KDB interactive debug
+- pj run -c testname -gui
+*** DONE single test SEED
+    - State "DONE"       from ""           [2016-07-27 Wed 09:36]
+随机种子，SEED固定为默认值为1，便于复现bug
+*** DONE SEED属性
+    - State "DONE"       from ""           [2016-07-27 Wed 09:36]
+长度要达到至少十几位，实现真随机，不能伪随机
+*** DONE SEED参数
+    - State "DONE"       from ""           [2016-07-27 Wed 09:36]
+既可指定SEED，也可随机产生分配SEED；
+e.g. pj -c testname -seed 123456789；
+e.g. pj -c testname -seed random
+- pj run -c <case> -seed <random/No.>
+*** DONE 仿真结果目录
+    - State "DONE"       from ""           [2016-07-27 Wed 09:36]
+首先按照testname分类保存编译结果；
+其次每个testname目录下按照seed number分类保存仿真结果
+*** DONE move case dir up from group dir
+    - State "DONE"       from "TODO"       [2016-07-29 Fri 08:19]
+将case dir提到与group dir并级
+*** DONE run case要能够自动打开波形
+    - State "DONE"       from "DONE"       [2016-08-29 Mon 21:12]
+    - State "DONE"       from "DOING"      [2016-08-12 Fri 13:04]
+    - State "DOING"      from "DOING"      [2016-08-11 Thu 16:08]
+    - State "DOING"      from "TODO"       [2016-08-05 Fri 17:57]
+e.g. pj verdi -c testname；
+e.g. pj dve -c testname
+- 取消dve support，只support verdi
+- pj run -c testname -verdi
+- pj run -c testname -wave -verdi
+- pj run -m modulename -verdi
+- 只有-m的时候，verdi自动load library，不打开波形
+*** DONE run目录下文件保留进config目录
+    - State "DONE"       from "DOING"      [2016-08-19 Fri 10:47]
+    - State "DOING"      from "TODO"       [2016-08-12 Fri 13:06]
+dve_session.tcl/synopsys_sim.setup/sim.upf/sdf_config_file
+- ignore dve_session.tcl
+- added entry for synopsys_sim.setup
+- added general entry for compilation and simulation stages
+*** DONE verilog tb
+    - State "DONE"       from "DONE"       [2017-02-24 Fri 08:38]
+    - State "DONE"       from "DOING"      [2016-08-05 Fri 13:37]
+    - State "DOING"      from "TODO"       [2016-07-28 Thu 20:18]
+支持verilog testbench；
+log parser兼容UVM case以及verilog tb case
+- log parser without ORM ready
+- 需要自行配置log checking strings
+log parser支持可配置特殊字符
+*** gate sim
+e.g. pj run -c testname -gate 包括corner opt worst/typical/best
+*** mvsim
+支持mvsim分析静态功耗
+*** 数模混合仿真
+利用uvm ams model或SPICE支持混合仿真，需要design team提供相应支持
+*** UPF低功耗仿真
+支持RTL、DC综合后netlist、ICC生成的netlist，三个阶段UPF低功耗仿真；
+e.g. pj run -c testname -upf
+*** DONE FPGA平台
+    - State "DONE"       from "DONE"       [2016-10-17 Mon 10:24]
+    - State "DONE"       from "DONE"       [2016-09-20 Tue 10:06]
+    - State "DONE"       from "DOING"      [2016-09-19 Mon 09:24]
+    - State "DOING"      from ""           [2016-09-18 Sun 15:35]
+合并ASIC与FPGA验证平台，便于FPGA debug，能够快速复现FPGA上发现的问题、bug；
+e.g. pj run -c testname -fpga；
+e.g. pj run -c testname -emu
+- pj run -c testname -fpga
+- pj regr -m zszx -t REGR_TYPE -fpga
+- 支持run与regr子命令
+- 支持验证一组与二组的FPGA宏
+*** DONE UVM Template
+    - State "DONE"       from "DOING"      [2017-06-19 Mon 11:24]
+    - State "DOING"      from "PENDING"    [2017-06-02 Fri 08:32]
+    - State "PENDING"    from "DOING"      [2016-10-27 Thu 14:39]
+    - State "DOING"      from "DOING"      [2016-10-10 Mon 16:30]
+    - State "DOING"      from "TODO"       [2016-09-09 Fri 10:21]
+产生固定格式的UVM环境空模版，直接调用uvmgen会有很多options，目前验证一组总结出一套简洁，实用，支持covergroup的UVM验证环境，需要把格式固定下来，以免一个模块一个样；同时将整个平台环境一同产生；
+e.g. pj uvmgen
+- initial verification env dir building done
+- pj gen -m module_name
+- dependency: the UVM template details by verification group 2
+*** DONE 效率分析
+    - State "DONE"       from "DOING"      [2016-08-29 Mon 17:03]
+    - State "DOING"      from "DONE"       [2016-08-26 Fri 13:41]
+    - State "DONE"       from "DOING"      [2016-08-23 Tue 10:53]
+    - State "DOING"      from "TODO"       [2016-08-19 Fri 18:44]
+e.g. pj -c testname -prof time 分析仿真时间过长，生成HTML report；
+e.g. pj -c testname -prof mem 分析仿真使用内存，生成HTML report
+- 利用run的传参opt
+- pj run -c case_name -E "-simprofile" -S "-simprofile time"
+- pj run -c case_name -E "-simprofile" -S "-simprofile mem"
+- pj run -c case_name -prof time
+- pj run -c case_name -prof mem
+*** DONE 仿真结果dump memory波形
+    - State "DONE"       from "DONE"       [2017-03-10 Fri 16:20]
+    - State "DONE"       from "DOING"      [2016-08-29 Mon 17:04]
+    - State "DOING"      from "DONE"       [2016-08-26 Fri 13:42]
+    - State "DONE"       from "DOING"      [2016-08-23 Tue 10:45]
+    - State "DOING"      from "TODO"       [2016-08-19 Fri 18:44]
+e.g. pj -c testname -mda
+- 利用run的传参opt
+- pj run -c case_name -E "+memcbk"
+- pj run -c case_name -wave mem
+- fixed memory dump missing issue
+*** DONE 波形显示glitch
+    - State "DONE"       from "DOING"      [2016-08-29 Mon 17:04]
+    - State "DOING"      from "DONE"       [2016-08-26 Fri 13:42]
+    - State "DONE"       from "DOING"      [2016-08-23 Tue 10:47]
+    - State "DOING"      from "TODO"       [2016-08-19 Fri 18:44]
+e.g. pj -c testname -glitch
+- 利用run的传参opt
+- pj run -c case_name -A "+define+glitchon"
+- ucli tcl dump waveform
+- pj run -c case_name -wave glitch
+*** DONE 显示assertion断言成功结果
+    - State "DONE"       from "TODO"       [2016-08-16 Tue 11:30]
+防止都没执行，也PASS；
+e.g. pj -c testname -assert success
+- 利用run的传参opt
+- pj run -c case_name -S "-assert success"
+*** DONE 命令行传递VCS任意option
+    - State "DONE"       from ""           [2016-07-27 Wed 09:40]
+- 用户需要区分所传option所属的3-step flow的step, 分别通过run的-A、-E、-S传递
+*** DONE 根据case自动检测module
+    - State "DONE"       from ""           [2016-07-27 Wed 09:40]
+run只需提供testcase名字 <module>__<case>
+- pj run -c <case>
+- <case> = <module>__<str>
+*** DONE 列出module的所有case
+    - State "DONE"       from ""           [2016-07-27 Wed 09:43]
+e.g. pj testlist
+- pj run -m <module> -list
+*** DONE test可以选择LSF queue
+    - State "DONE"       from ""           [2016-07-27 Wed 11:49]
+- case可以配置LSF specification
+- case specification优先级最高
+*** DONE configuration makefile dependency checking feature
+    - State "DONE"       from "DONE"       [2016-08-23 Tue 08:10]
+    - State "DONE"       from "DOING"      [2016-08-15 Mon 08:40]
+    - State "DOING"      from "TODO"       [2016-08-12 Fri 16:49]
+检查makefile中的cfg依赖，确保不会漏编options
+- 根据module cfg与上次的对比结果更改cfg时间戳确保make执行
+- 根据每个group生成json细化到每个group保证依赖准确
+*** CANCELLED lint检查
+    - State "CANCELLED"  from "DONE"       [2016-08-26 Fri 13:53]
+    - State "DONE"       from "DOING"      [2016-08-23 Tue 09:05]
+    - State "DOING"      from "TODO"       [2016-08-19 Fri 18:44]
+rtl lint检查
+- pj run -m module_name -lint
+*** vhdl编译
+编译dut中的vhdl
+*** DONE random特性
+    - State "DONE"       from ""           [2016-07-27 Wed 11:50]
+regression支持case random
+- run case自带random特性
+*** DONE email自动匹配发送
+    - State "DONE"       from "DONE"       [2016-10-21 Fri 14:41]
+    - State "DONE"       from ""           [2016-10-17 Mon 10:25]
+目前只支持模块级，需继续开发支持更多units及full chip级
+- 依赖infra的user group id统一
+- infra NIS认证ready
+- 不依赖Jenkin，pj自动发送email
+- 非必要需求
+- pj regr生成json支持jenkins自动发送邮件功能
+- 更新json的数据结构添加进seed信息
+*** DONE 现场复原
+    - State "DONE"       from "DOING"      [2016-12-06 Tue 10:24]
+    - State "DOING"      from "TODO"       [2016-10-19 Wed 16:00]
+复原某次regression，含seed信息等
+- pj regr -m MODULE -fm
+*** DONE regression类型
+    - State "DONE"       from "DOING"      [2016-07-28 Thu 20:22]
+    - State "DOING"      from ""           [2016-07-27 Wed 11:53]
+支持更多的regression类型
+- 在case.cfg中自行定义任意regression type
+*** DONE sanity检查
+    - State "DONE"       from ""           [2016-07-27 Wed 09:38]
+e.g. pj sanity
+- pj regr -m <modules> -t sanity
+*** DONE locally手动一遍回归
+    - State "DONE"       from ""           [2016-07-27 Wed 09:39]
+e.g. pj tests zszx_group 默认runs=1，SEED全部随机化
+- pj regr -m <modules> -t <types>
+*** DONE locally手动N遍回归
+    - State "DONE"       from "DONE"       [2016-08-16 Tue 09:01]
+    - State "DONE"       from "TODO"       [2016-08-09 Tue 16:55]
+e.g. pj tests zszx_group -runs 100
+- pj regr -m <module> -t <regr_type> -rt <N>
+*** DONE 带覆盖率的回归
+    - State "DONE"       from "DOING"      [2016-08-12 Fri 15:45]
+    - State "DOING"      from "TODO"       [2016-08-12 Fri 15:40]
+e.g. pj tests zszx_group -runs 100 -cov
+- pj regr -m run_test -t sanity -rt 100 -cov
+*** 后仿回归
+e.g. pj tests zszx_group -run 100 -gate
+*** DONE regression显示
+    - State "DONE"       from "DONE"       [2016-09-01 Thu 10:54]
+    - State "DONE"       from "DONE"       [2016-08-26 Fri 12:43]
+    - State "DONE"       from ""           [2016-07-27 Wed 09:39]
+只打印testcase PASS/FAIL，详细信息不显示，不生成波形，缩短regression周期
+- regression结束自动kick off regression report
+- -rpt参数让用户控制是否显示web report
+- pretty ascii table显示stdout与output下的regr_rpt
+*** DONE 可定制log parser关键字
+    - State "DONE"       from "DONE"       [2017-01-20 Fri 16:50]
+    - State "DONE"       from "DONE"       [2016-11-11 Fri 08:45]
+    - State "DONE"       from "DONE"       [2016-09-08 Thu 16:31]
+    - State "DONE"       from "DOING"      [2016-08-05 Fri 13:40]
+    - State "DOING"      from ""           [2016-07-27 Wed 09:45]
+错误关键字，可排除错误关键字，pj要准确、无误、可靠地报PASS/FAIL
+- 支持配置ignore string、fail string、pass string
+- log parser内置更多string pattern
+- log parser解析各个stage的log
+- dump json避免重复log parsing
+- simulation通过log parser写db，同时显示summary table
+- simulation通过django接口间接写db，避免规模过大的时候db连接数过多导致db写入问题
+- 增强了从配置文件取关键字的robust特性
+*** tests状态报告
+web导出到excel以便归档
+** coverage: cov
+*** DONE 合并覆盖率
+    - State "DONE"       from "DONE"       [2016-11-22 Tue 16:18]
+    - State "DONE"       from "DOING"      [2016-08-15 Mon 17:22]
+    - State "DOING"      from "TODO"       [2016-08-12 Fri 15:40]
+e.g. pj urg
+- pj cov -m module_name -merge
+- 更新merge机制，自动删除已merge的case vdb，加速merge时间
+*** DONE 分析覆盖率
+    - State "DONE"       from "DOING"      [2016-08-15 Mon 17:48]
+    - State "DOING"      from "TODO"       [2016-08-15 Mon 08:49]
+e.g. pj dve -covdir zszx_merged.vdb 既有默认当前模块的*.vdb，又可任意指定
+- 取消dve support，只support verdi
+- pj cov -m module_name -verdi
+- pj cov -m module_name -rpt
+*** DONE Verdi分析覆盖率
+    - State "DONE"       from "DOING"      [2016-08-15 Mon 17:49]
+    - State "DOING"      from "TODO"       [2016-08-15 Mon 08:49]
+使用verdi取代dve分析coverage
+- pj cov -m module_name -verdi
+- pj cov -m module_name -rpt
+** vplan: vplan
+*** DONE 检查vplan语法
+    - State "DONE"       from "DOING"      [2016-08-17 Wed 08:30]
+    - State "DOING"      from "TODO"       [2016-08-16 Tue 18:04]
+e.g. pj checkvplan -vplan zszx_vplan.xml 既有默认vplan，又可任意指定
+- pj vplan -m module_name
+*** DONE 反标vplan
+    - State "DONE"       from "DONE"       [2016-11-22 Tue 16:17]
+    - State "DONE"       from "DOING"      [2016-08-17 Wed 08:34]
+    - State "DOING"      from "TODO"       [2016-08-16 Tue 18:04]
+e.g. pj annotate -vplan zszx_vplan.xml 既有默认vplan，又可任意指定
+- 自动查找module下面全部vplan
+- 自动查找merged coverage vdb
+- 自动查找所有exclusion files
+- pj vplan -m module_name
+- 在home页添加case passing rate，code coverage，function coverage总体得分
+*** CANCELLED 反标pdf版本design spec
+    - State "CANCELLED"  from ""           [2016-10-14 Fri 17:25]
+TBD
+*** feature list生成
+输入spec(pdf/word)，输出vplan(web/excel)
+*** DONE function coverage报告
+    - State "DONE"       from "DONE"       [2016-11-18 Fri 13:53]
+    - State "DONE"       from "DOING"      [2016-11-10 Thu 13:20]
+    - State "DOING"      from "TODO"       [2016-10-14 Fri 17:25]
+根据database反标vplan；
+支持C/S/M反标
+- pj vplan -m zszx -proc
+- added function point percentage part
+- color separation for cover group and cover point
+*** DONE passing rate coverage报告
+    - State "DONE"       from "DONE"       [2016-11-18 Fri 13:54]
+    - State "DONE"       from "DOING"      [2016-11-10 Thu 13:21]
+    - State "DOING"      from "TODO"       [2016-10-14 Fri 17:25]
+根据module passing rate反标vplan
+- pj vplan -m zszx -proc -d 5
+- added cl_range and regr_days columns
+*** DONE code covarege报告
+    - State "DONE"       from ""           [2016-11-22 Tue 16:15]
+根据code coverage反标vplan
+- pj vplan -m zszx -proc
+- 顶层以及顶层下一级的code coverage
+** autoReg: reg
+*** web reg
+利用web实现reg信息的输入、展示、搜索、输出；
+支持从网页或Excel的寄存器列表到Register Model的生成；
+一步自动完成；
+e.g. pj autoreg -m zszx_reg_plan.xlsx
+*** 模糊查询支持
+web前端对reg信息的模糊查询支持
+*** TODO 输出文件格式
+支持生成、导出各种格式的reg文件
+*** reg generation for protocol
+支持生成复杂协议的reg model，需要design team提供相应支持
+*** DONE 从Synopsys RALF产生RAL Model
+    - State "DONE"       from "DOING"      [2016-08-17 Wed 16:28]
+    - State "DOING"      from "TODO"       [2016-08-17 Wed 09:26]
+便于分步执行，debug；
+e.g. pj ral -ralf zszx.ralf
+- 从reg目录下自动查找ralf文件生成RAL Model
+- pj reg -m module_name
+** filelist: flist
+*** DONE 树状filelist递归搜索
+    - State "DONE"       from "DOING"      [2016-10-14 Fri 17:24]
+    - State "DOING"      from "DONE"       [2016-08-26 Fri 14:06]
+    - State "DONE"       from "DONE"       [2016-08-24 Wed 17:29]
+    - State "DONE"       from "DONE"       [2016-07-29 Fri 15:53]
+    - State "DONE"       from ""           [2016-07-27 Wed 09:25]
+无需设计验证组提供固定filelist；
+DC综合使用同一套，确保拿去综合的就是freeze在验证平台上的文件
+- filelist格式要求，-f, +incdir, +define
+- <module>/flist下面需要提供tb.flist, rtl.flist, lib.flist
+- flist支持绝对路径以及相对路径
+- flist支持重复文件检查
+- flist支持重复+define
+- flist支持各种行注释
+*** DONE 多种filelist自动生成
+    - State "DONE"       from ""           [2016-07-27 Wed 09:33]
+e.g. vhdl/vlog/tb/rtl/netlist/UVM configs
+*** DONE filelist动态匹配
+    - State "DONE"       from "DOING"      [2016-09-14 Wed 10:42]
+    - State "DOING"      from "DOING"      [2016-09-12 Mon 18:08]
+    - State "DOING"      from "TODO"       [2016-09-09 Fri 17:37]
+支持rtl、bfm、dummy等，包括design flow所需的各种filelist
+- added filelist mapping, such as rtl, bfm, etc.
+- supported sub module filelist types
+*** source gen
+支持不同view的简单source file的自动生成，例如verilog dummy file
+同时可以抽取MACRO等信息
+*** CANCELLED filelist自动生成
+    - State "CANCELLED"  from ""           [2016-07-29 Fri 15:45]
+无需designer手写
+- designe team出于安全方面考虑，cancelled
+*** DONE filelist design verification统一
+    - State "DONE"       from ""           [2016-07-29 Fri 15:46]
+基础叶子filelist由designer提供，生成的filelist由pj提供
+*** DONE flist提为二级命令
+    - State "DONE"       from "DOING"      [2016-08-08 Mon 14:55]
+    - State "DOING"      from "TODO"       [2016-08-05 Fri 17:58]
+后面还可指定各种option；
+e.g. pj flist -rtl 产生DC综合filelist直接使用这个
+- 目前支持pj flst -f <files>
+- 待顶层filelist ready可以添加-rtl类似的option
+** document: doc
+*** DONE NaturalDocs
+    - State "DONE"       from "TODO"       [2016-08-16 Tue 15:14]
+e.g. pj doc -m zszx 可任意指定module
+- pj doc -m zszx -gen
+*** DONE added customized path parameter
+    - State "DONE"       from ""           [2017-01-13 Fri 11:24]
+- pj doc -p CUSTOM_PATH -gen
+** clean: clean
+*** DONE 删除仿真结果
+    - State "DONE"       from "DOING"      [2016-08-15 Mon 12:07]
+    - State "DOING"      from "TODO"       [2016-08-15 Mon 08:50]
+clean提为二级命令，可以清除全部仿真结果，包括打开verdi产生的临时文件，也可以清除一个testcase结果，clean前要有命令行交互提示，以免误删；
+e.g. pj clean；
+e.g. pj clean -c testname
+- pj clean -m module_name
+- pj clean -c standard_case_name
+- pj clean -m module_name -c case_name
+- pj clean -m module_name -cov
+** leda
+*** DONE leda生成log
+    - State "DONE"       from ""           [2016-11-28 Mon 17:52]
+- pj leda -gen_log -f FILELIST
+*** DONE leda调用gui添加waiver
+    - State "DONE"       from ""           [2016-11-28 Mon 17:52]
+- pj leda -gui
+*** DONE 添加leda on和leda off关键字检测并生成log
+    - State "DONE"       from ""           [2016-12-02 Fri 14:49]
+*** DONE leda black box 参数支持
+    - State "DONE"       from ""           [2016-12-02 Fri 14:49]
+*** DONE leda自动检测log中ERROR并报告
+    - State "DONE"       from ""           [2017-01-17 Tue 10:23]
+*** DONE leda集成进pj run子命令
+    - State "DONE"       from ""           [2017-02-24 Fri 08:32]
+** RVP
+*** RVP生成verilog list；
+*** RVP完成rtl规范检查
+** dc
+*** customized LSF max_cores
+*** DONE PLUG support cmd and parameters
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 08:47]
+    - State "DOING"      from ""           [2017-02-24 Fri 09:03]
+PLUG single directory
+several fixed PLUG position from design team
+DC共需要4个plug: pre_compile/post_compile/pre_wirte/post_wirte/
+对应位置分别在：compile_ultra的前/后 ， 最后一个write -format ddc的前面/wirte_sdc的后面
+所有4个tcl请一起放置到一个文件夹PLUG下面。
+*** DONE dc log parsing
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 08:47]
+    - State "DOING"      from ""           [2017-02-24 Fri 09:03]
+*** DONE timming report parsing
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 08:47]
+    - State "DOING"      from ""           [2017-02-24 Fri 09:04]
+*** DONE timing single log report
+    - State "DONE"       from ""           [2017-04-24 Mon 09:12]
+*** DONE qor and related reports parsing
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 08:47]
+    - State "DOING"      from ""           [2017-02-24 Fri 15:23]
+*** DONE log archive feature, dc_<timestamp> directory name
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 08:47]
+    - State "DOING"      from ""           [2017-02-24 Fri 09:04]
+** icc
+*** DONE removed shell cmds in tcl(starts with sh)
+    - State "DONE"       from ""           [2017-04-24 Mon 08:47]
+*** DONE icc stages encapsulate in tcl
+    - State "DONE"       from "DOING"      [2017-06-02 Fri 08:32]
+    - State "DOING"      from ""           [2017-04-24 Mon 08:55]
+setup -> floorplan -> place -> cts -> route
+** formality
+*** DONE solo complete formality flow
+    - State "DONE"       from ""           [2017-04-24 Mon 09:13]
+*** DONE formality flow automation after dc flow
+    - State "DONE"       from ""           [2017-04-24 Mon 09:13]
+*** DONE log archive feature, fm_<timestamp> directory name
+    - State "DONE"       from ""           [2017-04-24 Mon 09:13]
+*** DONE config
+    - State "DONE"       from ""           [2017-04-24 Mon 09:13]
+mode setting
+** customized IC QA
+** auto connect
+*** DONE emacs auto verilog
+    - State "DONE"       from "DONE"       [2017-02-23 Thu 10:09]
+    - State "DONE"       from "DOING"      [2017-02-22 Wed 15:28]
+    - State "DOING"      from "DOING"      [2017-01-13 Fri 11:22]
+    - State "DOING"      from ""           [2016-12-23 Fri 15:19]
+支持design team的自动连线flow
+完成emacs auto beta demo，并获取反馈意见
+完成通用自动连线flow，规则为：跨hier信号名必须一致
+移除auto tie 0属性
+*** multiple instance connect
+*** DONE customized connnection
+    - State "DONE"       from ""           [2017-02-24 Fri 08:34]
+在*.ac.v中完成自定义端口连接
+*** DONE demo with design team about usage and rules
+    - State "DONE"       from ""           [2017-04-24 Mon 09:11]
+** mem bist
+** dft compiler
+** cdc
+*** DONE cdc检查
+    - State "DONE"       from ""           [2017-06-02 Fri 08:33]
+cdc report collection；
+cdc waive script；
+验证一组：
+make cdc_comp
+make cdc_clock
+make cdc
+pj cdc -m module_name
+- pj cdc -s CDC_SRC
+** power
+利用ptpx支持power analysis
+** emulator
+硬件仿真加速器，Palladium, zebu, veloce, pxp等；
+emulator的simulation；
+emulator的report
+** DONE twiki page
+   - State "DONE"       from "DOING"      [2016-09-02 Fri 15:32]
+   - State "DOING"      from "DOING"      [2016-09-02 Fri 10:42]
+   - State "DOING"      from "TODO"       [2016-08-30 Tue 12:27]
+pj所有help均要在twiki page上体现；
+pj help与twiki page上的同步
+- 利用sphinx生成platform自己的doc
+- vp intro done
+- cfg & pj done
+- backend done
+** DONE pylint
+   - State "DONE"       from "DOING"      [2017-06-02 Fri 08:33]
+   - State "DOING"      from "DOING"      [2017-04-28 Fri 16:01]
+   - State "DOING"      from ""           [2017-04-24 Mon 09:27]
+checking all python code using pylint
+- pj pylint completed
+* backend
+** desc
+- 独立的后台开发部分，配合runner组成ASIC开发使用的完整平台
+- database提供统一的database入口，收集全部case、regression、reg等信息
+- 利用web前端与MVT框架提供统一的report展示与输出
+- 数据集中管理：database方便数据管理与收集
+- 数据安全：非文件存储方式，db权限管理
+- 数据查询：基于syndrome，fail类型的查询
+- 数据可存储量大：可保存许多proj很多年的regression等信息
+- 数据分析与利用：计算和预测schedule趋势，预测风险点如eco，scipy
+- 数据库的互动：failed case加comment
+- regression历史展示：基于changelist或module
+- regression结果实时展示：regression每个case、block的实时passing rate
+- 多元化展示：柱状图、趋势曲线、表，matplotlib
+- report的统一link入口：根据username，projname自动跳转
+** database
+*** DONE postgresql搭建
+    - State "DONE"       from ""           [2016-07-27 Wed 11:54]
+- 申请database server 8cores@2.0GHz, 32GB Mem, 500GB Disk
+- 172.51.13.147:5432
+- 设定了专用db name、user以及权限
+*** DONE table规划
+    - State "DONE"       from "DONE"       [2016-08-23 Tue 08:15]
+    - State "DONE"       from "DOING"      [2016-08-05 Fri 13:45]
+    - State "DOING"      from "TODO"       [2016-07-29 Fri 10:02]
+讨论database数量以及table list符合可扩展与一致性的要求
+- 目前用一个case table处理regr app的需求，具体各个field参考models.py
+- regr app拆分成6张表
+- 5张基本表每个名称字段设置unique constraint保证pg on conflict满足条件
+** django
+*** DONE django框架搭建
+    - State "DONE"       from "DONE"       [2016-08-19 Fri 11:24]
+    - State "DONE"       from "DOING"      [2016-08-18 Thu 10:49]
+    - State "DOING"      from "DOING"      [2016-08-05 Fri 13:47]
+    - State "DOING"      from ""           [2016-07-27 Wed 11:57]
+讨论report的层级与url跳转形式
+- 已经搭建初步的django框架，models.py讨论后待定
+- models.py根据log parser需求确定
+- models.py拆分表，初始6张表
+*** DONE regression app开发
+    - State "DONE"       from "DONE"       [2016-11-11 Fri 08:46]
+    - State "DONE"       from "DOING"      [2016-08-26 Fri 11:17]
+    - State "DOING"      from "DOING"      [2016-08-24 Wed 17:36]
+    - State "DOING"      from "DOING"      [2016-08-23 Tue 15:56]
+    - State "DOING"      from "TODO"       [2016-08-23 Tue 14:46]
+regression report app开发，展示regression report的主要app
+- added cas static for datatables and jquery
+- added general templates
+- updated index url pages
+- added regr user, proj, module list pages
+- added more modles.py sim fks
+- performed initial version of regression report
+- added query* interfaces for python requests calling to communicate with db
+- aligned url standard, since regr app including web, ajax and json interface
+*** DONE uwsgi配置
+    - State "DONE"       from "TODO"       [2016-09-06 Tue 16:46]
+- 8 workers
+- 利用:8001端口做socket
+*** DONE removed duplicated Datatables statics
+    - State "DONE"       from ""           [2017-01-13 Fri 11:18]
+*** DONE removed useless team url and views from django base
+    - State "DONE"       from ""           [2017-01-13 Fri 11:18]
+*** DONE django bad url handling (url else)
+    - State "DONE"       from "DOING"      [2017-04-28 Fri 16:01]
+    - State "DOING"      from ""           [2017-04-24 Mon 09:17]
+添加404页面
+- added 404 and ie_detect webpage
+** server
+*** DONE nginx配置
+    - State "DONE"       from "TODO"       [2016-09-06 Tue 16:48]
+- 8 workers
+- 172.51.13.205:8000
+*** DONE static serving配置
+    - State "DONE"       from "TODO"       [2016-09-06 Tue 16:49]
+- static/media url configuration done according to nginx serving
+- sphinx doc serving
+** web
+*** DONE 历史信息
+    - State "DONE"       from "DOING"      [2016-11-18 Fri 15:07]
+    - State "DOING"      from "DOING"      [2016-11-11 Fri 08:49]
+    - State "DOING"      from "DOING"      [2016-09-29 Thu 10:34]
+    - State "DOING"      from "DOING"      [2016-08-31 Wed 09:44]
+    - State "DOING"      from "DOING"      [2016-08-26 Fri 12:43]
+    - State "DOING"      from "TODO"       [2016-08-23 Tue 14:47]
+支持显示每个case的全部历史信息
+- 只用一列显示error info，根据log优先级
+- 规划passing rate history展示方式
+- 将时间轴打散到各个层级展示历史信息
+*** DONE 报告形式
+    - State "DONE"       from "DONE"       [2016-12-23 Fri 14:30]
+    - State "DONE"       from "DOING"      [2016-12-22 Thu 08:46]
+    - State "DOING"      from "DOING"      [2016-12-02 Fri 10:40]
+    - State "DOING"      from "DOING"      [2016-11-11 Fri 08:48]
+    - State "DOING"      from "DOING"      [2016-10-10 Mon 16:34]
+    - State "DOING"      from ""           [2016-09-29 Thu 10:33]
+支持多种形式报告，图表、图形等
+- 重新规划web report结构
+- 讨论制定index页面的多层级选择支持
+- 确定了后续多参数选择ajax页面呈现方案
+- v3.0确定最终查询界面
+- 添加datatables表头选择功能
+*** DONE excel、csv导出功能
+    - State "DONE"       from "TODO"       [2017-01-05 Thu 09:52]
+excel导出等服务runner的功能
+*** DONE form输入，excel导入功能
+    - State "DONE"       from "TODO"       [2017-02-24 Fri 08:45]
+*** TODO x86_ins generation web development
+*** DONE ldap user registration web development
+    - State "DONE"       from "DOING"      [2017-02-24 Fri 08:46]
+    - State "DOING"      from "DOING"      [2017-01-13 Fri 15:18]
+    - State "DOING"      from "TODO"       [2017-01-05 Thu 10:33]
+*** DONE user_info (ladp and svn) app web development
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 09:16]
+    - State "DOING"      from "TODO"       [2017-02-24 Fri 08:46]
+添加repo支持
+更新前端展示
+*** DONE postgresql并发查询
+    - State "DONE"       from "DOING"      [2016-12-30 Fri 15:15]
+    - State "DOING"      from "TODO"       [2016-12-27 Tue 09:22]
+- 利用pg9.6并发查询提高效率
+- 优化查询逻辑提高效率
+*** DONE python profiling
+    - State "DONE"       from "DOING"      [2016-12-30 Fri 15:15]
+    - State "DOING"      from ""           [2016-12-27 Tue 09:22]
+- cProfile
+- line_profiler
+*** DONE 替换中心官方logo
+    - State "DONE"       from "DOING"      [2016-12-30 Fri 15:15]
+    - State "DOING"      from ""           [2016-12-27 Tue 09:22]
+- 在web index主页替换中心官方logo
+- 优化前端布局与字体
+*** DONE regression types写入数据库
+    - State "DONE"       from ""           [2016-12-30 Fri 15:23]
+*** DONE simulation end time写入数据库
+    - State "DONE"       from "DONE"       [2016-12-30 Fri 15:52]
+*** DONE report界面显示regression types
+    - State "DONE"       from "TODO"       [2017-01-05 Thu 09:51]
+*** DONE report界面显示simulation end time
+    - State "DONE"       from "TODO"       [2017-01-05 Thu 09:51]
+*** DONE added raw user_info app to cas site
+    - State "DONE"       from ""           [2017-01-13 Fri 11:17]
+** issue tracking
+*** PENDING trac
+    - State "PENDING"    from ""           [2017-06-02 Fri 08:37]
+利用trac完成平台追踪功能
+- 等待trac在1.3.3支持python3
+** pj app
+*** DONE aligned regr app, dc app, formality app, etc. into unique pj app
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 09:14]
+    - State "DOING"      from ""           [2017-02-24 Fri 08:47]
+*** DONE dc app development
+    - State "DONE"       from "DOING"      [2017-04-24 Mon 09:14]
+    - State "DOING"      from ""           [2017-02-24 Fri 08:47]
+recording key error/warning info into database
+*** DONE fm app development
+    - State "DONE"       from ""           [2017-04-24 Mon 09:14]
+*** DONE pj app code refactoring following pep8 rules
+    - State "DONE"       from "DOING"      [2017-06-02 Fri 08:33]
+    - State "DOING"      from ""           [2017-04-24 Mon 09:14]

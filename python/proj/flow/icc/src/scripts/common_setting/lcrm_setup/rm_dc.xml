@@ -1,0 +1,67 @@
+<top_flow name="lcrm_dc">
+    <join_task name="all">
+        <step>rm_dc</step>
+    </join_task>
+    <join_task name="all_top"></join_task>
+    <join_task name="implement">
+        <step>rm_dc</step>
+    </join_task>
+    <join_task name="implement_top"></join_task>
+    <tool_task name="dc">
+        <step>rm_dc</step>
+        <script_file>$SEV(bscript_dir)/rm_dc_scripts/dc.tcl</script_file>
+        <src>dc</src>
+        <dst>dc</dst>
+        <tool>dct</tool>
+    </tool_task>
+    <tool_task name="dc_top">
+        <step>rm_dc</step>
+        <script_file>$SEV(bscript_dir)/rm_dc_scripts/dc_top.tcl</script_file>
+        <src>dc</src>
+        <dst>dc</dst>
+        <tool>dct</tool>
+    </tool_task>
+    <tool_task name="fm">
+        <step>rm_dc</step>
+        <script_file>$SEV(bscript_dir)/rm_dc_scripts/fm.tcl</script_file>
+        <src>dc</src>
+        <dst>dc</dst>
+        <tool>fm</tool>
+        <must_have_list>
+            <must_have regexp="Verification SUCCEEDED" severity="error"></must_have>
+        </must_have_list>
+    </tool_task>
+    <tool_task name="fm_top">
+        <step>rm_dc</step>
+        <script_file>$SEV(bscript_dir)/rm_dc_scripts/fm_top.tcl</script_file>
+        <src>dc</src>
+        <dst>dc</dst>
+        <tool>fm</tool>
+        <must_have_list>
+            <must_have regexp="Verification SUCCEEDED" severity="error"></must_have>
+        </must_have_list>
+    </tool_task>
+    <connect_group name="build_subblocks">
+        <connect_in></connect_in>
+        <connect_out></connect_out>
+    </connect_group>
+    <edges>
+        <edge from="dc" to="fm"></edge>
+        <edge from="dc" to="implement"></edge>
+        <edge from="dc_top" to="fm_top"></edge>
+        <edge from="dc_top" to="implement_top"></edge>
+        <edge from="fm" to="all"></edge>
+        <edge from="fm_top" to="all_top"></edge>
+    </edges>
+    <graph grid_width="556" grid_height="762">
+        <node name="all" x="159" y="380"></node>
+        <node name="all_top" x="455" y="381"></node>
+        <node name="implement" x="19" y="376"></node>
+        <node name="implement_top" x="275" y="381"></node>
+        <node name="dc" x="48" y="216"></node>
+        <node name="dc_top" x="304" y="217"></node>
+        <node name="fm" x="157" y="281"></node>
+        <node name="fm_top" x="455" y="283"></node>
+        <node name="build_subblocks" x="266" y="134"></node>
+    </graph>
+</top_flow>

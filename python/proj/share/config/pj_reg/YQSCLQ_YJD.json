@@ -1,0 +1,1617 @@
+{
+    "IA32_MTRR_DEF_TYPE": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h2ff",
+        "global_address": "11'ha6",
+        "local_address": "11'ha6",
+        "local_address_hi": "11'ha7",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "MEMTYPE",
+                "description": "默认MTRR内存类型.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h6"
+            },
+            "[10]": {
+                "RW": "RW",
+                "definition": "FE",
+                "description": "固定MTRR有效位.",
+                "reset_value": "1'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "EN",
+                "description": "MTRR有效位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b1"
+            }
+        }
+    },
+    "IA32_MTRR_PHYSBASE<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h200", "step": "2"},
+        "global_address": {"base": "11'h0", "step": "4"},
+        "local_address": {"base": "11'h0", "step": "4"},
+        "local_address_hi": {"base": "11'h1", "step": "4"},
+        "32bit/64bit": "64bit",
+        "range": "0,7",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "MEMTYPE",
+                "description": "MTRR内存类型.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "continuous2m",
+                "description": "设置为1时该MTRR里地址空间大于等于2M，并且是对齐的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10]": {
+                "RW": "RW",
+                "definition": "continuous4m",
+                "description": "设置为1时该MTRR里地址空间大于等于4M，并且是对齐的.",
+                "reset_value": "1'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "continuous1g",
+                "description": "设置为1时该MTRR理地址空间大于等于1G，并且是对齐的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[39:12]": {
+                "RW": "RW",
+                "definition": "BASE",
+                "description": "基地址.",
+                "reset_value": "28'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "IA32_MTRR_PHYSMASK<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h201", "step": "2"},
+        "global_address": {"base": "11'h2", "step": "4"},
+        "local_address": {"base": "11'h2", "step": "4"},
+        "local_address_hi": {"base": "11'h3", "step": "4"},
+        "32bit/64bit": "64bit",
+        "range": "0,7",
+        "ST/MT": "ST",
+        "fields": {
+            "[11]": {
+                "RW": "RW",
+                "definition": "VLD",
+                "description": "有效位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[39:12]": {
+                "RW": "RW",
+                "definition": "MASK",
+                "description": "掩码.",
+                "reset_value": "28'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "MTRRfix64K": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h250",
+        "global_address": "11'ha0",
+        "local_address": "11'ha0",
+        "local_address_hi": "11'ha1",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射64K地址空间从00000-0FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射64K地址空间从10000-1FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射64K地址空间从20000-2FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射64K地址空间从30000-3FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射64K地址空间从40000-4FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射64K地址空间从50000-5FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射64K地址空间从60000-6FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射64K地址空间从70000-7FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "MTRRfix16K8": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h258",
+        "global_address": "11'hb0",
+        "local_address": "11'hb0",
+        "local_address_hi": "11'hb1",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从80000-83FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从84000-87FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从88000-8BFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从8C000-8FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从90000-93FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从94000-97FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从98000-9BFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从9C000-9FFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "MTRRfix16Ka": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h259",
+        "global_address": "11'hb2",
+        "local_address": "11'hb2",
+        "local_address_hi": "11'hb3",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从A0000-A3FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从A4000-A7FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从A8000-ABFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从AC000-AFFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从B0000-B3FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从B4000-B7FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从B8000-BBFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从BC000-BFFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+
+    "MTRRfix4Kc0": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h268",
+        "global_address": "11'hd0",
+        "local_address": "11'hd0",
+        "local_address_hi": "11'hd1",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从C0000到C0FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从C1000-C1FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从C2000-C2FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从C3000-C3FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从C4000-C4FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从C5000-C5FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从C6000-C6FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从C7000-C7FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "MTRRfix4Kc8": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h269",
+        "global_address": "11'hd2",
+        "local_address": "11'hd2",
+        "local_address_hi": "11'hd3",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从C8000-C8FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从C9000-C9FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从CA000-CAFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从CB000-CBFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从CC000-CCFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从CD000-CDFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从CE000-CEFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从CF000-CFFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "MTRRfix4Kd0": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h26a",
+        "global_address": "11'hd4",
+        "local_address": "11'hd4",
+        "local_address_hi": "11'hd5",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从D0000-D0FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从D1000-D1FFF .",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从D2000-D2FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从D3000-D3FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从D4000-D4FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从D5000-D5FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从D6000-D6FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从D7000-D7FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "MTRRfix4Kd8": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h26b",
+        "global_address": "11'hd6",
+        "local_address": "11'hd6",
+        "local_address_hi": "11'hd7",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从D8000-D8FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从D9000-D9FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从DA000-DAFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从DB000-DBFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从DC000-DCFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从DD000-DDFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从DE000-DEFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从DF000-DFFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "MTRRfix4Ke0": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h26c",
+        "global_address": "11'hd8",
+        "local_address": "11'hd8",
+        "local_address_hi": "11'hd9",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从E0000-E0FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从E1000-E1FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从E2000-E2FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从E3000-E3FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从E4000-E4FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从E5000-E5FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从E6000-E6FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从E7000-E7FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "MTRRfix4Ke8": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h26d",
+        "global_address": "11'hda",
+        "local_address": "11'hda",
+        "local_address_hi": "11'hdb",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从E8000-E8FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从E9000-E9FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从EA000-EAFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从EB000-EBFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从EC000-ECFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从ED000-EDFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从EE000-EEFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从EF000-EFFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "MTRRfix4Kf0": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h26e",
+        "global_address": "11'hdc",
+        "local_address": "11'hdc",
+        "local_address_hi": "11'hdd",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从F0000-F0FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从F1000-F1FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从F2000-F2FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从F3000-F3FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从F4000-F4FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从F5000-F5FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从F6000-F6FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从F7000-F7FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "MTRRfix4Kf8": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h26f",
+        "global_address": "11'hde",
+        "local_address": "11'hde",
+        "local_address_hi": "11'hdf",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "RANGE0",
+                "description": "映射16K地址空间从F8000-F8FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10:8]": {
+                "RW": "RW",
+                "definition": "RANGE1",
+                "description": "映射16K地址空间从F9000-F9FFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "RANGE2",
+                "description": "映射16K地址空间从FA000-FAFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26:24]": {
+                "RW": "RW",
+                "definition": "RANGE3",
+                "description": "映射16K地址空间从FB000-FBFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "RANGE4",
+                "description": "映射16K地址空间从FC000-FCFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[42:40]": {
+                "RW": "RW",
+                "definition": "RANGE5",
+                "description": "映射16K地址空间从FD000-FDFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "RANGE6",
+                "description": "映射16K地址空间从FE000-FEFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[58:56]": {
+                "RW": "RW",
+                "definition": "RANGE7",
+                "description": "映射16K地址空间从FF000-FFFFF.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+ "PDPTR<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h200", "step": "2"},
+        "local_address": {"base": "11'h200", "step": "2"},
+        "local_address_hi": {"base": "11'h201", "step": "4"},
+        "32bit/64bit": "64bit",
+        "range": "0,3",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "P",
+                "description": "有效位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "PWT",
+                "description": "页表级缓存WT位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "PCD",
+                "description": "页表级缓存CD位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[39:12]": {
+                "RW": "NA",
+                "definition": "ADDR",
+                "description": "页目录基地址.",
+                "reset_value": "28'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+ "EPT_FAULT_GPA": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h702",
+        "local_address": "11'h702",
+        "local_address_hi": "11'h703",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[39:0]": {
+                "RW": "NA",
+                "definition": "GPA",
+                "description": "客户物理地址.",
+                "reset_value": "40'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[60]": {
+                "RW": "NA",
+                "definition": "GPA_IS_CR3",
+                "description": "客户物理地址来自于CR3.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[61]": {
+                "RW": "NA",
+                "definition": "GPA_IS_PDPTR",
+                "description": "客户物里地址来自于PDPTR寄存器.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[63:62]": {
+                "RW": "NA",
+                "definition": "GPA_PDPTR_INDEX",
+                "description": "PDPTR的索引.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+     },
+ "CR3": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h704",
+        "local_address": "11'h704",
+        "local_address_hi": "11'h705",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[3]": {
+                "RW": "NA",
+                "definition": "PWT",
+                "description": "页表级缓存WT位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "PCD",
+                "description": "页表级缓存CD位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[39:12]": {
+                "RW": "NA",
+                "definition": "PDBA",
+                "description": "页目录基地址.",
+                "reset_value": "28'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+     },
+ "PAT": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h277",
+        "global_address": "11'hee",
+        "local_address": "11'hee",
+        "local_address_hi": "11'hef",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "ENTRY0",
+                "description": "PAT内存类型0.",
+                "reset_value": "3'h6",
+                "ucode_reset_value": "3'h6"
+            },
+            "[10:8]": {
+                "RW": "NA",
+                "definition": "ENTRY1",
+                "description": "PAT内存类型1.",
+                "reset_value": "3'h4",
+                "ucode_reset_value": "3'h4"
+            },
+            "[18:16]": {
+                "RW": "RW",
+                "definition": "ENTRY2",
+                "description": "PAT内存类型2.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h7"
+            },
+            "[26:24]": {
+                "RW": "NA",
+                "definition": "ENTRY3",
+                "description": "PAT内存类型3.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h0"
+            },
+            "[34:32]": {
+                "RW": "RW",
+                "definition": "ENTRY4",
+                "description": "PAT内存类型4.",
+                "reset_value": "3'h6",
+                "ucode_reset_value": "3'h6"
+            },
+            "[42:40]": {
+                "RW": "NA",
+                "definition": "ENTRY5",
+                "description": "PAT内存类型5.",
+                "reset_value": "3'h4",
+                "ucode_reset_value": "3'h4"
+            },
+            "[50:48]": {
+                "RW": "RW",
+                "definition": "ENTRY6",
+                "description": "PAT内存类型6.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h7"
+            },
+            "[58:56]": {
+                "RW": "NA",
+                "definition": "ENTRY7",
+                "description": "PAT内存类型7.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h0"
+            }
+         }
+     },
+    "DEFEATURE": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h91",
+        "local_address": "11'h91",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2]": {
+                "RW": "NA",
+                "definition": "PMH_DISABLE",
+                "description": "设置为1时取消PMH中的页表访问逻辑。线性地址当作物理地址返回，内存类型由MTRR指定。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "PDE_DISABLE",
+                "description": "设置为1时取消PDE缓存的分配操作，但是不取消读操作。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "PDP_DISABLE",
+                "description": "设置为1时取消PDP缓存，PDPTR寄存器在64位模式中不再作为缓存使用。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "L2TLB_DISABLE",
+                "description": "设置为1时取消L2TLB的读写访问。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "EPTMEMT_DISABLE",
+                "description": "设置为1时，在EPT模式下忽略EPT内存类型，使用PAT作为最终内存类型.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "EPT_PDE_DISABLE",
+                "description": "设置为1时取消EPT-PDE缓存的分配操作，但是不取消读操作。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "EPT_PDP_DISABLE",
+                "description": "设置为1时取消EPT-PDP缓存。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "L3MissSusp_DISABLE",
+                "description": "设置为1时，L3缓存未命中不再作为页表访问可中断的条件。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "NX_DISABLE",
+                "description": "设置为1时忽略NX机制，NX位始终返回0。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "L2TLB_WAY0",
+                "description": "设置为1时L2TLB只有way0有效。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[22]": {
+                "RW": "NA",
+                "definition": "ITLB_CACHE_DISABLE",
+                "description": "设置为1时不再为ITLB页表访问分配PDE/PDE/EPT-PDE/EPT-PDE缓存项，DTLB页表访问不受影响。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "RR_MATCH_RESULT": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5f2",
+        "local_address": "11'h5f2",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[1]": {
+                "RW": "NA",
+                "definition": "WRITE",
+                "description": "设置为1时表明地址匹配命中是由写操作引起。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "PAGEWALK",
+                "description": "设置为1时表明地址匹配命中是由页表访问引起。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "SPLIT",
+                "description": "设置为1时表明地址匹配命中是由跨页的装载或者存储引起的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "SPLITHI",
+                "description": "设置为1时表明地址匹配命中是由高位部分的跨页的装载或者存储引起的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "SMRR",
+                "description": "设置为1时表明命中了SMRR寄存器。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "RR_MATCH_ADDR": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5f3",
+        "local_address": "11'h5f3",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[27:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "物理地址[39:12]。",
+                "reset_value": "28'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "SMRR_BASE": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h1f2",
+        "global_address": "11'ha8",
+        "local_address": "11'ha8",
+        "local_address_hi": "11'ha9",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "RW",
+                "definition": "MEMTYPE",
+                "description": "内存类型。",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[31:12]": {
+                "RW": "RW",
+                "definition": "BASE",
+                "description": "基地址。",
+                "reset_value": "20'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "SMRR_MASK": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h1f3",
+        "global_address": "11'haa",
+        "local_address": "11'haa",
+        "local_address_hi": "11'hab",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[9]": {
+                "RW": "RW",
+                "definition": "TRIGGER_EVENT",
+                "description": "设置为1时命中SMRR寄存器需要触发事件。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "VLD",
+                "description": "有效位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[31:12]": {
+                "RW": "RW",
+                "definition": "MASK",
+                "description": "掩码。",
+                "reset_value": "20'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "PMRR": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hb4",
+        "local_address": "11'hb4",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[2:0]": {
+                "RW": "NA",
+                "definition": "MEMTYPE",
+                "description": "补丁内存类型。",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "VLD",
+                "description": "PMRR使能位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },     
+      "SMRR_MODE": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5f8",
+        "local_address": "11'h5f8",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "SMM_MODE",
+                "description": "设置为1时表明当前处于SMM模式中。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "SMRR_DEFEATURE",
+                "description": "设置为1时表明SMM机制不可用。如果此位被修改，MTRRCAP寄存器中的相应位也需要被修改。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "HPA_ADDRESS": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5fe",
+        "local_address": "11'h5fe",
+        "local_address_hi": "11'h5ff",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[39:0]": {
+                "RW": "NA",
+                "definition": "HPA",
+                "description": "宿主物理地址。",
+                "reset_value": "40'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "HPA_ATTRIBUTES": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h600",
+        "local_address": "11'h600",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "EPT_X",
+                "description": "执行权限位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "EPT_W",
+                "description": "写权限位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "EPT_R",
+                "description": "读权限位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5:3]": {
+                "RW": "NA",
+                "definition": "MemType",
+                "description": "内存类型。",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+     "GPA_MEMTYPE": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h601",
+        "local_address": "11'h601",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[5:3]": {
+                "RW": "NA",
+                "definition": "MemType",
+                "description": "内存类型。",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+ "CR0": { 
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h100",
+        "local_address": "11'h602",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "PE",
+                "description": "保护模式使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "MP",
+                "description": "控制ts位与wait指令之间的交互.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "EM",
+                "description": "仿真.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "TS",
+                "description": "任务切换.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[4]": {
+                "RW": "RW",
+                "definition": "ET",
+                "description": "保留位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[5]": {
+                "RW": "RW",
+                "definition": "NE",
+                "description": "设置后允许报告X87 FPU错误.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[16]": {
+                "RW": "RW",
+                "definition": "WP",
+                "description": "设置后禁止高权限级应用写入只读页面.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[18]": {
+                "RW": "RW",
+                "definition": "AM",
+                "description": "设置后允许进行对齐检查.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[29]": {
+                "RW": "RW",
+                "definition": "NW",
+                "description": "NW标志位，CD位和NW位的作用参见manual.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[30]": {
+                "RW": "RW",
+                "definition": "CD",
+                "description": "CD标志位，CD位和NW位的作用参见manual.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[31]": {
+                "RW": "RW",
+                "definition": "PG",
+                "description": "设置后开启分页机制.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+ "CR4": { 
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h17c",
+        "local_address": "11'h603",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "VME",
+                "description": "使能虚拟8086模式的扩展.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "PVI",
+                "description": "在保护模式下使能虚拟中断的硬件支持.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "TSD",
+                "description": "设置后限制RDTSC指令在低权限级应用中的执行.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "DE",
+                "description": "设置后引用DR4和DR5寄存器将产生UD异常.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[4]": {
+                "RW": "RW",
+                "definition": "PSE",
+                "description": "设置后在32位分页机制下使能4M页面.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[5]": {
+                "RW": "RW",
+                "definition": "PAE",
+                "description": "设置后允许物理地址超过32位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[6]": {
+                "RW": "RW",
+                "definition": "MCE",
+                "description": "设置后使能机器检查异常.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[7]": {
+                "RW": "RW",
+                "definition": "PGE",
+                "description": "设置后使能页面属性中的全局属性.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[8]": {
+                "RW": "RW",
+                "definition": "PCE",
+                "description": "设置后允许在任意权限级执行RDPMC指令.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "osfxsr",
+                "description": "使能快速Fxsave和Fxrestore.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[10]": {
+                "RW": "RW",
+                "definition": "xmmexc",
+                "description": "设置后表明操作系统支持unmasked SIMD浮点异常.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[13]": {
+                "RW": "RW",
+                "definition": "vmxe",
+                "description": "设置后使能VMX操作.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[14]": {
+                "RW": "RW",
+                "definition": "smxe",
+                "description": "设置后使能SMX操作.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[17]": {
+                "RW": "RW",
+                "definition": "pcide",
+                "description": "设置后使能线程上下文标识机制.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[20]": {
+                "RW": "RW",
+                "definition": "smep",
+                "description": "设置后使能特权模式使能保护.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[21]": {
+                "RW": "RW",
+                "definition": "smap",
+                "description": "设置后使能特权模式访问保护.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+    "IA32_EFER": {
+        "SW_visible": "yes",
+        "MSR_address": "32'hc0000080",
+        "global_address": "11'h112",
+        "local_address": "11'h93",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[10]": {
+                "RW": "RW",
+                "definition": "LMA",
+                "description": "64位模式的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "nxe",
+                "description": "不可执行机制的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+    "eptp": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h5e2",
+        "local_address": "11'h5e2",
+        "local_address_hi": "11'h5e3",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[2:0]": {
+                "RW": "NA",
+                "definition": "memtype",
+                "description": "内存类型.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[39:12]": {
+                "RW": "NA",
+                "definition": "address",
+                "description": "虚拟页表基地址.",
+                "reset_value": "28'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[63]": {
+                "RW": "NA",
+                "definition": "enable",
+                "description": "EPT的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    }
+
+}

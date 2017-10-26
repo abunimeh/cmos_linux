@@ -1,0 +1,71 @@
+{
+    "AGU_TEST_CRTL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h108",
+        "local_address": "11'h108",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[1]": {
+                "RW": "NA",
+                "definition": "NO_SERIALIZE_BIT",
+                "description": "禁止序列化位。序列化位阻塞所有对段寄存器文件的写。一旦该位被设置，后续所有的段寄存器文件写操作都将忽略直到下一次RoFlush。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "MASK_LIMIT_BIT",
+                "description": "段限检查掩码位。该位被设置，段限检查违反将不可见。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "MASK_ACCESS_FAULTS",
+                "description": "权限异常掩码位。该位被设置，权限异常将不可见。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "MASK_TESTPLA_BIT",
+                "description": "MASK_TESTPLA_BIT。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "CANCEL_OP_MODE",
+                "description": "取消微操作位。该位被设置，允许取消微操作。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "VMCS_PLA_CTL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h73e",
+        "local_address": "11'h73e",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[2]": {
+                "RW": "NA",
+                "definition": "FAULT_ON_VMREAD_ACCESS",
+                "description": "该位被设置，所有VMCS VMRead的访问都将产生异常。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+		"[3]": {
+                "RW": "NA",
+                "definition": "FAULT_ON_VMWRITE_ACCESS",
+                "description": "该位被设置，所有VMCS VMWrite的访问都将产生异常。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      }
+}

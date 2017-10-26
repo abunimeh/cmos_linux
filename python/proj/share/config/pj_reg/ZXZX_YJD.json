@@ -1,0 +1,50 @@
+{
+    "CR0": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h100",
+        "local_address": "11'h6e2",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "PE",
+                "description": "保护模式使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[8]": {
+                "RW": "RW",
+                "definition": "AM",
+                "description": "设置后允许进行对齐检查.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+    "CR4": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h17c",
+        "local_address": "11'h6e3",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "VME",
+                "description": "vm8086模式使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "PVI",
+                "description": "保护模式虚拟中断使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    }
+}

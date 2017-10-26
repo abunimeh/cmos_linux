@@ -1,0 +1,1 @@
+-f ${PROJ_RTL}/{{module_name}}/rtl_flist.flist

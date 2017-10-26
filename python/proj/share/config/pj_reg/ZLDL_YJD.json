@@ -1,0 +1,593 @@
+{
+    "IQ_COMMAND": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h30",
+        "local_address": "11'h30",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "DEC0_ONLY_MODE",
+                "description": "IQ每次只会发送1条指令到解码器0.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "FORCEBRKPT",
+                "description": "每条指令都插入代码断点.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "DISABLE_MACROFUSE",
+                "description": "IQ不能宏融合指令.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "PATCH0ENABLE",
+                "description": "宏补丁寄存器0的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "PATCH1ENABLE",
+                "description": "宏补丁寄存器1的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "PATCH2ENABLE",
+                "description": "宏补丁寄存器2的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "PATCH3ENABLE",
+                "description": "宏补丁寄存器3的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[17]": {
+                "RW": "NA",
+                "definition": "DISABLE_IQFLUSH",
+                "description": "禁用IQFLUSH机制.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "CR0": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h100",
+        "local_address": "11'h626",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "PE",
+                "description": "Protection Enable位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "MP",
+                "description": "Monitor Coprocessor位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "EM",
+                "description": "Emulation位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "TS",
+                "description": "Task Switched位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      },
+    "CR4": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h17c",
+        "local_address": "11'h64f",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[9]": {
+                "RW": "RW",
+                "definition": "osfxsr",
+                "description": "使能快速FXsave和FXrestore.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      },
+    "PATCHCONTROLREG_0": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h34",
+        "local_address": "11'h34",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁匹配寄存器0.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "PATCHCONTROLREG_1": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h35",
+        "local_address": "11'h35",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁匹配寄存器1.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "PATCHCONTROLREG_2": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h36",
+        "local_address": "11'h36",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁匹配寄存器2.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "PATCHCONTROLREG_3": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h37",
+        "local_address": "11'h37",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁匹配寄存器3.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "PATCHMASKCONTROLREG_0": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h38",
+        "local_address": "11'h38",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁掩码寄存器0.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+    "PATCHMASKCONTROLREG_1": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h39",
+        "local_address": "11'h39",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁掩码寄存器1.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+    "PATCHMASKCONTROLREG_2": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h3a",
+        "local_address": "11'h3a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁掩码寄存器2.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+    "PATCHMASKCONTROLREG_3": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h3b",
+        "local_address": "11'h3b",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "指令宏补丁掩码寄存器3.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+ "IA32_PERFEVTSEL0": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h186",
+        "global_address": "11'h61a",
+        "local_address": "11'h750",
+        "local_address_hi": "11'h751",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	  }
+    },	
+
+ "IA32_PERFEVTSEL1": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h187",
+        "global_address": "11'h61c",
+        "local_address": "11'h752",
+        "local_address_hi": "11'h753",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	  }
+    },	
+
+ "IA32_PERFEVTSEL2": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h188",
+        "global_address": "11'h61e",
+        "local_address": "11'h754",
+        "local_address_hi": "11'h755",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	  }
+    },	
+
+ "IA32_PERFEVTSEL3": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h189",
+        "global_address": "11'h620",
+        "local_address": "11'h756",
+        "local_address_hi": "11'h757",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	  }
+    }
+
+
+
+}

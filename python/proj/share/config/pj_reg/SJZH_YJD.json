@@ -1,0 +1,565 @@
+{
+    "dtlb_debug_ctrl": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h9d",
+        "local_address": "11'h9d",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "DISABLE_DTLB",
+                "description": "设置后关闭DTLB转换。线性地址当作物理地址使用，内存类型设置为UC，页面属性全部为0.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "DISABLE_FAULTS",
+                "description": "设置抑制DTLB错误的写回。错误信息将写入DTLB内寄存器，但是不再写回ROQ，同时DTLB错误信息也不再发送给MOB和L1D，而是发送OK信号.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "FORCEONEWAY",
+                "description": "设置后DTLB只有way0有效.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "NO_PTLB",
+                "description": "设置后不再为使用物理地址的微操作分配DTLB表项.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "fault0": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h690",
+        "local_address": "11'h690",
+        "local_address_hi": "11'h691",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "DTLB错误寄存器0，记录发生错误的线性地址.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+    "fault1": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h692",
+        "local_address": "11'h692",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "PRESENT",
+                "description": "DTLB错误寄存器1，记录错误信息, 当页表项存在时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "WRITE",
+                "description": "DTLB错误寄存器1，记录错误信息, 微操作需要检测写权限时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "USER",
+                "description": "DTLB错误寄存器1，记录错误信息, 当微操作执行在用户模式下时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "RESERVED",
+                "description": "DTLB错误寄存器1，记录错误信息, 记录检测到保留为异常.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "NxEnable",
+                "description": "DTLB错误寄存器1，记录错误信息, 当NX属性位有效时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "NX",
+                "description": "DTLB错误寄存器1，记录错误信息, 当微操作检测到Nx位异常时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "STORE",
+                "description": "当发生错误的微操作是存储操作时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "BUSERR",
+                "description": "当检测到BUS错误时进行设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "IFETCH",
+                "description": "当微操作是itlb_fetch时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "RR_HIT",
+                "description": "当微操作命中SMRR寄存器时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10]": {
+                "RW": "NA",
+                "definition": "DIRTY",
+                "description": "DTLB错误寄存器1，记录错误信息, 当微操作需要检测Dirty位时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[17:11]": {
+                "RW": "NA",
+                "definition": "ROQINDEX",
+                "description": "微操作在重排序队列中的索引.",
+                "reset_value": "7'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18]": {
+                "RW": "NA",
+                "definition": "ROQWRAP",
+                "description": "微操作在重排序队列中的wrap位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[19]": {
+                "RW": "NA",
+                "definition": "VALID",
+                "description": "有效位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[20]": {
+                "RW": "NA",
+                "definition": "EPT",
+                "description": "当微操作检测到Ept错误时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[22]": {
+                "RW": "NA",
+                "definition": "PHYSICAL",
+                "description": "当微操作是使用物理地址时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[25:23]": {
+                "RW": "NA",
+                "definition": "LENGTH",
+                "description": "发生错误的微操作操作数大小，001=1B, 010=2B, 011=3B, 100=4B, 101=8B, 110=16B.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+      "eptfault": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h694",
+        "local_address": "11'h694",
+        "local_address_hi": "11'h695",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "R",
+                "description": "当发生EPT错误的是装载操作时设置，或者在EPT状态机执行一半发生错误时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "W",
+                "description": "当发生EPT错误的是存储操作时设置，要求EPT状态机正常结束.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "X",
+                "description": "当发生EPT错误的是执行操作时设置，要求EPT状态机正常结束.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "EPTR",
+                "description": "EPT表项中的R位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "EPTW",
+                "description": "EPT表项中的W位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "EPTX",
+                "description": "EPT表项中的X位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "GLA_V",
+                "description": "客户线性地址有效（微操作不是EPT_TRANSFER)设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "GLA_GPA",
+                "description": "客户线性地址有效并且已经翻译为客户物理地址.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "GPA_V",
+                "description": "客户物理地址寄存器有效（该寄存器位于PMH中）时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10]": {
+                "RW": "NA",
+                "definition": "CONFIG",
+                "description": "当EPT错误是由于错误配置时设置.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "DR<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h40", "step": "2"},
+        "local_address": {"base": "11'h698", "step": "2"},
+        "local_address_hi": {"base": "11'h699", "step": "2"},
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "range": "0, 3",
+        "fields": {
+            "[48:0]": {
+                "RW": "RW",
+                "definition": "adr_low",
+                "description": "线性地址.",
+                "reset_value": "49'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[63:49]": {
+                "RW": "RW",
+                "definition": "adr_high",
+                "description": "线性地址.",
+                "reset_value": "15'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+    "DR7": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h210",
+        "local_address": "11'h6a0",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "L0",
+                "description": "DR0当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]":{
+                "RW": "RW",
+                "definition": "G0",
+                "description": "DR0的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "L1",
+                "description": "DR1当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "G1",
+                "description": "DR1的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "RW",
+                "definition": "L2",
+                "description": "DR2当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "RW",
+                "definition": "G2",
+                "description": "DR2的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "RW",
+                "definition": "L3",
+                "description": "DR3当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "RW",
+                "definition": "G3",
+                "description": "DR3的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "RW",
+                "definition": "LE",
+                "description": "忽略.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "GE",
+                "description": "忽略.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "RW",
+                "definition": "GD",
+                "description": "调试寄存器保护机制的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[17:16]": {
+                "RW": "RW",
+                "definition": "rw0",
+                "description": "DR0的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[19:18]": {
+                "RW": "RW",
+                "definition": "len0",
+                "description": "DR0的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[21:20]": {
+                "RW": "RW",
+                "definition": "rw1",
+                "description": "DR1的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[23:22]": {
+                "RW": "RW",
+                "definition": "len1",
+                "description": "DR1的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[25:24]": {
+                "RW": "RW",
+                "definition": "rw2",
+                "description": "DR2的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[27:26]": {
+                "RW": "RW",
+                "definition": "len2",
+                "description": "DR2的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[29:28]": {
+                "RW": "RW",
+                "definition": "rw3",
+                "description": "DR3的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[31:30]": {
+                "RW": "RW",
+                "definition": "len3",
+                "description": "DR3的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+
+    "breakpoint_ctrl": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h714",
+        "local_address": "11'h6a1",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "dr0",
+                "description": "此位为1时表明DR0寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "dr1",
+                "description": "此位为1时表明DR1寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "dr2",
+                "description": "此位为2时表明DR1寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "dr3",
+                "description": "此位为3时表明DR1寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+  "MC2_CTL": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h408",
+        "global_address": "11'h188",
+        "local_address": "11'h188",
+        "local_address_hi": "11'h189",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "ENABLE_DTLB",
+                "description": "使能DTLB单元MCA事件记录.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "mc2_status": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h409",
+        "global_address": "11'h1a2",
+        "local_address": "11'h1a2",
+        "local_address_hi": "11'h1a3",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "RO",
+                "definition": "MCACOD",
+                "description": "MAC错误码.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "16'h0"
+            },
+            "[31:16]": {
+                "RW": "RO",
+                "definition": "MSCOD",
+                "description": "架构定义的特殊MCA错误码.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "16'h0"
+            },
+            "[57]": {
+                "RW": "RO",
+                "definition": "PCC",
+                "description": "处理器上下文环境污染标志位，设置为1时表明处理器的状态被发生的MCA事件影响了，软件无法安全的进行重启。产生事件时总是置1",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[58]": {
+                "RW": "RO",
+                "definition": "ADDRV",
+                "description": "MC2_ADDR寄存器的使能位。始终为0",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[60]": {
+                "RW": "RO",
+                "definition": "EN",
+                "description": "错误使能标志位，记录发生的MCA错误是否被CTL寄存器使能。设置为1时，表明该MCA错误在CTL寄存器中是使能的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[61]": {
+                "RW": "RO",
+                "definition": "UC",
+                "description": "不可纠正错误标志位，设置为1时，表明发生的MCA错误是不可纠正的。发生错误时，总是置1，DTLB只记录不可纠正MCA错误",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[62]": {
+                "RW": "RO",
+                "definition": "OVER",
+                "description": "设置为1时，表明一个新的MCA错误发生时，之前发生的一个旧的MCA错误还没有处理完毕，其信息仍然保存在status中。 DTLB只会记录UC类型的MCA错误，因此新的MAC错误只会设置OVER位，不会覆盖旧MCA错误的状态信息。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[63]": {
+                "RW": "RO",
+                "definition": "VAL",
+                "description": "状态寄存器的使能位，表明status中的信息是有效的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    }
+
+
+}

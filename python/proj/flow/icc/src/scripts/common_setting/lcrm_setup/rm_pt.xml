@@ -1,0 +1,28 @@
+<top_flow name="lcrm_pt">
+    <tool_task name="dmsa">
+        <step>rm_pt</step>
+        <script_file>$SEV(bscript_dir)/rm_pt_scripts/dmsa.tcl</script_file>
+        <src>ptdmsa</src>
+        <dst>ptdmsa</dst>
+        <tool>pt_dmsa</tool>
+    </tool_task>
+    <tool_task name="pt">
+        <step>rm_pt</step>
+        <script_file>$SEV(bscript_dir)/rm_pt_scripts/pt.tcl</script_file>
+        <src>pt</src>
+        <dst>pt</dst>
+        <tool>pt</tool>
+    </tool_task>
+    <tool_task name="ptvx">
+        <step>rm_pt</step>
+        <script_file>$SEV(bscript_dir)/rm_pt_scripts/ptvx.tcl</script_file>
+        <src>ptvx</src>
+        <dst>ptvx</dst>
+        <tool>pt</tool>
+    </tool_task>
+    <graph grid_width="556" grid_height="762">
+        <node name="dmsa" x="323" y="124"></node>
+        <node name="pt" x="219" y="126"></node>
+        <node name="ptvx" x="236" y="197"></node>
+    </graph>
+</top_flow>

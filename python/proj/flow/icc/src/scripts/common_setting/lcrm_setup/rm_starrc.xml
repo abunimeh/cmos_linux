@@ -1,0 +1,14 @@
+<top_flow name="lcrm_starrc">
+    <tool_task name="starrc">
+        <step>rm_starrc</step>
+        <script_file>$SEV(bscript_dir)/rm_setup/run_starrc.tcl</script_file>
+        <src>starrc</src>
+        <dst>starrc</dst>
+        <tool>tcl_job</tool>
+        <analysis_task>1</analysis_task>
+        <aux_tools>star</aux_tools>
+    </tool_task>
+    <graph grid_width="556" grid_height="762">
+        <node name="starrc" x="330" y="120"></node>
+    </graph>
+</top_flow>

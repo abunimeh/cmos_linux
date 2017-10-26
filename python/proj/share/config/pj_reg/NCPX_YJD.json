@@ -1,0 +1,494 @@
+{
+    "MD_CONTROL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'ha3",
+        "local_address": "11'ha3",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[1]": {
+                "RW": "NA",
+                "definition": "DISABLE_MD",
+                "description": "禁用MD.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "DEBUG": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'ha5",
+        "local_address": "11'ha5",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "LOAD_DISP_RETR",
+                "description": "阻塞load，直至其成为下一个要retire的项.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "STA_DISP_RETR",
+                "description": "阻塞STA，直至其成为下一个要retire的项.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "SPLIT_LOCK_DISABLE",
+                "description": "如果为跨行/页访问，则禁用锁操作.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "STA_DISP_RETR",
+                "description": "阻塞STA，直至其成为下一个要retire的项.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "DISABLE_SPLIT_STORE_FWD",
+                "description": "如果为跨行/页访问，则禁用存储前传 .",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "LOAD_SPLIT_RETR",
+                "description": "阻塞跨行的load，直至其成为下一个要retire的项.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "STA_SPLIT_RETR",
+                "description": "阻塞跨行的STA，直至其成为下一个要retire的项.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "FORCE_LD_MDA",
+                "description": "在RS分发load时，强制设置MDA位(忽略历史阵列的值).",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "FORCE_ST_ALLBLK",
+                "description": "强制设置STA对应的AllBlock位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "DISABLE_LD_BYPASS",
+                "description": "禁用所有load bypass.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "DISABLE_ST_BYPASS",
+                "description": "禁用所有STA bypass.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[10]": {
+                "RW": "NA",
+                "definition": "DISABLE_ENH_LNET",
+                "description": "禁用增强松散检查.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "DISABLE_USWC_STR",
+                "description": "禁用WC类型的load.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "PARTITION_SR",
+                "description": "在多线程模式下，允许线程分割SR.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "DISABLE_DISP_ACT",
+                "description": "禁用分发计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "DISABLE_CYCL_ACT",
+                "description": "禁用时钟周期计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "DISABLE_STORE_FWD",
+                "description": "禁用存储前传.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[18]": {
+                "RW": "NA",
+                "definition": "DISABLE_LB_SNOOPS",
+                "description": "禁用LB的所有侦听(外部及跨线程侦听).",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[19]": {
+                "RW": "NA",
+                "definition": "DISABLE_ST_ALLBLK_WHEN_MDA",
+                "description": "当MD使能时，禁用Allblock位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[21]": {
+                "RW": "NA",
+                "definition": "FORCE_UNLOCK_ALLBLK",
+                "description": "在store unlock时强制All Block .",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[26]": {
+                "RW": "NA",
+                "definition": "DISABLE_LD_BLK_ON_ST_LLB",
+                "description": "在senior store活锁时阻止load的分发.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "LL_DISP_THRESHOLD": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hb5",
+        "local_address": "11'hb5",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[11:0]": {
+                "RW": "NA",
+                "definition": "L1_MAX",
+                "description": "Level1分发计数器阈值.",
+                "reset_value": "12'h8",
+                "ucode_reset_value": "NA"
+            },
+            "[15:12]": {
+                "RW": "NA",
+                "definition": "L1_ACT",
+                "description": "Level1分发计数的持续时钟周期数.",
+                "reset_value": "4'h1",
+                "ucode_reset_value": "NA"
+            },
+            "[27:16]": {
+                "RW": "NA",
+                "definition": "L2_MAX",
+                "description": "Level2分发计数器阈值.",
+                "reset_value": "12'h40",
+                "ucode_reset_value": "NA"
+            },
+            "[31:28]": {
+                "RW": "NA",
+                "definition": "L2_ACT",
+                "description": "Level2分发计数的持续时钟周期数.",
+                "reset_value": "4'h8",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "LL_CYCL_THRESHOLD": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hb6",
+        "local_address": "11'hb6",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "NA",
+                "definition": "L1_MAX",
+                "description": "Level1时钟周期计数器阈值.",
+                "reset_value": "16'h100",
+                "ucode_reset_value": "NA"
+            },
+            "[31:16]": {
+                "RW": "NA",
+                "definition": "L2_MAX",
+                "description": "CRD放弃的时钟周期阈值.",
+                "reset_value": "16'h200",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "DISPATCH": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hb7",
+        "local_address": "11'hb7",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "STOP_LOAD",
+                "description": "停止从LB中分发load.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "STOP_STA",
+                "description": "停止从SAB中分发STA .",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "IA32_PERFEVTSEL<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h186", "step": "2"},
+        "global_address": {"base": "11'h61a", "step": "2"},
+        "local_address": {"base": "11'h65a", "step": "2"},
+        "local_address_hi": {"base": "11'h65b", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,3",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	  }
+    },     
+  "MC1_CTL": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h404",
+        "global_address": "11'h198",
+        "local_address": "11'h198",
+        "local_address_hi": "11'h199",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "L1D_EN",
+                "description": "若设置，则允许L1D中的错误报告.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "mc1_status": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h405",
+        "global_address": "11'h19a",
+        "local_address": "11'h19a",
+        "local_address_hi": "11'h19b",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "RO",
+                "definition": "MCA_ERR_CODE",
+                "description": "Mache Check错误编码.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "16'h0"
+            },
+            "[37:16]": {
+                "RW": "RO",
+                "definition": "Model_Specific_ERR_CODE",
+                "description": "对于所有的错误，该域设为全0.",
+                "reset_value": "22'h0",
+                "ucode_reset_value": "22'h0"
+            },
+            "[52:38]": {
+                "RW": "RO",
+                "definition": "CECNT",
+                "description": "可纠正L1D错误的计数器.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[57]": {
+                "RW": "RO",
+                "definition": "PCC",
+                "description": "处理器上下文环境污染标志位，设置为1时表明处理器的状态被发生的MCA事件影响了，软件无法安全的进行重启。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[58]": {
+                "RW": "RO",
+                "definition": "ADDRV",
+                "description": "MC1_ADDR寄存器的使能位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[59]": {
+                "RW": "RO",
+                "definition": "MISCV",
+                "description": "表示MC1_MISC是否有效,由于L1D未实现MC1_MISC，该位一直置0。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[60]": {
+                "RW": "RO",
+                "definition": "EN",
+                "description": "错误使能标志位，记录发生的MCA错误是否被CTL寄存器使能。设置为1时，表明该MCA错误在CTL寄存器中是使能的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[61]": {
+                "RW": "RO",
+                "definition": "UC",
+                "description": "不可纠正错误标志位，设置为1时，表明发生的MCA错误是不可纠正的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[62]": {
+                "RW": "RO",
+                "definition": "OVER",
+                "description": "设置为1时，表明一个新的MCA错误发生时，之前发生的一个旧的MCA错误还没有处理完毕，其信息仍然保存在status中。 新的MCA错误可能会覆盖旧的MCA错误，具体覆盖规则详见manual。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[63]": {
+                "RW": "RO",
+                "definition": "VAL",
+                "description": "状态寄存器的使能位，表明status中的信息是有效的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "mc1_addr": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h406",
+        "global_address": "11'h19c",
+        "local_address": "11'h19c",
+        "local_address_hi": "11'h19d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[21:0]": {
+                "RW": "RO",
+                "definition": "LOW",
+                "description": "触发错误请求的物理地址的低部分.",
+                "reset_value": "22'h0",
+                "ucode_reset_value": "22'h0"
+            },
+            "[49:32]": {
+                "RW": "RO",
+                "definition": "HIGH",
+                "description": "触发错误请求的物理地址的高部分.",
+                "reset_value": "18'h0",
+                "ucode_reset_value": "18'h0"
+            }
+         }
+      },
+  "mc1_ctl2": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h281",
+        "global_address": "11'h186",
+        "local_address": "11'h186",
+        "local_address_hi": "11'h187",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[14:0]": {
+                "RW": "RW",
+                "definition": "corrected_err_thrsh",
+                "description": "可纠正错误计数阈值.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[30]": {
+                "RW": "RW",
+                "definition": "corrected_err_en",
+                "description": "可纠正错误的CMCI中断使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      }
+
+}

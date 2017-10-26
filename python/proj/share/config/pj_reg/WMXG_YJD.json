@@ -1,0 +1,763 @@
+{
+    "UC000_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h266", "step": "1"},
+        "local_address": {"base": "11'h266", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,9",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷000_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC001_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h300", "step": "1"},
+        "local_address": {"base": "11'h300", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,3",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷001_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC002": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h504",
+        "global_address": "11'h304",
+        "local_address": "11'h304",
+        "local_address_hi": "11'h305",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷002.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC003": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h6",
+        "global_address": "11'h306",
+        "local_address": "11'h306",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷003.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC004_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h307", "step": "1"},
+        "local_address": {"base": "11'h307", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,4",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷004_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC005": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h30c",
+        "local_address": "11'h30c",
+        "local_address_hi": "11'h30d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷005.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC006_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h30e", "step": "1"},
+        "local_address": {"base": "11'h30e", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,4",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷006_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC007": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h924",
+        "global_address": "11'h313",
+        "local_address": "11'h313",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷007.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC008_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h314", "step": "1"},
+        "local_address": {"base": "11'h314", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷008_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC009": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h600",
+        "global_address": "11'h316",
+        "local_address": "11'h316",
+        "local_address_hi": "11'h317",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷009.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC010_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h318", "step": "1"},
+        "local_address": {"base": "11'h318", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷010_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC011": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h19a",
+        "global_address": "11'h31a",
+        "local_address": "11'h31a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷011.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC012": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h25b",
+        "global_address": "11'h31b",
+        "local_address": "11'h31b",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷012.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC013": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h9c",
+        "global_address": "11'h31c",
+        "local_address": "11'h31c",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷013.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC014_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h31d", "step": "1"},
+        "local_address": {"base": "11'h31d", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,2",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷014_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC015": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h520",
+        "global_address": "11'h320",
+        "local_address": "11'h320",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷015.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC016_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h321", "step": "1"},
+        "local_address": {"base": "11'h321", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,2",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷016_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC017": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h4e4",
+        "global_address": "11'h324",
+        "local_address": "11'h324",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷017.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC018": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h325",
+        "local_address": "11'h325",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷018.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC019_<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h4e6", "step": "1"},
+        "global_address": {"base": "11'h326", "step": "1"},
+        "local_address": {"base": "11'h326", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷019_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC020_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h328", "step": "1"},
+        "local_address": {"base": "11'h328", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷020_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC021_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h32a", "step": "2"},
+        "local_address": {"base": "11'h32a", "step": "2"},
+        "local_address_hi": {"base": "11'h32b", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷021_<id>.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC022_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h32e", "step": "1"},
+        "local_address": {"base": "11'h32e", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷022_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC023_<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h170", "step": "1"},
+        "global_address": {"base": "11'h330", "step": "1"},
+        "local_address": {"base": "11'h330", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷023_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC024": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h172",
+        "global_address": "11'h332",
+        "local_address": "11'h332",
+        "local_address_hi": "11'h333",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷024.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC025_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h334", "step": "2"},
+        "local_address": {"base": "11'h334", "step": "2"},
+        "local_address_hi": {"base": "11'h335", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UCÁÙÊ±¼Ä´æÆ÷025_<id>.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+  "UC026": {
+        "SW_visible": "yes",
+        "MSR_address": "32'hc0000083",
+        "global_address": "11'h338",
+        "local_address": "11'h338",
+        "local_address_hi": "11'h339",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷026.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC027": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h17a",
+        "global_address": "11'h33a",
+        "local_address": "11'h33a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷027.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC028": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h33b",
+        "local_address": "11'h33b",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷028.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC029": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h33c",
+        "local_address": "11'h33c",
+        "local_address_hi": "11'h33d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷029.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC030_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h33e", "step": "1"},
+        "local_address": {"base": "11'h33e", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,5",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷030_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC030": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h344",
+        "local_address": "11'h344",
+        "local_address_hi": "11'h345",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[63:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷030.",
+                "reset_value": "64'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC031_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h346", "step": "1"},
+        "local_address": {"base": "11'h346", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,3",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷031_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC032": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h34",
+        "global_address": "11'h34a",
+        "local_address": "11'h34a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷032.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC033_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h34b", "step": "1"},
+        "local_address": {"base": "11'h34b", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,22",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷033_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC034_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address":{"base": "11'h364", "step": "1"},
+        "local_address": {"base": "11'h364", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷034_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+   "UC035": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h2e0",
+        "global_address": "11'h366",
+        "local_address": "11'h366",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷035.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+  "UC036": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h367",
+        "local_address": "11'h367",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷036.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+
+   "UC037": {
+        "SW_visible": "yes",
+        "MSR_address": "32'he2",
+        "global_address": "11'h368",
+        "local_address": "11'h368",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷037.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+  "UC038": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h369",
+        "local_address": "11'h369",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷038.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+  "UC039": {
+        "SW_visible": "yes",
+        "MSR_address": "32'he4",
+        "global_address": "11'h36a",
+        "local_address": "11'h36a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "RW",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷039.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+  "UC040": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h36b",
+        "local_address": "11'h36b",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷040.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "UC041_<id>": {
+        "SW_visible": "no",
+        "MSR_address": {"base": "NA", "step": "0"},
+        "global_address": {"base": "11'h36e", "step": "1"},
+        "local_address": {"base": "11'h36e", "step": "1"},
+        "32bit/64bit": "32bit",
+        "range": "0,1",
+        "ST/MT": "ST",
+        "fields": {
+            "[31:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "UC ÁÙÊ±¼Ä´æÆ÷041_<id>.",
+                "reset_value": "32'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    }
+
+}

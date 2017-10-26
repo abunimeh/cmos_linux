@@ -1,0 +1,624 @@
+{
+    "icache_flush_control": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h3c",
+        "local_address": "11'h3c",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "CMD_FLUSH",
+                "description": "刷新使能信号，处理完毕后Icache清空该位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+    "itlb_flush_control": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h640",
+        "local_address": "11'h640",
+        "local_address_hi": "11'h641",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "V",
+                "description": "有效位置1说明有新的释放请求到达，通过解析寄存器中的其它域判断请求类型进行相应处理，处理完毕后ITLB清空该位",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "L",
+                "description": "L位是类型域，为1时指示当前的释放请求应该使用INV_Addr域，为0时使用INV_MASK域",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "G",
+                "description": "释放时是否包含Global项",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[10:3]": {
+                "RW": "NA",
+                "definition": "INV_MASK",
+                "description": "删除掩码，和CBID域进行与运算",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[46:11]": {
+                "RW": "NA",
+                "definition": "INV_ADDR",
+                "description": "在L置1时，通过指定的线性地址页框号删除ITLB表项，该线性地址页框号由INV_Addr域给出",
+                "reset_value": "36'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "error_linadr": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h62a",
+        "local_address": "11'h62a",
+        "local_address_hi": "11'h62b",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[48:0]": {
+                "RW": "NA",
+                "definition": "LINADR",
+                "description": "出错的线性地址.",
+                "reset_value": "49'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "CMC_SNP_CNT": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h3f",
+        "local_address": "11'h3f",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[6:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "外部侦听写入侦听队列后开始计时，如果计数大于寄存器中设置的阈值，则阻塞SMC侦听，直到侦听队列中的CMC侦听全部处理完毕.",
+                "reset_value": "7'h0",
+                "ucode_reset_value": "7'h40"
+            }
+        }
+    },
+    "LCP_THREAD_BIAS": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h48",
+        "local_address": "11'h48",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "NA",
+                "definition": "BIAS",
+                "description": "LCP线程偏向.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "16'h7c7"
+            },
+            "[31:16]": {
+                "RW": "NA",
+                "definition": "VALID",
+                "description": "LCP线程偏向的掩码。从低位开始连续的1有效.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "16'h7ff"
+            }
+        }
+    },
+    "DR0": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h40",
+        "local_address": "11'h632",
+        "local_address_hi": "11'h633",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[48:0]": {
+                "RW": "RW",
+                "definition": "ADR_LOW",
+                "description": "线性地址.",
+                "reset_value": "49'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[63:49]": {
+                "RW": "RW",
+                "definition": "ADR_HIGH",
+                "description": "高位保留地址.",
+                "reset_value": "15'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "DR1": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h42",
+        "local_address": "11'h638",
+        "local_address_hi": "11'h639",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[48:0]": {
+                "RW": "RW",
+                "definition": "ADR_LOW",
+                "description": "线性地址.",
+                "reset_value": "49'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[63:49]": {
+                "RW": "RW",
+                "definition": "ADR_HIGH",
+                "description": "高位保留地址.",
+                "reset_value": "15'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "DR2": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h44",
+        "local_address": "11'h63a",
+        "local_address_hi": "11'h63b",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[48:0]": {
+                "RW": "RW",
+                "definition": "ADR_LOW",
+                "description": "线性地址.",
+                "reset_value": "49'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[63:49]": {
+                "RW": "RW",
+                "definition": "ADR_HIGH",
+                "description": "高位保留地址.",
+                "reset_value": "15'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "DR3": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h46",
+        "local_address": "11'h63c",
+        "local_address_hi": "11'h63d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[48:0]": {
+                "RW": "RW",
+                "definition": "ADR_LOW",
+                "description": "线性地址.",
+                "reset_value": "49'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[63:49]": {
+                "RW": "RW",
+                "definition": "ADR_HIGH",
+                "description": "高位保留地址.",
+                "reset_value": "15'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+
+    "DR7": {
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h210",
+        "local_address": "11'h63e",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "L0",
+                "description": "DR0当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "G0",
+                "description": "DR0的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "L1",
+                "description": "DR1当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "G1",
+                "description": "DR1的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "RW",
+                "definition": "L2",
+                "description": "DR2当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "RW",
+                "definition": "G2",
+                "description": "DR2的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "RW",
+                "definition": "L3",
+                "description": "DR3当前线程的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "RW",
+                "definition": "G3",
+                "description": "DR3的全局使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "RW",
+                "definition": "LE",
+                "description": "忽略.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "GE",
+                "description": "忽略.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "RW",
+                "definition": "GD",
+                "description": "调试寄存器保护机制的使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[17:16]": {
+                "RW": "RW",
+                "definition": "rw0",
+                "description": "DR0的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[19:18]": {
+                "RW": "RW",
+                "definition": "len0",
+                "description": "DR0的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[21:20]": {
+                "RW": "RW",
+                "definition": "rw1",
+                "description": "DR1的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[23:22]": {
+                "RW": "RW",
+                "definition": "len1",
+                "description": "DR1的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[25:24]": {
+                "RW": "RW",
+                "definition": "rw2",
+                "description": "DR2的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[27:26]": {
+                "RW": "RW",
+                "definition": "len2",
+                "description": "DR2的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[29:28]": {
+                "RW": "RW",
+                "definition": "rw3",
+                "description": "DR3的类型.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[31:30]": {
+                "RW": "RW",
+                "definition": "len3",
+                "description": "DR3的长度.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+
+    "fetch_debug_ctrl": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h3d",
+        "local_address": "11'h3d",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[10]": {
+                "RW": "NA",
+                "definition": "DISABLE_CMCCNT",
+                "description": "设置为1时，外部侦听计时器逻辑无效.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[13:11]": {
+                "RW": "NA",
+                "definition": "CACHE_FORCEONEWAY",
+                "description": "当FORCEONEWAY_ENABLE置1时，根据此状态的值确定CACHE的哪一路有效.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "3'h0"
+            },
+            "[23]": {
+                "RW": "NA",
+                "definition": "FORCEONEWAY_ENABLE",
+                "description": "设置为1时有效，8路的CACHE变为1路结构，具体哪一路有效由CACHE_FORCEONEWAY指定.",
+                "reset_value": "1'h0",
+                "ucode_reset_value": "1'h0"
+            },
+            "[28]": {
+                "RW": "NA",
+                "definition": "DISIVCBEFLUSH",
+                "description": "设置为1时忽略IVC中的ROQINDEX和WRAP位，取消分支预测失败时IVC项的释放机制.",
+                "reset_value": "1'h0",
+                "ucode_reset_value": "1'h0"
+            },
+            "[31]": {
+                "RW": "NA",
+                "definition": "DISABLE_PREFETCH",
+                "description": "设置为1时取消CACHE中的预取机制.",
+                "reset_value": "1'h0",
+                "ucode_reset_value": "1'h0"
+            }
+         }
+     },
+    "breakpoint_ctrl": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h714",
+        "local_address": "11'h63f",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "dr0",
+                "description": "此位为1时表明DR0寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "dr1",
+                "description": "此位为1时表明DR1寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "dr2",
+                "description": "此位为2时表明DR1寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "dr3",
+                "description": "此位为3时表明DR1寄存器中的值是符合标准的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+  "MC0_CTL": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h400",
+        "global_address": "11'h190",
+        "local_address": "11'h190",
+        "local_address_hi": "11'h191",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "ENABLE_IDQ",
+                "description": "使能指令解码队列单元的MCA事件记录.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "ENABLE_UC",
+                "description": "使能微码序列器单元的MCA事件记录.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "ENABLE_IQ",
+                "description": "使能指令队列单元的MCA事件记录.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "ENABLE_FETCH",
+                "description": "使能取指单元的MCA事件记录.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[4]": {
+                "RW": "RW",
+                "definition": "ENABLE_ROQ",
+                "description": "使能重排序队列的MCA事件记录.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "mc0_status": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h401",
+        "global_address": "11'h192",
+        "local_address": "11'h192",
+        "local_address_hi": "11'h193",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[8:0]": {
+                "RW": "RO",
+                "definition": "MCACOD",
+                "description": "MAC错误码.",
+                "reset_value": "9'h0",
+                "ucode_reset_value": "9'h0"
+            },
+            "[18:16]": {
+                "RW": "RO",
+                "definition": "MSCOD",
+                "description": "架构定义的特殊MCA错误码.",
+                "reset_value": "3'b0",
+                "ucode_reset_value": "3'b0"
+            },
+            "[51:38]": {
+                "RW": "RO",
+                "definition": "corrected_err_cnt",
+                "description": "可纠正错误计数器.",
+                "reset_value": "14'h0",
+                "ucode_reset_value": "14'h0"
+            },
+            "[52]": {
+                "RW": "RO",
+                "definition": "sticky",
+                "description": "计数器溢出后设置的标志位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[57]": {
+                "RW": "RO",
+                "definition": "PCC",
+                "description": "处理器上下文环境污染标志位，设置为1时表明处理器的状态被发生的MCA事件影响了，软件无法安全的进行重启。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[58]": {
+                "RW": "RO",
+                "definition": "ADDRV",
+                "description": "MC0_ADDR寄存器的使能位。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[60]": {
+                "RW": "RO",
+                "definition": "EN",
+                "description": "错误使能标志位，记录发生的MCA错误是否被CTL寄存器使能。设置为1时，表明该MCA错误在CTL寄存器中是使能的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[61]": {
+                "RW": "RO",
+                "definition": "UC",
+                "description": "不可纠正错误标志位，设置为1时，表明发生的MCA错误是不可纠正的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[62]": {
+                "RW": "RO",
+                "definition": "OVER",
+                "description": "设置为1时，表明一个新的MCA错误发生时，之前发生的一个旧的MCA错误还没有处理完毕，其信息仍然保存在status中。 新的MCA错误可能会覆盖旧的MCA错误，具体覆盖规则详见manual。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[63]": {
+                "RW": "RO",
+                "definition": "VAL",
+                "description": "状态寄存器的使能位，表明status中的信息是有效的。",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "mc0_addr": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h402",
+        "global_address": "11'h194",
+        "local_address": "11'h194",
+        "local_address_hi": "11'h195",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[48:0]": {
+                "RW": "RO",
+                "definition": "",
+                "description": "记录发生错误的线性地址.",
+                "reset_value": "49'h0",
+                "ucode_reset_value": "49'h0"
+            }
+         }
+      },
+  "mc0_ctl2": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h280",
+        "global_address": "11'h184",
+        "local_address": "11'h184",
+        "local_address_hi": "11'h185",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[14:0]": {
+                "RW": "RW",
+                "definition": "corrected_err_thrsh",
+                "description": "可纠正错误计数阈值.",
+                "reset_value": "15'h0",
+                "ucode_reset_value": "15'h0"
+            },
+            "[30]": {
+                "RW": "RW",
+                "definition": "corrected_err_en",
+                "description": "可纠正错误的CMCI中断使能位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      }
+
+
+}

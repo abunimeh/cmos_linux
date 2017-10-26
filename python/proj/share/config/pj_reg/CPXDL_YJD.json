@@ -1,0 +1,1609 @@
+{
+    "COMMAND": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h495",
+        "local_address": "11'h495",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "DBLFAULT_RST",
+                "description": "重置double fault状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2:1]": {
+                "RW": "NA",
+                "definition": "DBLFLT_STATE",
+                "description": "double fault状态.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4:3]": {
+                "RW": "NA",
+                "definition": "CRS",
+                "description": "CRSTI  CRSS.",
+                "reset_value": "2'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "CLEAR_PND_TRAP",
+                "description": "清空pending trap.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "STISS_STATE_BIT",
+                "description": "STISS状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "STI_STATE",
+                "description": "STI状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "PND_BRKPT",
+                "description": "pending breakpoint状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "ROB_IN_PROBE_MODE_BIT",
+                "description": "PROBE模式.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "CLEAR_PND_PEBS",
+                "description": "清空pending pebs.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "COMMAND2": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h496",
+        "local_address": "11'h496",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[7]": {
+                "RW": "NA",
+                "definition": "INTR_TO_MONITOR_ENABLE",
+                "description": "int事件变为monitor事件.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "EXCEP_IN_PROG",
+                "description": "清空mov ss和sti状态，在提交带有Accpt_Intr的额外功能域的uop提交的时候，清空这个位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "HOST_INTR_CTRL",
+                "description": "HOST_INTR_CTRL.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "HOST_INTR_FLAG",
+                "description": "HOST_INTR_FLAG.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "VIRT_INTR_PEND",
+                "description": "VIRT_INTR_PEND.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "MTF",
+                "description": "monitor trap位，用来产生monitor trap事件.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+          }
+      },
+      "FOP": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h497",
+        "local_address": "11'h497",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[10:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "最后一个浮点宏指令的opcode的11位.",
+                "reset_value": "11'h0",
+                "ucode_reset_value": "11'h0"
+            }
+         }
+      },
+      "TAGWORD": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h498",
+        "local_address": "11'h498",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[15:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "架构tagword值.",
+                "reset_value": "16'hff",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "TAGWORD_DIRECT8": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h499",
+        "local_address": "11'h499",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "架构tagword值的direct 8模式.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "FPCTL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h49a",
+        "local_address": "11'h49a",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[6]": {
+                "RW": "NA",
+                "definition": "IGNORE_PENDING_ES",
+                "description": "在检查浮点标志位错误时忽略ES位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+         }
+      },
+      "FERR_CAPABILITIES": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h1f1",
+        "global_address": "11'h1f1",
+        "local_address": "11'h1f1",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "FERR_ENABLE",
+                "description": "当该bit为0时，不能送出FERR；为1时，FERR信息将在非屏蔽x87异常生成时发送。默认不发送.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "FCC_BACKUP": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h49b",
+        "local_address": "11'h49b",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[3:0]": {
+                "RW": "NA",
+                "definition": "FCC",
+                "description": "FCC位.",
+                "reset_value": "4'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "FSWPEF",
+                "description": "FSW里的PE位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "IOMISCINFO": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hf0",
+        "local_address": "11'hf0",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "SMI",
+                "description": "SMM IO MISC信息：产生了SMI中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3:1]": {
+                "RW": "NA",
+                "definition": "IO_LENGTH",
+                "description": "产生SMI中断的IO指令访问的数据长度.",
+                "reset_value": "3'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[7:4]": {
+                "RW": "NA",
+                "definition": "IO_TYPE",
+                "description": "产生SMI中断的IO类型.",
+                "reset_value": "4'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[31:16]": {
+                "RW": "NA",
+                "definition": "IO_PORT",
+                "description": "产生SMI中断的IO端口.",
+                "reset_value": "16'h0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "TMPDR6": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h102",
+        "local_address": "11'h102",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "B0",
+                "description": "架构DR6的B0位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "B1",
+                "description": "架构DR6的B1位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "B2",
+                "description": "架构DR6的B2位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "B3",
+                "description": "架构DR6的B3位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "BD",
+                "description": "架构DR6的BD位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "BS",
+                "description": "架构DR6的BS位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "BT",
+                "description": "架构DR6的BT位.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+        "EVENT_TYPE": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h0cc",
+        "local_address": "11'h0cc",
+        "local_address_hi": "11'h0cd",
+        "32bit/64bit": "64bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "REAL_FAULT",
+                "description": "REAL_FAULT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "REAL_HW_INT",
+                "description": "REAL_HW_INT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "PROT_FAULT",
+                "description": "PROT_FAULT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "VME_FAULT ",
+                "description": "VME_FAULT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[15]": {
+                "RW": "NA",
+                "definition": "VME_HW_INT ",
+                "description": "VME_HW_INT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "RESET",
+                "description": "RESET.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[18]": {
+                "RW": "NA",
+                "definition": "SEG_ACC_BIT ",
+                "description": "SEG_ACC_BIT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[20]": {
+                "RW": "NA",
+                "definition": "RESTART_FROM_EIP ",
+                "description": "发生事件的微操作的5位额外功能域.",
+                "reset_value": "1'h1",
+                "ucode_reset_value": "NA"
+            },
+            "[21]": {
+                "RW": "NA",
+                "definition": "RESTART_IN_FLOW ",
+                "description": "RESTART_IN_FLOW.",
+                "reset_value": "1'h1",
+                "ucode_reset_value": "NA"
+            },
+            "[22]": {
+                "RW": "NA",
+                "definition": "FLOATPOINT",
+                "description": "FLOATPOINT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[23]": {
+                "RW": "NA",
+                "definition": "FERR",
+                "description": "FERR.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[24]": {
+                "RW": "NA",
+                "definition": "CODEBREAKPOINT",
+                "description": "FERR.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[25]": {
+                "RW": "NA",
+                "definition": "DATABREAKPOINT",
+                "description": "DATABREAKPOINT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[26]": {
+                "RW": "NA",
+                "definition": "SINGLESTEP",
+                "description": "SINGLESTEP.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[27]": {
+                "RW": "NA",
+                "definition": "VMCS_PLA",
+                "description": "VMCS_PLA.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[28]": {
+                "RW": "NA",
+                "definition": "EPT_DATA_PAGE_FAULT",
+                "description": "EPT_DATA_PAGE_FAULT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[29]": {
+                "RW": "NA",
+                "definition": "PAGE_AD_BIT",
+                "description": "PAGE_AD_BIT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[30]": {
+                "RW": "NA",
+                "definition": "WRITE_COMBINE",
+                "description": "WRITE_COMBINE.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[32]": {
+                "RW": "NA",
+                "definition": "MACHINECHECK",
+                "description": "MACHINECHECK .",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[33]": {
+                "RW": "NA",
+                "definition": "NMI",
+                "description": "NMI.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[34]": {
+                "RW": "NA",
+                "definition": "UNCORE_TRAP_EVENT",
+                "description": "UNCORE_TRAP_EVENT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[35]": {
+                "RW": "NA",
+                "definition": "A20M",
+                "description": "A20M.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[36]": {
+                "RW": "NA",
+                "definition": "MICRO_EVENT",
+                "description": "MICRO_EVENT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },    
+            "[37]": {
+                "RW": "NA",
+                "definition": "INIT",
+                "description": "INIT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[38]": {
+                "RW": "NA",
+                "definition": "SMI",
+                "description": "SMI.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[39]": {
+                "RW": "NA",
+                "definition": "TRACE_MESSAGE",
+                "description": "TRACE_MESSAGE.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[40]": {
+                "RW": "NA",
+                "definition": "PROBE_MODE",
+                "description": "PROBE_MODE.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[41]": {
+                "RW": "NA",
+                "definition": "STOP_CLK",
+                "description": "STOP_CLK.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[42]": {
+                "RW": "NA",
+                "definition": "DATA_PAGE_FAULT",
+                "description": "DATA_PAGE_FAULT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },    
+            "[43]": {
+                "RW": "NA",
+                "definition": "ITLB_MISS_PAGE_FAULT",
+                "description": "ITLB_MISS_PAGE_FAULT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[44]": {
+                "RW": "NA",
+                "definition": "SIMD",
+                "description": "SIMD.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[45]": {
+                "RW": "NA",
+                "definition": "ILLEGAL_OPCODE",
+                "description": "ILLEGAL_OPCODE.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[46]": {
+                "RW": "NA",
+                "definition": "SIMDFP",
+                "description": "SIMDFP.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },    
+            "[47]": {
+                "RW": "NA",
+                "definition": "EPT_CODE_PAGE_FAULT",
+                "description": "EPT_CODE_PAGE_FAULT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[48]": {
+                "RW": "NA",
+                "definition": "MEMORY_VIOLATION",
+                "description": "MEMORY_VIOLATION.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[50]": {
+                "RW": "NA",
+                "definition": "MONITOR_EVENT",
+                "description": "MONITOR_EVENT.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[51]": {
+                "RW": "NA",
+                "definition": "LT_DOORBELL",
+                "description": "LT_DOORBELL.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[52]": {
+                "RW": "NA",
+                "definition": "MACRO_FUSE",
+                "description": "MACRO_FUSE.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+            "[54]": {
+                "RW": "NA",
+                "definition": "SYNC_FLUSH",
+                "description": "SYNC_FLUSH.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },    
+            "[57]": {
+                "RW": "NA",
+                "definition": "ECC",
+                "description": "ECC.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            },
+           "[59]": {
+                "RW": "NA",
+                "definition": "VMX_TIMER",
+                "description": "VMX_TIMER.",
+                "reset_value": "1'b1",
+                "ucode_reset_value": "NA"
+            }
+
+         }
+      },
+      "EVENT_INFO": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h606",
+        "local_address": "11'h606",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "IS_VIRT_FlUSHABLE",
+                "description": "当发生事件的uop有virtual flushable额外功能域.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "IS_ALLOW_SMC",
+                "description": "当发生事件的uop有ALLOW_SMC额外功能域.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "IS_UPDATE_EIP",
+                "description": "当发生事件的uop有UPDATE_EIP额外功能域.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "NA",
+                "definition": "IS_ACCEPT_TRAPS",
+                "description": "当发生事件的uop有ACCEPT_TRAPS额外功能域.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[4]": {
+                "RW": "NA",
+                "definition": "IS_ACCEPT_INTR",
+                "description": "当发生事件的uop有ACCEPT_Intr额外功能域.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "PROBE_MODE_FAULT",
+                "description": "发生事件的微操作在错误期间进入了probe mode.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "PROBE_MODE_INIT",
+                "description": "发生事件的微操作进入了probe mode初始化入口.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[15:11]": {
+                "RW": "NA",
+                "definition": "EXTRA_FUNC",
+                "description": "发生事件的微操作的5位额外功能域.",
+                "reset_value": "5'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[21:16]": {
+                "RW": "NA",
+                "definition": "EVENT_VECTOR",
+                "description": "6位事件向量.",
+                "reset_value": "6'h0",
+                "ucode_reset_value": "NA"
+            },
+            "[22]": {
+                "RW": "NA",
+                "definition": "IS_TRAP_EVENT",
+                "description": "事件是trap类型.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[23]": {
+                "RW": "NA",
+                "definition": "IS_SYNC_EVENT",
+                "description": "事件是Sync Flush.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+      "MISC_INFO": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hf4",
+        "local_address": "11'hf4",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "THREAD_ACTIVE_T0",
+                "description": "thread 0是活跃的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "THREAD_ACTIVE_T1",
+                "description": "thread10是活跃的.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "NA",
+                "definition": "UCODE_FERR_REQUEST",
+                "description": "微码在FERR事件处理中设置该位初始化FERR响应信息.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+
+      "EVENT_PENDING": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h607",
+        "local_address": "11'h607",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[1]": {
+                "RW": "NA",
+                "definition": "RESTART_MICRO",
+                "description": "Restart micro事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "MONITORTRAP",
+                "description": "Monitor trap事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "BTM",
+                "description": "Branch trace message事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "SMC",
+                "description": "SMC事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "VIRTUAL_FLUSH",
+                "description": "virtual Flush事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "UCODE_MACROTRAP",
+                "description": "ucode macrotrap事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "CRD",
+                "description": "CRD事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "FERR",
+                "description": "FERR事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "PEBS",
+                "description": "PEBS事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "NMIP",
+                "description": "NMIP事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+         }
+      },
+      "EVENT_SET": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h608",
+        "local_address": "11'h608",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[1]": {
+                "RW": "NA",
+                "definition": "RESTART_MICRO",
+                "description": "Restart micro事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "MONITORTRAP",
+                "description": "Monitor trap事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "BTM",
+                "description": "Branch trace message事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "SMC",
+                "description": "SMC事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "VIRTUAL_FLUSH",
+                "description": "virtual Flush事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "UCODE_MACROTRAP",
+                "description": "ucode macrotrap事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "CRD",
+                "description": "CRD事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "FERR",
+                "description": "FERR事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "PEBS",
+                "description": "PEBS事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "NMIP",
+                "description": "NMIP事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+          }
+        },
+      "EVENT_RESET": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h609",
+        "local_address": "11'h609",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[1]": {
+                "RW": "NA",
+                "definition": "RESTART_MICRO",
+                "description": "Restart micro事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[6]": {
+                "RW": "NA",
+                "definition": "MONITORTRAP",
+                "description": "Monitor trap事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[7]": {
+                "RW": "NA",
+                "definition": "BTM",
+                "description": "Branch trace message事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[8]": {
+                "RW": "NA",
+                "definition": "SMC",
+                "description": "SMC事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "NA",
+                "definition": "VIRTUAL_FLUSH",
+                "description": "virtual Flush事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "NA",
+                "definition": "UCODE_MACROTRAP",
+                "description": "ucode macrotrap事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[12]": {
+                "RW": "NA",
+                "definition": "CRD",
+                "description": "CRD事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[13]": {
+                "RW": "NA",
+                "definition": "FERR",
+                "description": "FERR事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[14]": {
+                "RW": "NA",
+                "definition": "PEBS",
+                "description": "PEBS事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[16]": {
+                "RW": "NA",
+                "definition": "NMIP",
+                "description": "NMIP事件没有解决的状态.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+       }
+ },
+ "ROQDefeature": { 
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hf5",
+        "local_address": "11'hf5",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "FORCE_ALLTHREAD",
+                "description": "如果该位为1，ROQ认为所有事件都是全线程事件.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+ "STRING_CNT": { 
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h60c",
+        "local_address": "11'h60c",
+        "local_address_hi": "11'h60d",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[47:0]": {
+                "RW": "NA",
+                "definition": "",
+                "description": "用于记录字符串微操作已经执行的位置.",
+                "reset_value": "48'h0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+ "CR0": { 
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h100",
+        "local_address": "11'h60b",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "PE",
+                "description": "保护模式使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "EM",
+                "description": "仿真.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "TS",
+                "description": "任务切换.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+ "CR4": { 
+        "SW_visible": "yes",
+        "MSR_address": "NA",
+        "global_address": "11'h17c",
+        "local_address": "11'h610",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "VME",
+                "description": "使能虚拟8086模式的扩展.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "osfxsr",
+                "description": "使能快速Fxsave和Fxrestore.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "channels_enabled",
+                "description": "使能通道.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+ "IA32_EFER": { 
+        "SW_visible": "yes",
+        "MSR_address": "32'hC000_0080",
+        "global_address": "11'h112",
+        "local_address": "11'h103",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[10]": {
+                "RW": "RW",
+                "definition": "LMA",
+                "description": "long mode active.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+ "FLA": { 
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h684",
+        "local_address": "11'h66e",
+        "local_address_hi": "11'h66f",
+        "32bit/64bit": "64bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[49]": {
+                "RW": "NA",
+                "definition": "lbit_and_lma",
+                "description": "resolved lbit.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "NA"
+            }
+        }
+    },
+    "IA32_PERFEVTSEL<id>": {
+        "SW_visible": "yes",
+        "MSR_address": {"base": "32'h186", "step": "1"},
+        "global_address": {"base": "11'h61a", "step": "2"},
+        "local_address": {"base": "11'h664", "step": "2"},
+        "local_address_hi": {"base": "11'h665", "step": "2"},
+        "32bit/64bit": "64bit",
+        "range": "0,3",
+        "ST/MT": "MT",
+        "fields": {
+            "[7:0]": {
+                "RW": "RW",
+                "definition": "EVENT_SEL",
+                "description": "事件选择:选择一个性能事件逻辑单元.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },            
+            "[15:8]": {
+                "RW": "RW",
+                "definition": "UMASK",
+                "description": "子事件选择:对于选择的事件进一步明确检测的条件.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            },          
+            "[16]": {
+                "RW": "RW",
+                "definition": "USER",
+                "description": "用户模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[17]": {
+                "RW": "RW",
+                "definition": "OS",
+                "description": "操作系统模式下计数.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[18]": {
+                "RW": "RW",
+                "definition": "Edge_Detect",
+                "description": "边沿检测：当检测的条件从不满足到满足跳变时计数加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[20]": {
+                "RW": "RW",
+                "definition": "INT",
+                "description": "当计数溢出时产生中断.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[21]": {
+                "RW": "RW",
+                "definition": "anythread",
+                "description": "为1时表示统计两个线程的事件.为0时只统计本线程的事件",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[22]": {
+                "RW": "RW",
+                "definition": "CNT_EN",
+                "description": "计数器本地使能.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[23]": {
+                "RW": "RW",
+                "definition": "INVERT",
+                "description": "阈值比较翻转：为1时，同一周期事件数小于阈值时计数器加一.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },          
+            "[31:24]": {
+                "RW": "RW",
+                "definition": "Threshold",
+                "description": "事件阈值:当该值不为0时，同一周期的事件数不小于阈值时计数器加一.",
+                "reset_value": "8'h0",
+                "ucode_reset_value": "8'h0"
+            }
+	 }
+    },     
+  "IA32_DEBUGCTLMSR": {
+        "SW_visible": "yes",
+        "MSR_address": "32'h1d9",
+        "global_address": "11'h66d",
+        "local_address": "11'h66d",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "LBR",
+                "description": "LBR: Last Branch Record.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "BTF",
+                "description": "BTF.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[6]": {
+                "RW": "RW",
+                "definition": "TR",
+                "description": "Branch Trace.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[7]": {
+                "RW": "RW",
+                "definition": "BTS",
+                "description": "Log Branch Trace Message to BTS buffer.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[8]": {
+                "RW": "RW",
+                "definition": "BTINT",
+                "description": "BTINT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "BTS_OFF_OS",
+                "description": "BTS_OFF_OS.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[10]": {
+                "RW": "RW",
+                "definition": "BTS_OFF_USER",
+                "description": "BTS_OFF_USER.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "FREEZE_LBR_ON_PMI",
+                "description": "FREEZE_LBR_ON_PMI.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[12]": {
+                "RW": "RW",
+                "definition": "FREEZE_PERFMON_ON_PMI",
+                "description": "FREEZE_PERFMON_ON_PMI.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[13]": {
+                "RW": "RW",
+                "definition": "ENABLE_UNCORE_PMI",
+                "description": "ENABLE_UNCORE_PMI.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[14]": {
+                "RW": "RW",
+                "definition": "FREEZE_WHILE_SMM",
+                "description": "FREEZE_WHILE_SMM.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "EVENT_INHIBIT": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h481",
+        "local_address": "11'h481",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "RW",
+                "definition": "ECC",
+                "description": "ECC.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "RW",
+                "definition": "MOFLUSH",
+                "description": "MOFLUSH.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[2]": {
+                "RW": "RW",
+                "definition": "TBITTRAP",
+                "description": "TBITTRAP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[3]": {
+                "RW": "RW",
+                "definition": "SINGLESTEP",
+                "description": "SINGLESTEP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[4]": {
+                "RW": "RW",
+                "definition": "DATABRKTRAP",
+                "description": "DATABRKTRAP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[5]": {
+                "RW": "RW",
+                "definition": "BRANCHTAKENTRAP",
+                "description": "BRANCHTAKENTRAP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[6]": {
+                "RW": "RW",
+                "definition": "MONITORTRAP",
+                "description": "MONITORTRAP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[7]": {
+                "RW": "RW",
+                "definition": "BRANCH_TRACE_MESSAGE",
+                "description": "BRANCH_TRACE_MESSAGE.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[8]": {
+                "RW": "RW",
+                "definition": "SMC",
+                "description": "SMC.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[9]": {
+                "RW": "RW",
+                "definition": "VIRTFLUSH",
+                "description": "VIRTFLUSH.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[11]": {
+                "RW": "RW",
+                "definition": "UCODE_MACROTRAP",
+                "description": "UCODE_MACROTRAP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[12]": {
+                "RW": "RW",
+                "definition": "FERR",
+                "description": "FERR.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[13]": {
+                "RW": "RW",
+                "definition": "CSLIM_CANONICAL_FAULT",
+                "description": "CSLIM_CANONICAL_FAULT.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[14]": {
+                "RW": "RW",
+                "definition": "EVENTBASESAMP",
+                "description": "EVENTBASESAMP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+           "[15]": {
+                "RW": "RW",
+                "definition": "CRD",
+                "description": "CRD.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+           "[17]": {
+                "RW": "RW",
+                "definition": "VIRT_INTR_PEND",
+                "description": "VIRT_INTR_PEND.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+           "[18]": {
+                "RW": "RW",
+                "definition": "NMIP",
+                "description": "NMIP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+
+        }
+    },
+        
+  "CRDCTRL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'h60f",
+        "local_address": "11'h60f",
+        "32bit/64bit": "32bit",
+        "ST/MT": "MT",
+        "fields": {
+            "[0]": {
+                "RW": "NA",
+                "definition": "CRD_DEFET",
+                "description": "不允许CRD.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[1]": {
+                "RW": "NA",
+                "definition": "CRD_PROG_DEFET",
+                "description": "不允许CRDP.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            },
+            "[5]": {
+                "RW": "NA",
+                "definition": "CRD_PANIC_DEFET",
+                "description": "Panic 关闭.",
+                "reset_value": "1'b0",
+                "ucode_reset_value": "1'b0"
+            }
+        }
+    },
+  "CRDPALSTALLFALL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hf7",
+        "local_address": "11'hf7",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[7:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRDP alstall fall 的值.",
+                "reset_value": "8'h10",
+                "ucode_reset_value": "8'h10"
+            }
+        }
+    },           
+  "CRDPCOUNT": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hf8",
+        "local_address": "11'hf8",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRDP计数器的值.",
+                "reset_value": "16'h100",
+                "ucode_reset_value": "16'h100"
+            }
+        }
+    }, 
+  "CRDISTARVE": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hf9",
+        "local_address": "11'hf9",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[7:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRD iside starve值.",
+                "reset_value": "8'h20",
+                "ucode_reset_value": "8'h20"
+            }
+        }
+    },               
+  "CRDIACTION": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hfa",
+        "local_address": "11'hfa",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRD iside值.",
+                "reset_value": "16'h100",
+                "ucode_reset_value": "16'h100"
+            }
+        }
+    },           
+  "CRDCOUNTING": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hfb",
+        "local_address": "11'hfb",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[7:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRD正在计数的值.",
+                "reset_value": "8'h10",
+                "ucode_reset_value": "8'h10"
+            }
+        }
+    },      
+  "CRDALSTALL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hfc",
+        "local_address": "11'hfc",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[7:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRD alstall的值.",
+                "reset_value": "8'h8",
+                "ucode_reset_value": "8'h8"
+            }
+        }
+    }, 
+  "CRDALSTALLFALL": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hfd",
+        "local_address": "11'hfd",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRD alstall fall的值.",
+                "reset_value": "16'h100",
+                "ucode_reset_value": "16'h100"
+            }
+        }
+    }, 
+  "CRDFLUSH": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hfe",
+        "local_address": "11'hfe",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[15:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRD刷新值.",
+                "reset_value": "16'h2000",
+                "ucode_reset_value": "16'h2000"
+            }
+        }
+    },      
+  "CRDPANIC": {
+        "SW_visible": "no",
+        "MSR_address": "NA",
+        "global_address": "11'hff",
+        "local_address": "11'hff",
+        "32bit/64bit": "32bit",
+        "ST/MT": "ST",
+        "fields": {
+            "[7:0]": {
+                "RW": "NA",
+                "definition": "VAL",
+                "description": "CRD panic值.",
+                "reset_value": "8'h8",
+                "ucode_reset_value": "8'h8"
+            }
+        }
+    } 
+
+}

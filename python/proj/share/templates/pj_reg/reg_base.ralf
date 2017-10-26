@@ -1,0 +1,93 @@
+//禁止修改，该文件由pj reg自动生成
+
+{% for reg, parameters in public_data.items() -%}
+{% if parameters["ST/MT"] == "MT" -%}
+{% for i in range(2) -%}
+register {{reg}}{{i}} {
+    {% for bits, items in parameters.fields.items() -%}
+    field {{items.definition}}_field (u_{{reg}}_{{items.definition}}{{i}}.kzjcq_pp) @{{items.st_bit}} {
+        bits {{items.bits}};
+        access rw;
+        reset {{items.reset_value}};
+        constraint {{items.definition_field}}_c {
+        };
+    }
+    {% endfor %}
+}
+{% endfor -%}
+{% else -%}
+register {{reg}} {
+    {% for bits, items in parameters.fields.items() -%}
+    field {{items.definition}}_field (u_{{reg}}_{{items.definition}}.kzjcq_pp) @{{items.st_bit}} {
+        bits {{items.bits}};
+        access rw;
+        reset {{items.reset_value}};
+        constraint {{items.definition}}_field_c {
+        };
+    }
+    {% endfor %}
+}
+{% endif -%}
+{% endfor %}
+
+{% for block, reg_dic in data.items() -%}
+{% if block != "blk_bytes" -%}
+//-----{{block}}-----
+{% for reg, parameters in reg_dic.items() -%}
+{% if reg != "blk_bytes" and reg not in public_data -%}
+{% if parameters["ST/MT"] == "MT" -%}
+{% for i in range(2) -%}
+register {{reg}}{{i}} {
+    {% for bits, items in parameters.fields.items() -%}
+    field {{items.definition}}_field (u_{{reg}}_{{items.definition}}{{i}}.kzjcq_pp) @{{items.st_bit}} {
+        bits {{items.bits}};
+        access rw;
+        reset {{items.reset_value}};
+        constraint {{items.definition_field}}_c {
+        };
+    }
+    {% endfor %}
+}
+
+{% endfor -%}
+{% else -%}
+register {{reg}} {
+    {% for bits, items in parameters.fields.items() -%}
+    field {{items.definition}}_field (u_{{reg}}_{{items.definition}}.kzjcq_pp) @{{items.st_bit}} {
+        bits {{items.bits}};
+        access rw;
+        reset {{items.reset_value}};
+        constraint {{items.definition}}_field_c {
+        };
+    }
+    {% endfor %}
+}
+{% endif -%}
+{% endif -%}
+{% endfor %}
+
+block {{block}} {
+    bytes {{reg_dic.blk_bytes}};
+    {% for reg, parameters in reg_dic.items() -%}
+    {% if reg != "blk_bytes" -%}
+    {% if parameters["ST/MT"] == "MT" -%}
+    register {{reg}}0 @{{parameters.local_address}};
+    register {{reg}}1 @{{parameters.mt_address}};
+    {% else -%}
+    register {{reg}} @{{parameters.local_address}};
+    {% endif -%}
+    {% endif -%}
+    {% endfor %}
+}
+{% endif -%}
+{% endfor %}
+
+system cpu1 {
+    bytes {{data.blk_bytes}};
+    {% for block, reg_dic in data.items() -%}
+    {% if block != "blk_bytes" -%}    
+    block {{block}} (`TB_TOP.u_{{block}}.u_{{block}});
+    {% endif -%}
+    {%- endfor %}    
+}
+

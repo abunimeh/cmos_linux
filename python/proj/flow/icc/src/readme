@@ -1,0 +1,27 @@
+1.new design-----need to change some setting in follows scripts:
+scripts/common_setting/icc_setup.tcl
+scripts/common_setting/common_setup.tcl
+scripts/custom_scripts/custom_voltage_area.tcl
+scripts/custom_scripts/custom_power_switch.tcl
+scripts/custom_scripts/custom_pns_constraint.tcl
+scripts/custom_scripts/custom_floorplan.tcl
+scripts/custom_scripts/custom_preroute.tcl
+
+parameter setting :{ICC_IN_FLOORPLAN_USER_FILE CUSTOM_LOAD_ASCII_UPF_SCRIPT_LIST CUSTOM_CREATE_VA_SCRIPT CUSTOM_POWER_SWITCH_SCRIPT CUSTOM_ICC_DP_PREROUTE_STD_CELL_SCRIPT CUSTOM_ICC_DP_PNS_CONSTRAINT_SCRIPT CUSTOM_ICC_DP_PNS_SCRIPT ICC_IN_VERILOG_NETLIST_FILE ICC_IN_SDC_FILE ICC_IN_UPF_FILE those parameter set in scripts/common_setting/icc_setup.tcl} {DESIGN_NAME TARGET_LIBRARY_FILES MW_REFERENCE_LIB_DIRS MIN_LIBRARY_FILES those parameter set in scripts/common_setting/common_setup.tcl} those parameters must be reset in a new design
+
+
+
+
+
+
+
+2.when create a new floorplan we need use scripts as follow:
+scripts/custom_scripts/custom_voltage_area.tcl
+scripts/custom_scripts/custom_power_switch.tcl
+scripts/custom_scripts/custom_pns_constraint.tcl
+scripts/custom_scripts/custom_floorplan.tcl
+scripts/custom_scripts/custom_preroute.tcl
+
+
+
+if floorplan is alread exist those scripts don't need at all!
