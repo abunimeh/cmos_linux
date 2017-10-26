@@ -128,6 +128,16 @@ def svn_query_table(type, repos, proj, ugflag=False):
                                     'level': ud_tup[1].level.name})
     return dir_lst
 
+def svn_query_dir_lst(request):
+    """API: query user dir lst information from database"""
+    return HttpResponse(json.dumps(
+        [dir_obj.name.split(":")[1] for user_obj in User.objects.filter(
+            name=request.GET.get("user", ""), proj__name=request.GET.get("proj", ""))
+         for dir_obj in Dir.objects.filter(
+                 proj__name=user_obj.proj.name, repos__name=user_obj.repos.name,
+                 level__name=user_obj.level.name, group__name=user_obj.group.name)]),
+                        content_type="application/json")
+
 #####query one team user info #####
 def svn_query_uteam_table(lst):
     auth_lst, noauth_lst = [], []

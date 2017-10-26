@@ -22,6 +22,15 @@ class DcLogParser(object):
         self.ced = ced
         self.dc_cfg_dic = dc_cfg_dic
         rpt_dir = pcom.rd_cfg(dc_cfg_dic, "set_args", "REPORTS_DIR", True)
+        self.pat_dic = {
+            "warn_pat1": re.compile(r"(.*?):\s*(.*?):(\d+?):(.*)\s*\((.*)\)"),
+            "warn_pat2": re.compile(r"(.*?):\s*(.*)\.(.*?):"),
+            "warn_pat3": re.compile(r"(.*?):\s*(.*?)\/(.*)."),
+            "we_pat": re.compile(r"(.*?):\s*(.*)\s*\((.*)\)"),
+            "line_pat": re.compile(r"\((.*)\)"),
+            "ct_pat": re.compile(r".*\(\s*([\.\d]*).*\)"),
+            "slk_pat": re.compile(r"(.*?)\s*\(.*\)\s*(.*)"),
+            "tpg_pat": re.compile(r"(.*?)\s*\'(.*)\'")}
         self.dc_dic = {
             "user": self.ced["USER_NAME"],
             "proj": self.ced["PROJ_NAME"],
@@ -34,45 +43,41 @@ class DcLogParser(object):
             "pw_rpt": {},
             "rpt_dir": rpt_dir,
             "log_file": os.path.join(os.path.dirname(rpt_dir), "dc.log")}
-    @classmethod
-    def proc_dc_warning(cls, dlf, line):
+    def proc_dc_warning(self, warn_dic, dlf, line):
         """to process dc warning type information"""
-        warn_dic = collections.defaultdict(list)
-        warn_pat1 = re.compile(r"(.*?):\s*(.*?):(\d+?):(.*)\s*\((.*)\)")
-        warn_pat2 = re.compile(r"(.*?):\s*(.*)\.(.*?):")
-        warn_pat3 = re.compile(r"(.*?):\s*(.*?)\/(.*).")
-        we_pat = re.compile(r"(.*?):\s*(.*)\s*\((.*)\)")
         mop = pcom.REOpter(line)
-        if mop.match(warn_pat1):
+        if mop.match(self.pat_dic["warn_pat1"]):
             (ew_file, ew_line, ew_info, ew_type) = (
                 mop.group(2), mop.group(3), mop.group(4), mop.group(5))
             warn_dic[ew_type].append([ew_file, ew_line, ew_info])
-        elif mop.match(warn_pat2):
+        elif mop.match(self.pat_dic["warn_pat2"]):
             ew_info, ew_type = mop.group(2), mop.group(3)
             if ew_type.strip() in ("Renaming file", ):
                 for _ in range(3):
                     ew_info += f",{dlf.readline().strip()}"
                 warn_dic[ew_type.strip()].append([None, None, ew_info])
-        elif mop.match(warn_pat3):
+        elif mop.match(self.pat_dic["warn_pat3"]):
             ew_type, ew_info = mop.group(2), mop.group(3)
             if ew_type.strip() in ("Duplicate library", ):
                 warn_dic[ew_type.strip()].append([None, None, ew_info])
-        elif mop.match(we_pat):
+        elif mop.match(self.pat_dic["we_pat"]):
             ew_info, ew_type = mop.group(2), mop.group(3)
             warn_dic[ew_type].append([None, None, ew_info])
         else:
-            mop = pcom.REOpter(f"{line} {dlf.readline().strip()}")
-            if mop.match(we_pat):
+            while not self.pat_dic["line_pat"].search(line):
+                new_line = dlf.readline().strip()
+                line += f" {new_line}"
+            mop = pcom.REOpter(line)
+            if mop.match(self.pat_dic["we_pat"]):
                 ew_info, ew_type = mop.group(2), mop.group(3)
                 warn_dic[ew_type].append([None, None, ew_info])
             else:
-                LOG.info("WARNING condition not matched in line %s", line)
+                LOG.warning("WARNING condition not matched in line %s", line)
         return warn_dic
     def parse_dc_log(self):
         """to parse main dc log"""
+        warn_dic = collections.defaultdict(list)
         error_dic = collections.defaultdict(list)
-        we_pat = re.compile(r"(.*?):\s*(.*)\s*\((.*)\)")
-        ct_pat = re.compile(r".*\(\s*([\.\d]*).*\)")
         with open(self.dc_dic["log_file"]) as dlf:
             for line in dlf:
                 line = line.strip()
@@ -81,17 +86,17 @@ class DcLogParser(object):
                     error_dic["tcrash"].append("stack overflow in tool crash")
                     break
                 elif line.startswith("CPU usage"):
-                    if mop.match(ct_pat):
+                    if mop.match(self.pat_dic["ct_pat"]):
                         self.dc_dic["cpu_usage"] = mop.group(1)
                 elif line.startswith("Warning:"):
-                    warn_dic = self.proc_dc_warning(dlf, line)
+                    warn_dic = self.proc_dc_warning(warn_dic, dlf, line)
                 elif line.startswith("Error:"):
-                    if mop.match(we_pat):
+                    if mop.match(self.pat_dic["we_pat"]):
                         ew_info, ew_type = mop.group(2), mop.group(3)
                         error_dic[ew_type].append(ew_info)
                     else:
                         mop = pcom.REOpter(f"{line} {dlf.readline().strip()}")
-                        if mop.match(we_pat):
+                        if mop.match(self.pat_dic["we_pat"]):
                             ew_info, ew_type = mop.group(2), mop.group(3)
                             error_dic[ew_type].append(ew_info)
                         else:
@@ -110,7 +115,6 @@ class DcLogParser(object):
             self.dc_dic["rpt_dir"], pcom.rd_cfg(self.dc_cfg_dic, "set_args", TIMING, True))
         if not os.path.isfile(dc_tm_file):
             return
-        slk_pat = re.compile(r"(.*?)\s*\(.*\)\s*(.*)")
         with open(dc_tm_file) as dtf:
             targ_flag = False
             for line in dtf:
@@ -125,7 +129,7 @@ class DcLogParser(object):
                         targ_dic[line_lst[0]] = line_lst[1].strip()
                 if line.startswith("slack "):
                     targ_flag = False
-                    if mop.match(slk_pat):
+                    if mop.match(self.pat_dic["slk_pat"]):
                         if float(mop.group(2)) < 0:
                             targ_dic[mop.group(1)] = float(mop.group(2))
                             self.dc_dic["tm_rpt"]["timing"].append(targ_dic)
@@ -138,7 +142,6 @@ class DcLogParser(object):
             self.dc_dic["rpt_dir"], pcom.rd_cfg(self.dc_cfg_dic, "set_args", QOR, True))
         if not os.path.isfile(dc_qor_file):
             return
-        tpg_pat = re.compile(r"(.*?)\s*\'(.*)\'")
         with open(dc_qor_file) as dqf:
             lines_str = dqf.read()
             for blk_str in lines_str.split("\n\n"):
@@ -153,7 +156,8 @@ class DcLogParser(object):
                         items_lst.append({str_lst[0].strip():float(str_lst[1])})
                     else:
                         mop = pcom.REOpter(l_str.strip())
-                        items_lst.append(mop.group(2) if mop.match(tpg_pat) else l_str.strip())
+                        items_lst.append(
+                            mop.group(2) if mop.match(self.pat_dic["tpg_pat"]) else l_str.strip())
                 if items_lst:
                     for item_dic in items_lst[1:]:
                         for key, value in item_dic.items():

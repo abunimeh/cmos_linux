@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^svn/items_add_or_change/(?P<pk>\w+)/(?P<items>\w+)/$', svn_views.svn_items_add_update, name = 'svn_items_add_update' ),
     url(r'^db/query_insert_dir/$', svn_views.query_insert_dir, name='query_insert_dir'),
     url(r'^db/query_insert_user/$', svn_views.query_insert_user, name='query_insert_user'), 
+    url(r'^svn/query_dir_lst/$', svn_views.svn_query_dir_lst, name='query_dir_lst'), 
 ]

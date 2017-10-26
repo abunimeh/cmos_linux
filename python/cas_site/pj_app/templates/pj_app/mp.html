@@ -8,19 +8,6 @@
 
 {% block flowjs %}
 <script type="text/javascript">
-Array.prototype.unique = function () {
-    var r= new Array();
-    label: for(var i=0, n=this.length; i<n; i++ ) {
-        for(var x=0, y=r.length; x<y; x++) {
-            if(r[x] == this[i]) {
-                continue label;
-            }
-        }
-        r[r.length] = this[i];
-    }
-    return r;
-}
-
 //row extra table
 function format (row_dt) {
     var html = "";
@@ -44,6 +31,14 @@ function gen_new_window(pk_lst, url_str){
     window.open(new_href);
 }
 
+function attr_exists(data, attr) {
+    var field = 'NA';
+    if (data && data.hasOwnProperty(attr)) {
+        field = data[attr];
+    }
+    return field ;
+}
+
 
 function gen_tab(udata) {
     $("body").showLoading();
@@ -52,7 +47,7 @@ function gen_tab(udata) {
         data: udata,
         success: function(data){
             $('#show_all').empty();
-            var tab_str = '<div id="show_tab1" style="margin-top:13px;"><table id="tab1" class="display"><thead><tr><th></th><th>Case Name</th><th>Module</th><th>Package nums</th><th>Seed</th><th>Status</th><th>Run Time</th><th></th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tfoot><tbody></tbody></table></div>';
+            var tab_str = '<div id="show_tab1" style="margin-top:13px;"><table id="tab1" class="display"><thead><tr><th></th><th>Case Name</th><th>Module</th><th>Simv</th><th>Package nums</th><th>Seed</th><th>Status</th><th>Run Time</th><th></th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tfoot><tbody></tbody></table></div>';
             $('#show_all').append(tab_str);
             var tab_attrs = {
                 "dom": '<"top" B>lfrtip<"clear">',
@@ -71,7 +66,7 @@ function gen_tab(udata) {
                   [5, 50, 100, "All"]],
                 "bPaginate": true,
                 "searching": true,
-                "order":[[6,'desc']],
+                "order":[[7,'desc']],
                 "scrollY": false,
                 "data": data,
                 "columns": [
@@ -82,58 +77,46 @@ function gen_tab(udata) {
                     },                
                     { "data": "pj_props" , //Case Name
                         "render": function (data, type, full, meta) {
-                            if (!data) {
-                                data = 'NA';
-                                return data;
-                            }
-                            return data.c_name ;
+                            return attr_exists(data, 'c_name');
                         },    
                     },
-                    { "data": "pj_props" , //Case Name
+                    { "data": "pj_props" , //module Name
                         "render": function (data, type, full, meta) {
-                            if (!data) {
-                                data = 'NA';
-                                return data;
-                            }
-                            return data.m_name;
+                            return attr_exists(data, 'm_name');
                         },    
                     },
-                    { "data": "pkg_nums", //Seed
+                    { "data": "pj_props" , //simv Name
                         "render": function (data, type, full, meta) {
-                            if (!data) {
-                                data = 0;
-                                return data;
-                            }
-                            return data;
+                            return attr_exists(data, 'v_name');
+                        },    
+                    },                    
+                    { "data": "misc", //pkg nums
+                        "render": function (data, type, full, meta) {
+                            return attr_exists(data, 'pkg_num');
                         },    
                     },
                     { "data": "pj_props", //Seed
                         "render": function (data, type, full, meta) {
-                            if (!data) {
-                                data = 'NA';
-                                return data;
-                            }
-                            return data.seed ;
+                            return attr_exists(data, 'seed');
                         },    
                     },                    
-                    { "data": "status", //Seed
+                    { "data": "misc", //status
                         "createdCell": function (tr, cellData, rowData, row, col) {
-                            var bk_color;
-                            if (cellData == 'Fault') {
-                                bk_color = 'red';
-                            } else if (cellData == 'Done') {
-                                bk_color = "green";
-                            } else if (cellData == 'Running') {
-                                bk_color = "yellow";
-                            }                                                 
+                            var bk_color = 'white';
+                            if(cellData && cellData.hasOwnProperty('status')) {
+                                if (cellData.status == 'Fault') {
+                                    bk_color = 'red';
+                                } else if (cellData.status == 'Done') {
+                                    bk_color = 'green';
+                                } else if (cellData.status == 'Running') {
+                                    bk_color = 'yellow';
+                                }                                                                                 
+                            }
                             $(tr).css('background', bk_color);
                         },
                         "render": function (data, type, full, meta) {
-                            if(!data) {
-                                data = "NA";
-                            } 
-                            return data;
-                        }                        
+                            return attr_exists(data, 'status');
+                        }
                     },                    
                     { "data": "run_time", //Run Time
                         "render": function (data, type, full, meta) {

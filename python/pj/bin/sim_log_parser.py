@@ -39,7 +39,8 @@ class LogParser(object):
             "ta": os.path.join(ced["OUTPUT_SIMV"], cvsr_tup[1], "tb_ana.log"),
             "e": os.path.join(ced["OUTPUT_SIMV"], cvsr_tup[1], "elab.log"),
             "s": os.path.join(
-                ced["MODULE_OUTPUT"], cvsr_tup[0], cvsr_tup[2], f"{cvsr_tup[2]}.log")}
+                ced["MODULE_OUTPUT"], cvsr_tup[0], f"{cvsr_tup[1]}__{cvsr_tup[2]}",
+                f"{cvsr_tup[2]}.log")}
         module_name = f"{ced['MODULE']}___{ced['PROJ_NAME']}"
         simv_name = f"{cvsr_tup[1]}___{module_name}"
         case_name = f"{cvsr_tup[0]}___{simv_name}"
@@ -83,7 +84,7 @@ class LogParser(object):
         if not os.path.isfile(self.log_dic["da"]):
             return
         dut_ana_error_lst = []
-        with open(self.log_dic["da"]) as daf:
+        with open(self.log_dic["da"], errors="replace") as daf:
             for line in daf:
                 line = line.strip()
                 mop = pcom.REOpter(line)
@@ -103,7 +104,7 @@ class LogParser(object):
         if not os.path.isfile(self.log_dic["ta"]):
             return
         tb_ana_error_lst = []
-        with open(self.log_dic["ta"]) as taf:
+        with open(self.log_dic["ta"], errors="replace") as taf:
             for line in taf:
                 line = line.strip()
                 mop = pcom.REOpter(line)
@@ -123,7 +124,7 @@ class LogParser(object):
         if not os.path.isfile(self.log_dic["e"]):
             return
         elab_error_lst = []
-        with open(self.log_dic["e"]) as elf:
+        with open(self.log_dic["e"], errors="replace") as elf:
             fin_flg = False
             for line in elf:
                 line = line.strip()
@@ -149,7 +150,7 @@ class LogParser(object):
         if not os.path.isfile(self.log_dic["s"]):
             return
         simu_error_lst = []
-        with open(self.log_dic["s"]) as slf:
+        with open(self.log_dic["s"], errors="replace") as slf:
             fin_flg = False
             uvm_flg = False
             pass_flg = False
@@ -192,7 +193,11 @@ class LogParser(object):
         """top execution function"""
         simv_log_json = os.path.join(self.ced["OUTPUT_SIMV"], self.cvsr_tup[1], "simv_log.json")
         case_log_json = os.path.join(
-            self.ced["MODULE_OUTPUT"], self.cvsr_tup[0], self.cvsr_tup[2], "case_log.json")
+            self.ced["MODULE_OUTPUT"], self.cvsr_tup[0],
+            f"{self.cvsr_tup[1]}__{self.cvsr_tup[2]}", "case_log.json")
+        case_info_json = os.path.join(
+            self.ced["MODULE_OUTPUT"], self.cvsr_tup[0],
+            f"{self.cvsr_tup[1]}__{self.cvsr_tup[2]}", "case_info.json")
         dalog_mt = os.path.getmtime(self.log_dic["da"])
         talog_mt = os.path.getmtime(self.log_dic["ta"])
         elog_mt = os.path.getmtime(self.log_dic["e"])
@@ -217,6 +222,8 @@ class LogParser(object):
         fin_dic = {}
         fin_dic.update(self.sc_dic["s"])
         fin_dic.update(self.sc_dic["c"])
+        with open(case_info_json) as cjf:
+            fin_dic["pj_props"] = json.load(cjf)
         query_url = "http://172.51.13.205:8000/pj_app/regr/db_query/query_insert_case/"
         requests.post(query_url, json=fin_dic)
         return fin_dic

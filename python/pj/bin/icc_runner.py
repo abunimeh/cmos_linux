@@ -82,10 +82,10 @@ class ICCProc(object):
         main_scripts_dir = f"{self.dir_f_dic['icct_dir']}{os.sep}scripts{os.sep}main_icc_scripts"
         for stage in cur_stage_lst:
             if stage not in self.stage_lst:
-                raise Exception(f"stage {stage} you typed is not existed")
+                raise Exception(f"stage {stage} you typed is NA")
             tcl_path = f"{main_scripts_dir}{os.sep}{self.icc_cfg_dic['icc_stage'][stage]}"
             if not os.path.isfile(tcl_path):
-                raise Exception(f"file {tcl_path} is not existed")
+                raise Exception(f"file {tcl_path} is NA")
             icc_stage = os.path.splitext(self.icc_cfg_dic['icc_stage'][stage])[0]
             log_file = f"{self.dir_f_dic['logs_dir']}{os.sep}{icc_stage}.log"
             run_str = (

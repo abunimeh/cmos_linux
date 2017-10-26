@@ -44,7 +44,10 @@ def gen_init_parser(subparsers):
         "init",
         help="sub cmd about generating initial svn directories")
     init_parser.add_argument(
-        "-proj", dest="proj_name", default=False,
+        "-list", dest="proj_list", default=False, action="store_true",
+        help="toggle to list all currently available proj names")
+    init_parser.add_argument(
+        "-proj", dest="proj_name", default="",
         help="input the proj name which will be check out from repository")
     init_parser.add_argument(
         "-dir", dest="sub_dir", default=[], nargs="+",
@@ -64,6 +67,9 @@ def gen_run_parser(subparsers):
         "-m", dest="run_module", default="",
         help="input run module")
     run_parser.add_argument(
+        "-check_rtl", dest="run_check_rtl", default=False, action="store_true",
+        help="toggle to check all rtl analysis processing")
+    run_parser.add_argument(
         "-comp", dest="run_comp", default=False, action="store_true",
         help="toggle to elaborate all case simvs")
     run_parser.add_argument(
@@ -75,6 +81,9 @@ def gen_run_parser(subparsers):
     run_parser.add_argument(
         "-list", dest="run_list", default=False, action="store_true",
         help="toggle to list all cases in module")
+    run_parser.add_argument(
+        "-simv", dest="run_simv", default="",
+        help="input simv to run cases in module")
     run_parser.add_argument(
         "-all", dest="run_all", default=False, action="store_true",
         help="toggle to run all cases of module")
@@ -138,15 +147,6 @@ def gen_run_parser(subparsers):
     run_parser.add_argument(
         "-fm", dest="run_failed_mode", default=False, action="store_true",
         help="toggle to run in failed mode")
-    run_parser.add_argument(
-        "-x86_ins", dest="run_x86_ins", default=False, action="store_true",
-        help="toggle to perform x86 instruction generation before")
-    run_parser.add_argument(
-        "-x86_ins_num", dest="run_x86_ins_num", type=int, default=None,
-        help="input x86 instruction generation number")
-    run_parser.add_argument(
-        "-x86_ins_groups", dest="run_x86_ins_groups", default=None, nargs="+",
-        help="input x86 instruction generation groups")
     run_parser.set_defaults(func=main_run)
 
 def main_run(args):
@@ -202,11 +202,11 @@ def gen_reg_parser(subparsers):
         "reg",
         help="sub cmd about generating auto reg")
     reg_parser.add_argument(
-        "-m", dest="reg_module", default="",
-        help="input reg module")
-    reg_parser.add_argument(
         "-gen", dest="reg_gen", default=False, action="store_true",
         help="toggle to generate auto reg files")
+    reg_parser.add_argument(
+        "-m", dest="reg_module_lst", default=[], nargs="+",
+        help="input reg cfg modules to generate particular reg files")
     reg_parser.set_defaults(func=main_reg)
 
 def main_reg(args):
@@ -298,17 +298,14 @@ def gen_leda_parser(subparsers):
         "-t", dest="leda_top", default="",
         help="input base rtl top module")
     leda_parser.add_argument(
-        "-bbf", dest="leda_bb_flist_lst", default=[], nargs="+",
-        help="input black box flist files")
-    leda_parser.add_argument(
-        "-c", dest="leda_cfg_file", default="",
-        help="input leda cfg file")
-    leda_parser.add_argument(
-        "-w", dest="leda_waiver_flist", default=[], nargs="+",
-        help="input leda_waiver files")
+        "-s", dest="leda_src", default="",
+        help="input leda source files directory")
     leda_gg_group.add_argument(
         "-gui", dest="leda_gui", default=False, action="store_true",
         help="toggle to kick off leda gui")
+    leda_parser.add_argument(
+        "-d", dest="leda_dir", default="",
+        help="input existed leda timestamp directory")
     leda_parser.set_defaults(func=main_leda)
 
 def main_leda(args):
@@ -358,6 +355,9 @@ def gen_dc_parser(subparsers):
     dc_parser.add_argument(
         "-fm", dest="dc_formality", default=False, action="store_true",
         help="toggle to run formality automatically")
+    dc_parser.add_argument(
+        "-cp_rtl", dest="dc_cp_rtl", default=False, action="store_true",
+        help="toggle to copy all rtl filelist file into timestamp dir")
     dc_parser.set_defaults(func=main_dc)
 
 def main_dc(args):
@@ -370,8 +370,11 @@ def gen_tm_parser(subparsers):
         "tm",
         help="sub cmd about parsing the timing report")
     tm_parser.add_argument(
-        "-f", dest="tm_report_file", default=False,
+        "-f", dest="tm_report_file", default="",
         help="input timing report file")
+    tm_parser.add_argument(
+        "-g", dest="tm_path_group", default=[], nargs="+",
+        help="input path_group name needed to check")
     tm_parser.add_argument(
         "-l", dest="tm_hier_level", type=int, default=1,
         help="input the statistics hierarchy level")
@@ -387,10 +390,10 @@ def gen_fm_parser(subparsers):
         "fm",
         help="sub cmd about run formality")
     fm_parser.add_argument(
-        "-ref", dest="fm_ref_file", default=False,
+        "-ref", dest="fm_ref_file", default="",
         help="input formality ref file")
     fm_parser.add_argument(
-        "-imp", dest="fm_imp_file", default=False,
+        "-imp", dest="fm_imp_file", default="",
         help="input formality imp file")
     fm_parser.add_argument(
         "-s", dest="fm_src", default="",

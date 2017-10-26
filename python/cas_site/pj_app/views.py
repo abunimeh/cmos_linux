@@ -9,6 +9,47 @@ from django.conf import settings
 from nested_dict import nested_dict
 from .models import User, RegrSim, DcRun, FmRun, MpRun
 
+def do_line_profiler(view=None, extra_view=None):
+    """profiler test"""
+    import line_profiler
+    def wrapper(view):
+        """warpper"""
+        def wrapped(*args, **kwargs):
+            """wrapped"""
+            prof = line_profiler.LineProfiler()
+            prof.add_function(view)
+            if extra_view:
+                _ = [prof.add_function(v) for v in extra_view]
+            with prof:
+                resp = view(*args, **kwargs)
+            prof.print_stats()
+            return resp
+        return wrapped
+    if view:
+        return wrapper(view)
+    return wrapper
+
+def update_userinfo(pj_type, user_obj, proj, module):
+    """update user aisc information"""
+    if pj_type in user_obj.asic_info:
+        type_lst = user_obj.asic_info[pj_type]
+        for proj_md in type_lst:
+            if proj == proj_md["n"]:
+                if {"n": module} not in proj_md["s"]:
+                    for j, mod_dic in enumerate(proj_md["s"]):
+                        if mod_dic["n"] > module:
+                            proj_md["s"].insert(j, {"n": module})
+                            break
+                break
+        else:
+            for i, proj_dic in enumerate(type_lst):
+                if proj_dic["n"] > proj:
+                    type_lst.insert(i, {"n": proj, "s": [{"n": module}]})
+                    break
+    else:
+        user_obj.asic_info[pj_type] = [{"n": proj, "s": [{"n": module}]}]
+    user_obj.save()
+
 # Create your views here.
 def gen_date_range(date_str, diff=1):
     """gen datatime range"""
@@ -71,32 +112,18 @@ def ldap3_query():
             team_dic[gp_entry.cn.value] = model_dic[gp_entry.gidNumber.value]
     return team_dic
 
-def sql_query(sim):
+def sql_query(pj_type):
     """get users from postgresql"""
     user_dic = collections.OrderedDict()
     for user_obj in User.objects.all():
-        proj_lst = []
-        for proj_obj in sim.objects.filter(user__name=user_obj.name).distinct('proj'):
-            module_lst = []
-            for module_obj in sim.objects.filter(
-                    user__name=user_obj.name, proj__name=proj_obj.proj.name).distinct('module'):
-                module_lst.append({"n":module_obj.m_name})
-            proj_lst.append({"n":proj_obj.p_name, "s":module_lst})
-        user_dic[user_obj.name] = proj_lst
+        if pj_type in user_obj.asic_info:
+            user_dic[user_obj.name] = user_obj.asic_info[pj_type]
     return user_dic
 
 def query_select(request, pj_type):
     """combine sql users and ldap3 users and teams to select plugins"""
     query_lst = []
-    if pj_type == 'regr':
-        sim = RegrSim
-    elif pj_type == 'dc':
-        sim = DcRun
-    elif pj_type == 'fm':
-        sim = FmRun
-    elif pj_type == 'mp':
-        sim = MpRun
-    sql_dic = sql_query(sim)
+    sql_dic = sql_query(pj_type)
     for tm_key, tm_value in ldap3_query().items():
         user_lst = []
         for user_nm in tm_value:
@@ -116,7 +143,7 @@ def pj_flow_info(pj_flow_qs, order_type, index):
     number = 0
     if pj_flow_qs.objects.exists():
         for pj_flow_obj in pj_flow_qs.objects.order_by('-'+order_type)[0:index]:
-            time_str = dt.datetime.strftime(getattr(pj_flow_obj, order_type), '%Y_%m_%d_%H_%M_%S')
+            time_str = zone_time(getattr(pj_flow_obj, order_type))
             pj_flow_dic['user'][f"user{number}"] = pj_flow_obj.user.name
             pj_flow_dic['run_time'][f"time{number}"] = time_str
             number += 1

@@ -6,6 +6,7 @@ Description: TmParser class for parsing dc timing related logs
 
 import os
 import re
+import fnmatch
 import collections
 import texttable
 import pcom
@@ -31,29 +32,32 @@ class TmParser(object):
         else:
             sum_dic[k_tuple][0] = sum_dic[k_tuple][0]+1
         if len(sum_dic[k_tuple]) == 1:
-            sum_dic[k_tuple].append([0, 0, 0, 0, 0])
-        if slack_value > -0.1:
+            sum_dic[k_tuple].append([0, 0, 0, 0, 0, 0])
+        if slack_value > -0.05:
             sum_dic[k_tuple][1][0] = sum_dic[k_tuple][1][0]+1
-        elif slack_value > -0.3:
+        if slack_value > -0.1:
             sum_dic[k_tuple][1][1] = sum_dic[k_tuple][1][1]+1
-        elif slack_value > -0.5:
+        elif slack_value > -0.3:
             sum_dic[k_tuple][1][2] = sum_dic[k_tuple][1][2]+1
-        elif slack_value > -1.0:
+        elif slack_value > -0.5:
             sum_dic[k_tuple][1][3] = sum_dic[k_tuple][1][3]+1
-        elif slack_value <= -1.0:
+        elif slack_value > -1.0:
             sum_dic[k_tuple][1][4] = sum_dic[k_tuple][1][4]+1
+        elif slack_value <= -1.0:
+            sum_dic[k_tuple][1][5] = sum_dic[k_tuple][1][5]+1
     @classmethod
     def gen_table(cls, sum_dic):
         """to generate ASCII table by using texttable module"""
         table = texttable.Texttable()
-        rows = [["group", "Startpoint", "Endpoint", "num", "-100", "-300", "-500", "-1000", "~"]]
+        rows = [
+            ["group", "Startpoint", "Endpoint", "num", "-50", "-100", "-300", "-500", "-1000", "~"]]
         for dic_k, dic_v in sum_dic.items():
             rows.append(
                 [dic_k[0], dic_k[1], dic_k[2], dic_v[0], dic_v[1][0], dic_v[1][1],
-                 dic_v[1][2], dic_v[1][3], dic_v[1][4]])
-        align_lst = ["c", "l", "l", "c", "c", "c", "c", "c", "c"]
-        valign_lst = ["m", "m", "m", "m", "m", "m", "m", "m", "m"]
-        cols_width = [7, 30, 30, 3, 5, 5, 5, 5, 5]
+                 dic_v[1][2], dic_v[1][3], dic_v[1][4], dic_v[1][5]])
+        align_lst = ["c", "l", "l", "c", "c", "c", "c", "c", "c", "c"]
+        valign_lst = ["m", "m", "m", "m", "m", "m", "m", "m", "m", "m"]
+        cols_width = [7, 20, 20, 8, 8, 8, 8, 8, 8, 8]
         table.set_cols_align(align_lst)
         table.set_cols_valign(valign_lst)
         table.set_cols_width(cols_width)
@@ -83,6 +87,9 @@ class TmParser(object):
                         if float(mop.group(2)) >= 0:
                             continue
                         bpg = blk_dic["Path Group"]
+                        if self.tm_dic["group"] and (
+                                not any(fnmatch.fnmatch(bpg, cc) for cc in self.tm_dic["group"])):
+                            continue
                         if "in2" in bpg or "2out" in bpg:
                             nl_dic = self.sum_dic["nl_dic"]
                             nl_dic[bpg] = nl_dic[bpg]+1 if bpg in nl_dic else 1

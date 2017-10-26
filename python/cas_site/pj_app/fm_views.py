@@ -7,7 +7,7 @@ from django.views.generic import ListView
 from django.http import JsonResponse
 from django.conf import settings
 from .models import User, Proj, Module, FmRun
-from .views import date_range, zone_time
+from .views import date_range, zone_time, update_userinfo
 
 def gen_fm_dic(fm_qs):
     """table row data list"""
@@ -31,8 +31,9 @@ class FmUserList(ListView):
     def __init__(self):
         self.user_list = []
     def get_queryset(self):
-        for user_obj in FmRun.objects.distinct('user'):
-            self.user_list.append(user_obj.user.name)
+        for user_obj in User.objects.all():
+            if user_obj.asic_info.get("fm"):
+                self.user_list.append(user_obj.name)
     def get_context_data(self, **kwargs):
         context = super(FmUserList, self).get_context_data(**kwargs)
         context['user_list'] = self.user_list
@@ -55,7 +56,7 @@ def fm_get_loginfo(request):
     if model == "all_mds":
         model_lst = gen_fm_dic(fm_obj_qs)
     elif model == 'sg_md':
-        model_lst = gen_fm_dic(fm_obj_qs.filter(m_name=module))
+        model_lst = gen_fm_dic(fm_obj_qs.filter(module__name=f"{module}___{proj}"))
     return JsonResponse(model_lst, safe=False)
 
 ##post data to database
@@ -65,8 +66,10 @@ def fm_query_insert_case(request):
     if request.method == 'POST':
         fm_dic = json.loads(request.body.decode())
         user_obj, _ = User.objects.update_or_create(name=fm_dic['user'])
+        update_userinfo('fm', user_obj, fm_dic['proj'], fm_dic['design_name'])
         proj_obj, _ = Proj.objects.update_or_create(name=fm_dic['proj'])
-        module_obj, _ = Module.objects.update_or_create(name=fm_dic['design_name'])
+        module_obj, _ = Module.objects.update_or_create(
+            name=f"{fm_dic['design_name']}___{fm_dic['proj']}")
         rtime = pytz.timezone(settings.TIME_ZONE).localize(
             dt.datetime.fromtimestamp(fm_dic['run_time']))
         FmRun.objects.create(

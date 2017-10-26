@@ -14,11 +14,14 @@
         {% for ct, ct_items in plot_data.items %}
             <div class="lines">
                 <div class="ln_prt colm_border" style="line-height: 23px;">
-                    <h1 style="font-size: 20px;">{{ct}} :</h1>
+                    <div style="background:rgba(215, 222, 236, 0.53);">
+                        <h1 style="font-size: 20px; float: left; margin-right: 20px; ">{{ct}} :</h1>
+                        <button id="rlt_btn">Real Time data</button>
+                        </div>
                     <ul style="margin: 7px 58px; font-size:18px; ">
-                        <li>Sum of group count: {{ct_items.strk_cn}}</li>
-                        <li>Clock point nums of each group: <span id="intv_num">{{ct_items.intv_nums}}</span></li>
-                        <li>Clock point interval: <span id="clk_intv">{{ct_items.clk_intv}}</span></li>
+                        <li>Group No.: <span id="gp_cn">{{ct_items.strk_cn}}</span></li>
+                        <li>X No./Group: <span id="intv_num">{{ct_items.intv_nums}}</span></li>
+                        <li>X Interval: <span id="clk_intv">{{ct_items.clk_intv}}</span></li>
                     </ul>
                 </div>
                 <div class="ln_form colm_border" style="font-size: 16px;"> 
@@ -36,7 +39,7 @@
         <div class="ln_container colm_border" style="margin-top: 20px;">
             <div class= "fg_left colm_border" style="margin-bottom: 5px; line-height: 28px; height: 100px;">
                 <div id="fg_selt">
-                    <label style="font-size: 18px;">X_Aaxis: </label>
+                    <label style="font-size: 18px;">X_Axis: </label>
                     <select id="x_selt" style="width: 130px;" >
                         {% for key, value in plot_data.items %}
                             {% for x_nm , x_val in value.x_axis.items %}
@@ -51,7 +54,7 @@
                 </div>
                 <div id="fg_checkbx">
                     <div style="float: left;">
-                        <label style="font-size: 18px;">Y_Aaxis: </label>                
+                        <label style="font-size: 18px;">Y_Axis: </label>                
                     </div>
                     <div id="y_lst" style="margin-left: 75px;">
                         {% for key, value in plot_data.items %}
@@ -67,9 +70,19 @@
             </div>
             <div class= "fg_right">
                 <div id="ln_loading" style="text-align: center; font-size: 21px"> Loading lines, please wait...</div>    
-                <div id="#container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>    
+                <div id="#container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>   
             </div>
         </div>
+        <div id="dialog">
+            <fieldset>
+                <legend style="font-size: 20px; line-height: 40px;">Parameters Setting:</legend>
+                <label for="tintvl" style="margin-left: 45px;">Time Interval:</label>
+                <input type="text" name="tintvl" style="width: 30px;"><span> /s</span>
+                <label for="pkg_num" style="margin-left: 10px;">Package Num:</label>
+                <input type="text" name="pkg_num" readonly="readonly" style="width: 60px;">
+            </fieldset>
+            <div id="container_rt" style="min-width: 768px; height: 500px; margin: 0 auto; position: relative;"> </div>
+        </div>        
     {% else %}
         <p style="font-size: 30px; text-align: center;">This case has no data!</p>
     {% endif %}
@@ -79,11 +92,46 @@
 
 {% block js %}
 <script type="text/javascript">
-    String.prototype.format = function(){
-      var args = arguments;
-      return this.replace(/\{(\d+)\}/g, function(s,i) {
-          return args[i];
-      });
+    var chart;
+    var shift_num = 20; 
+    var gp_cn = Number();
+    var dialog_win = true; //global
+
+    /* Request data from the server, add it to the graph 
+     and set a timeout to request again */
+    function requestData() {
+        var id_nums = parseInt($("input[name='id_nums']")[0].value);
+        var tintvl = parseInt($("input[name=tintvl]").val());
+        if(isNaN(tintvl) && tintvl==0) {
+            tintvl = 2;
+        }
+        $.ajax({
+            url: "{% url 'pj_app:mp_rt_ajax_lns' %}",
+            data: {"id_nums": id_nums, "gp_cn": gp_cn},
+            success: function(points) {
+                //points data matching line plot label
+                if(!$.isEmptyObject(points)) {                        
+                    $.each(chart.series, function(index, series_obj){
+                        var data_len = series_obj.data.length;
+                        var shift = data_len >= shift_num; //shift if series is longer than 20
+                        var point = points[series_obj.name];
+                        if(!series_obj.visible) {
+                            series_obj.removePoint(0);
+                        } 
+                        chart.series[index].addPoint(point, false, shift); //add point
+                    });
+                    $("input[name=pkg_num]").val(gp_cn);
+                    gp_cn += 1;
+                    chart.redraw();
+                }
+                // call it again after one second
+                if(dialog_win) setTimeout(requestData, tintvl*1000);
+            },
+            error: function() {
+                alert("Real time data loading error, please refresh it!");                
+            },
+            cache: false,
+        });
     }
 
     function gen_line_plot(data, x_text) {
@@ -139,7 +187,15 @@
                 shared: true,
                 useHTML: true,
                 headerFormat: '<strong>{0}: {point.x}</strong><table>'.format(x_text),
-                pointFormat: '<tr><td style="color: {series.color}">{series.name}:</td>' + '<td>{point.y:.f}</td></tr>',
+                pointFormatter: function(){
+                    var y;
+                    if(this.y%1) {
+                        y = parseFloat(this.y.toFixed(2));
+                    } else {
+                        y = this.y;
+                    }
+                    return "<tr><td style='color: {0}'>{1}:</td><td>{2}</td></tr>".format(this.series.color, this.series.name, y);
+                },
                 foorFormat: '</table>',
                 crosshairs: [false, true],
             },
@@ -178,7 +234,7 @@
         return {"x_axis": x_axis, "y_axis": y_axis}
     }
 
-    function gen_lst_interal(st, ed, max_gp) {
+    function gen_lst_interal(st, ed, intv_nums, max_gp) {
         var interval;
         if(st) {
             if(ed) {
@@ -193,7 +249,7 @@
                 interval = 0;
             }
         }
-        interval = interval ? interval : 1;
+        interval = Math.ceil(interval*intv_nums/1000);
         return interval
     }
 
@@ -309,8 +365,7 @@
                 var x_val = $("#x_selt option:selected").val();
                 var st_pt = parseInt($("input[name='st_pt']")[0].value);
                 var ed_pt = parseInt($("input[name='ed_pt']")[0].value);
-                console.log(ajax_data);
-                var interval = gen_lst_interal(st_pt, ed_pt, ajax_data.strk_cn);
+                var interval = gen_lst_interal(st_pt, ed_pt, ajax_data.intv_nums, ajax_data.strk_cn);
                 var intv_nums = parseInt(Math.ceil(ajax_data.intv_nums/interval));
                 var strk_cn = "{0} * ".format(interval)+ajax_data.clk_intv;
                 ajax_data = gen_interval_data(ajax_data, interval);
@@ -328,29 +383,30 @@
                 alert("loading data error, please refresh again!");
             }
         });
-    }
+        }
 
-    $(function () {
-        var plot_data = {{plot_data|to_js}};
-        //initiail line page
-        var max_gp, xy_data, xy_init;
-        $("input:checkbox").each(function(){
-            $(this).prop("checked", false);
-        });//remove all checkbox select
-        var x_val = $("#x_selt option:selected").val();
-        $.each(plot_data, function(case_tm, items){
-            xy_data = items;
-            max_gp = parseInt(items.strk_cn);
-            xy_init = gen_coord(xy_data, x_val);
-        });
-        gen_line_plot(xy_init, x_val);
-        $("#ln_loading").hide();
+        $(function () {
+            var plot_data = {{plot_data|to_js}};
 
-        //x_axis select choose
-        select_choose_plot(xy_data);
+            //initiail line page
+            var max_gp, xy_data, xy_init;
+            $("input:checkbox").each(function(){
+                $(this).prop("checked", false);
+            });//remove all checkbox select
+            var x_val = $("#x_selt option:selected").val();
+            $.each(plot_data, function(case_tm, items){
+                xy_data = items;
+                max_gp = parseInt(items.strk_cn);
+                xy_init = gen_coord(xy_data, x_val);
+            });
+            gen_line_plot(xy_init, x_val);
+            $("#ln_loading").hide();
 
-         //checkbox choose to plot
-        chbx_choose_plot(xy_data, x_val);
+            //x_axis select choose
+            select_choose_plot(xy_data);
+
+             //checkbox choose to plot
+            chbx_choose_plot(xy_data, x_val);
 
         //query different group interval
         $('#ln_form').on('submit', function(event) {
@@ -388,6 +444,102 @@
                 }
             }
             event.preventDefault();            
+        });
+
+
+        // real time monitor display
+        $("#dialog").dialog({
+            autoOpen:false,
+            width:1200,
+            height:650,
+            top: 300,
+            open: function(events) {
+                if($("#dialog").offset().top < 120) {
+                    $("#header").css({"z-index":2});
+                }                
+            },
+            dragStop: function(event, ui) {
+                if($(this).offset().top < 120) {
+                    $("#header").css({"z-index":2});
+                }
+            },
+            close: function(events) {
+                dialog_win = false;
+                chart = null;
+                $("#header").css({"z-index":109});                
+            }
+        });
+
+        $("#rlt_btn").click(function(){
+            $("#dialog").dialog("open");
+            
+            //initial real time data
+            var rt_items = new Array();
+            $("input[name=tintvl]").val(2);
+            dialog_win = true;
+            $.each(plot_data, function(case_tm, obj){
+                $.each(obj.y_axis, function(index, obj1){
+                    rt_items.push({'name': obj1.name});
+                });
+            });
+            var id_nums = parseInt($("input[name='id_nums']")[0].value);
+            $.ajax({
+                url: "{% url 'pj_app:mp_rt_ajax_lns' %}",
+                data: {"id_nums": id_nums},
+                async: false, 
+                success: function(data){
+                    gp_cn = data.pkg_st;
+                },
+                error: function() {
+                    alert("request recent update Package fail!");   
+                }
+            })
+            //new chart line
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container_rt',
+                    defaultSeriesType: 'spline',
+                    events: {
+                        load: requestData,
+                    }
+                },
+                title: {
+                    text: 'Real Time Monitor Data',
+                },
+                xAxis: {
+                    tickInterval: 1,
+                    title: {
+                        text: 'Clock',
+                        style: {
+                            'font-size': '20px',
+                            'color' : 'black',
+                        }
+                    },
+                    labels: {
+                        style: {
+                            "color": 'green',
+                        }
+                    },                
+                },
+                yAxis: {
+                    minPadding: 0.2, 
+                    maxPadding: 0.2,
+                    title: {
+                        text: "Value", 
+                        style: {
+                            'font-size': '20px',
+                            'color' : 'black',
+                        }
+                    },
+                },
+                exporting:{
+                    enabled:false
+                },
+                credits: {
+                    enabled:false
+                },               
+                series: rt_items,
+            });
         });
     });
 </script>

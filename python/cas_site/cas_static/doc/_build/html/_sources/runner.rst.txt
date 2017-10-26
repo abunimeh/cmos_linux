@@ -137,10 +137,10 @@ pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令�
 
 ::
 
-   usage: pj [-h] {init,run,cov,vplan,reg,doc,clean,gen,leda,ac,dc,tm,fm} ...
+   usage: pj [-h] {im,init,run,cov,vplan,reg,doc,clean,gen,leda,ac,dc,tm,fm,icc,cdc} ...
    
    positional arguments:
-     {init,run,cov,vplan,reg,doc,clean,gen,leda,ac,dc,tm,fm}
+     {im,init,run,cov,vplan,reg,doc,clean,gen,leda,ac,dc,tm,fm,icc,cdc}
        im                  sub cmd about running pj instance messager
        init                sub cmd about generating initial svn directories
        run                 sub cmd about running simulation and regression
@@ -164,14 +164,14 @@ pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令�
 目前pj的全部子命令有：
 
 - im：负责启动pj内部即时通信工具
-- init：负责版本控制初始化相关（新版带权限管控的svn repo不可用）
+- init：负责项目初始化相关
 - run：负责simulation和regression相关，包括verdi
 - cov：负责coverage收集与生成报告
 - vplan：负责vplan生成与更新
 - reg：负责autoreg
 - doc：负责NaturalDocs生成
 - clean：负责clean output以及可选目录的中间文件
-- gen：负责模块级验证目录初始模板生成
+- gen：负责模块级验证目录初始模板目录结构以及uvm验证环境生成
 - leda：负责leda flow
 - ac：负责自动连线
 - dc：负责dc flow
@@ -183,13 +183,32 @@ pj就是如上一段所讲的子命令参数体系，查看pj的全部子命令�
 pj子命令参数详细说明
 ----------------------------------------
 
+子命令init
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+- 查看子命令init的全部参数：
+
+  + ``$ pj init -h``
+
+- 列出全部可以初始化的项目：
+
+  + ``$ pj init -list``
+
+- 在当前目录下check out出指定项目全部允许check out的目录：
+
+  + ``$ pj init -proj PROJ``
+  + 有svn权限管控的项目会通过检索platform server上的可check out的dir的信息进行check out动作
+
+- 在当前目录下check out出指定项目下指定的子目录：
+
+  + ``$pj init -proj PROJ -dir DIR1 DIR2``
+
 子命令run
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 - 查看子命令run的全部参数：
 
   + ``$ pj run -h``
 
-- 列出一个module下全部case：
+- 列出一个module下全部case以及全部simv：
 
   + ``$ pj run -m MODULE -list``
   + pj允许在proj trunk的任意dir下面跑，所以需要得到module name信息
@@ -211,13 +230,21 @@ pj子命令参数详细说明
 
   + ``$ pj run -c CASE1 CASE2 ...``
 
-- 只做c code compilation，不做rtl compilation：
+- 只做仿真相关c code compilation，不做rtl compilation：
 
-  + ``$ pj run -m MODULE -cc``
+  + ``$ pj run -m MODULE -clib``
+
+- 只做src c code独立运行，不做仿真相关c code compilation与rtl compilation：
+
+  + ``$ pj run -m MODULE -csrc``
 
 - 只compilation(analysis+elaboration)，不simulation：
 
   + ``$ pj run -m MODULE -comp``
+
+- 指定simv（*）：
+
+  + ``$ pj run -c CASE -simv SIMV``
 
 - 指定seed（*）：
 
@@ -264,6 +291,12 @@ pj子命令参数详细说明
   + ``$ pj run -c CASE -cov``
   + 会默认load vdb constraint file PROJ_MODULE/config/cov.filter
 
+- 带upf功耗的simulation（*）：
+
+  + ``$ pj run -c CASE -upf``
+  + 默认load PROJ_MODULE/upf/MODULE.upf文件
+  + 确保power_top被正确设置
+
 - 带效率分析报告的simulation（*）：
 
   + ``$ pj run -c CASE -prof time``
@@ -271,11 +304,14 @@ pj子命令参数详细说明
 
 - 自定义tools options（*）：
 
-  + ``$ pj run -c CASE -A ANA_OPTS``
+  + ``$ pj run -c CASE -DA ANA_OPTS``
+  + ``$ pj run -c CASE -TA ANA_OPTS``
   + ``$ pj run -c CASE -E ELAB_OPTS``
   + ``$ pj run -c CASE -S SIMU_OPTS``
-  + ``$ pj run -c CASE -CC CC_OPTS``
-  + 分别在analysis, elaboration, simulation, c compilation几个阶段添加用户自己需要的tools的options
+  + ``$ pj run -c CASE -CLIBC CLIBC_OPTS``
+  + ``$ pj run -c CASE -CSRCC CSRCC_OPTS``
+  + ``$ pj run -c CASE -CSRCR CSRCR_OPTS``
+  + 分别在dut analysis, tb analysis, elaboration, simulation, 仿真c compilation, 独立c compilation, 独立c runtime这几个阶段添加用户自己需要的tools的options
 
 - 从头执行compilation与simulation的动作：
 
@@ -380,6 +416,10 @@ pj子命令参数详细说明
 
   + ``$ pj doc -m MODULE -gen``
 
+- 指定路径生成inline docs：
+
+  + ``$ pj doc -m MODULE -gen -p DOC_PATH``
+
 子命令clean
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 - 查看子命令clean的全部参数：
@@ -424,7 +464,7 @@ pj将全部中间文件按类放置于PROJ_MODULE/output下，在了解这些分
 子命令gen
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-gen是方便用户生成相应的验证目录结构，运行pj的必须文件以及中心UVM template的子命令：
+gen实现用户与平台的交互，gen是方便用户生成相应的验证目录结构，运行pj的必须文件以及uvm验证环境的子命令：
 
 - 查看子命令gen的全部参数：
 
@@ -433,11 +473,14 @@ gen是方便用户生成相应的验证目录结构，运行pj的必须文件以
 - 生成模块的验证目录结构：
 
   + ``$ pj gen -m MODULE``
+  + 在verification/MODULE下面生成模块目录结构
 
 - 指定相应的目录生成模块的验证目录结构：
 
   + ``$ pj gen -m MODULE -d MODULE_DIR``
-  + 没有指定目录的情况下会在verification下面生成-m指定参数的文件夹
+  + 在MODULE_DIR/MODULE下面生成模块目录结构
+
+配置文件proj.cfg中与gen命令相关的section有gen_agt和gen_with
 
 子命令leda
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -448,24 +491,28 @@ leda是方便用户对相应的RTL进行是否符合特性规则的检查所用�
 
   + ``$ pj leda -h``
 
+src目录：
+
+- src目录里面存放了一整套完整的配置可以用来跑某个模块的leda flow
+- -s参数可以用来指定特定的src目录，例如跑zszx的leda flow可以建一个zszx_src的目录，然后通过-s PATH/zszx_src指定；跑fdzx的leda flow可以建一个fdzx_src的目录，然后通过-s PATH/fdzx_src指定，PATH可以是相对路径或绝对路径
+- -s参数存在的目的是方便用户同时跑不同模块的leda flow，默认情况下src目录就是$PROJ_ROOT/flow/leda/src
+- src目录下面有bbox_file文件、leda.cfg文件、leda_rule目录、leda_waiver目录
+- bbox_file里面填写模块名，多个模块名写在多行，用来过滤leda对于这些模块的检查
+- leda_rule目录下可以放多个.tcl文件，用来保存相应的rule设置
+- leda_waiver目录下可以放多个.tcl文件，用来保存相应的waiver设置
+- pj会将这两个目录下全部.tcl文件合并生成运行目录下的leda.tcl并在运行时加载，顺序是先加载leda_rule中的后夹杂leda_waiver中的
+
+常用的添加到waiver中的tcl命令：
+
+- ``rule_deselect -rule X_4015`` waive掉某一种rule
+- ``rule_deselect -rule X_4015 -file ../../../../rtl/LP/addpp32.v`` waive掉属于某一种rule中的某个文件
+- ``rule_deselect -rule X_4015 -file ../../../../rtl/LP/addpp32.v -section {37 37}`` waive掉属于某一种rule中的某个文件的某开始行到某结束行
+
 配置leda.cfg：
 
-- 打开$PROJ_ROOT/flow/leda/leda.cfg文件完成配置
-
+- 打开$PROJ_ROOT/flow/leda/src/leda.cfg文件完成配置
 - 配置格式与case.cfg格式相同，详见 :ref:`config`
-
 - leda可变配置不多，默认不变也可以正常运行
-
-- option log_directory_name
-
-  + 可以改变log目录的名称
-  + 默认是leda_logs
-
-- option log_file_name
-
-  + 可以改变leda log的文件名称
-  + 默认是leda.log
-
 - option error_string
 
   + 可以调整检测leda报错的关键字符串
@@ -477,13 +524,12 @@ leda是方便用户对相应的RTL进行是否符合特性规则的检查所用�
 
   + ``$ pj leda -gen_log -f FLIELIST -t LEDA_TOP``
   + 需要提供RTL的filelist以及top模块名
+  + 每次gen_log的output在$PROJ_ROOT/flow/leda/LEDA_TIMESTAMP目录下
 
-- 指定特定的leda cfg或多个leda waiver对相应RTL进行leda check并生成log：
+- 指定特定的src目录，根据目录下的cfg, rule, waiver对相应RTL进行leda check并生成log：
 
-  + ``$ pj leda -gen_log -f FLIELIST -t LEDA_TOP -c LEDA_CFG -w LEDA_WAIVER``
-  + 需要提供RTL的filelist以及top模块名
-  + -c 为可选参数，可根据需求自己指定leda的cfg，默认为$PROJ_ROOT/flow/leda/leda.cfg文件
-  + -w 可以自行指定多个leda_waiver文件，添加的leda_waiver最终都会保存在leda.tcl文件中，原leda.tcl会备份为leda_<timestamp>.tcl
+  + ``$ pj leda -gen_log -f FLIELIST -t LEDA_TOP -s SRC``
+  + 不指定-s的情况下默认使用$PROJ_ROOT/flow/leda/src目录的配置
 
 - leda check过程中提供black box过滤功能：
 
@@ -493,8 +539,9 @@ leda是方便用户对相应的RTL进行是否符合特性规则的检查所用�
 
 - 打开leda GUI查看、审查与修订leda log中相应的问题：
 
-  + ``$ pj leda -gui``
+  + ``$ pj leda -gui -d LEDA_TIMESTAMP``
   + 打开GUI之后可以利用disable instance of rule来进行相应的review
+  + 批处理可以将rule_deselect的tcl命令添加到leda_waiver下的文件里
 
   .. figure:: images/leda_gui.png
 
@@ -543,6 +590,8 @@ ac是方便用户完成相应顶层例化自动连线的工具，主要利用ema
 
 - 文件结尾的注释不可少，在verilog-library-directories中要填该top需要例化连线的子模块目录，支持相对路径，否则ac工具无法获悉子模块的端口名
 
+- 当需要特殊连接的时候，将输入端口做特殊连接，输出端口做自动连接，因为自动生成wire是检测输出端口时才生效的
+
 子命令dc
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -551,6 +600,14 @@ dc是方便用户完成相应RTL综合的基础自动化流程：
 - 查看子命令dc的全部参数：
 
   + ``$ pj dc -h``
+
+src目录：
+
+- src目录里面存放了一整套完整的配置可以用来跑某个模块的dc flow
+- -s参数可以用来指定特定的src目录，例如跑zszx的dc flow可以建一个zszx_src的目录，然后通过-s PATH/zszx_src指定；跑fdzx的dc flow可以建一个fdzx_src的目录，然后通过-s PATH/fdzx_src指定，PATH可以是相对路径或绝对路径
+- -s参数存在的目的是方便用户同时跑不同模块的dc flow，默认情况下src目录就是$PROJ_ROOT/flow/dc/src
+- src目录下面有dc.cfg文件、dc_template目录、fm.cfg文件、fm_template目录
+- pj会根据dc.cfg文件以及dc_template目录生成运行dc flow的tcl，根据fm.cfg文件以及fm_template目录生成运行附属fm flow的tcl
 
 配置dc.cfg：
 
@@ -565,42 +622,42 @@ dc是方便用户完成相应RTL综合的基础自动化流程：
 - 生成tcl文件，对相应RTL进行dc综合：
 
   + ``$ pj dc -gen_tcl -run``
-  + dc综合出来的output在$PROJ_ROOT/flow/dc_<timestamp>下面
+  + dc综合出来的output在$PROJ_ROOT/flow/dc/DC_TIMESTAMP下面
 
 - 只生成tcl文件：
 
   + ``$ pj dc -gen_tcl -s SRC``
-  + 命令只创建$PROJ_ROOT/flow/dc_<timestamp>目录生成tcl文件，不运行dc
-  + 生成出来的tcl output在$PROJ_ROOT/flow/dc_<timestamp>下面
+  + 命令只创建$PROJ_ROOT/flow/dc/DC_TIMESTAMP目录生成tcl文件，不运行dc
+  + 生成出来的tcl output在$PROJ_ROOT/flow/dc/DC_TIMESTAMP下面
 
 - 指定特定的src目录，根据目录下的cfg与template生成tcl文件，并对相应RTL进行dc综合：
 
   + ``$ pj dc -gen_tcl -run -s SRC``
-  + -s为可选参数，指定一个包含cfg和temnplate的src目录，默认为$PROJ_ROOT/flow/dc/src
+  + -s为可选参数，指定一个包含cfg和template的src目录，默认为$PROJ_ROOT/flow/dc/src
 
-- 指定已存在的dc_<timestamp>目录，在该目录下利用已有的tcl文件对相应RTL进行dc综合：
+- 指定已存在的DC_TIMESTAMP目录，在该目录下利用已有的tcl文件对相应RTL进行dc综合：
 
-  + ``$ pj dc -d DC_<timestamp> -run``
+  + ``$ pj dc -d DC_TIMESTAMP -run``
 
 - 对相应RTL进行dc综合(topo模式)：
 
-  + ``$ pj dc -d DC_<timestamp> -run -topo`` 或 ``$ pj dc -gen_tcl -run -topo``
+  + ``$ pj dc -d DC_TIMESTAMP -run -topo`` 或 ``$ pj dc -gen_tcl -run -topo``
 
 - 对相应RTL进行dc综合，并自动生成文本格式的timing report：
 
-  + ``$ pj dc -d DC_<timestamp> -run -tm`` 或 ``$ pj dc -gen_tcl -run -tm``
-  + 文本格式的按timing violation分布区间的归纳统计报告：$PROJ_ROOT/flow/dc_<timestamp>/reports/sum_tm
+  + ``$ pj dc -d DC_TIMESTAMP -run -tm`` 或 ``$ pj dc -gen_tcl -run -tm``
+  + 文本格式的按timing violation分布区间的归纳统计报告：$PROJ_ROOT/flow/dc/DC_TIMESTAMP/reports/sum_tm
 
 - 调整timing report的startpoint与endpoint的hierarchy层数：
 
-  + ``$ pj dc -d DC_<timestamp> -run -tm -l 2`` 或 ``$ pj dc -gen_tcl -run -tm -l 2``
+  + ``$ pj dc -d DC_TIMESTAMP -run -tm -l 2`` 或 ``$ pj dc -gen_tcl -run -tm -l 2``
   + -l level参数控制的是所需要统计的timing violation的startpoint与endpoint的hierarchy层数
   + 默认level值为1
 
 - 对相应RTL进行dc综合之后自动进行综合前后的formality check：
 
-  + ``$ pj dc -d DC_<timestamp> -run -fm`` 或 ``$ pj dc -gen_tcl -run -fm``
-  + formality的output在$PROJ_ROOT/flow/dc_<timestamp>/fm_<timestamp>下面
+  + ``$ pj dc -d DC_TIMESTAMP -run -fm`` 或 ``$ pj dc -gen_tcl -run -fm``
+  + formality的output在$PROJ_ROOT/flow/dc/DC_TIMESTAMP/FM_TIMESTAMP下面
 
 利用pj跑dc flow每次的结果都会被我们收集的数据库中，同样也有一个web页面可以展示之前每个人kick off每个dc的结果统计，关于该report平台、platform server以及平台数据库请参考 :ref:`backend`
 
@@ -628,6 +685,14 @@ tm是dc的附属子命令，目的是独立分析dc的timing report并生成文�
 
 fm是方便用户完成独立的formality比对的基础自动化流程：
 
+src目录：
+
+- src目录里面存放了一整套完整的配置可以用来跑某个模块的fm flow
+- -s参数可以用来指定特定的src目录，例如跑zszx的fm flow可以建一个zszx_src的目录，然后通过-s PATH/zszx_src指定；跑fdzx的fm flow可以建一个fdzx_src的目录，然后通过-s PATH/fdzx_src指定，PATH可以是相对路径或绝对路径
+- -s参数存在的目的是方便用户同时跑不同模块的fm flow，默认情况下src目录就是$PROJ_ROOT/flow/fm/src
+- src目录下面有fm.cfg文件、fm_template目录
+- pj会根据fm.cfg文件以及fm_template目录生成运行附属fm flow的tcl
+
 配置fm.cfg：
 
 - 打开$PROJ_ROOT/flow/fm/src/fm.cfg文件完成配置
@@ -640,7 +705,7 @@ fm是方便用户完成独立的formality比对的基础自动化流程：
   + ``$ pj fm -ref REF_FILE -imp IMP_FILE -s SRC``
   + REF_FILE与IMP_FILE都可以是独立的.v文件或者filelist文件
   + -s为可选参数，用户可自行指定src目录，该目录下包含cfg文件和template，默认为$PROJ_ROOT/flow/fm/src目录
-  + fm比对出来的output在$PROJ_ROOT/flow/fm_<timestamp>下面
+  + fm比对出来的output在$PROJ_ROOT/flow/fm/FM_TIMESTAMP下面
 
 利用pj跑fm flow每次的结果也都会被我们收集的数据库中，请参考 :ref:`backend`
 
@@ -653,32 +718,44 @@ icc是方便用户完成物理设计的自动化流程：
 
   + ``$ pj icc -h``
 
+src目录：
+
+- src目录里面存放了一整套完整的配置可以用来跑某个模块的icc flow
+- -s参数可以用来指定特定的src目录，例如跑zszx的icc flow可以建一个zszx_src的目录，然后通过-s PATH/zszx_src指定；跑fdzx的icc flow可以建一个fdzx_src的目录，然后通过-s PATH/fdzx_src指定，PATH可以是相对路径或绝对路径
+- -s参数存在的目的是方便用户同时跑不同模块的icc flow，默认情况下src目录就是$PROJ_ROOT/flow/icc/src
+- src目录下面有icc.cfg文件、data目录、scripts目录
+- data目录用来存放icc flow过程中需要用到的data文件
+- scripts目录用来存放icc flow过程中需要用到的tcl文件
+- pj不会负责icc tcl的生成，只会控制运行scripts目录下相应阶段的tcl文件，将tcl开发与flow开发解耦合
+
 配置icc.cfg：
 
 - 打开$PROJ_ROOT/flow/icc/src/icc.cfg文件完成配置
-- 配置格式与case.cfg格式相同，详见 :ref:`config`
-- 具体icc.cfg的每一项配置的目的可以咨询后端组 **jiangz@cpu.com.cn**
 
+  + 文件中icc_stage的key对应于pj icc命令中指定的stage，stage名可根据自己需要进行命名，value对应于运行该stage需要的tcl文件名
+  + stage可以根据自己的需求进行拆分或合并，但是stage的顺序必须符合实际icc的执行顺序
+  + 文件中icc_string用于对icc的log进行检查，如果在某个stage的log中检测到不可忽略的Error，则不再运行后面的stage
+  
 使用pj跑icc flow：
 
 - 在指定的目录下运行icc的指定阶段：
 
-  + ``$ pj icc -d ICC_<timestamp> -setup -fp -place -cts -route``
-  + 在ICC_<timestamp>目录下自动运行指定的icc的某一个或某几个阶段
-  + icc运行的结果保存在指定的目录ICC_<timestamp>下
+  + ``$ pj icc -d ICC_TIMESTAMP -stage init_design flat_dp place_opt``
+  + 在ICC_TIMESTAMP目录下运行-stage后指定的icc的某一个或某几个阶段
+  + icc运行的结果保存在目录ICC_TIMESTAMP下
+  + 检测的Error和Warning信息记录文件保存在ICC_TIMESTAMP/logs目录下
+  + 运行结束后会自动将运行结果备份到ICC_TIMESTAMP/BACKUP__STAGE__TIMESTAMP下
 
 - 在自动创建的新目录下运行icc的指定阶段：
 
-  + ``$ pj icc -setup -fp -place -cts -route -gen_tcl -s SRC``
-  + ``$ pj icc -gen_tcl -s SRC`` 只创建$PROJ_ROOT/flow/icc/icc_<timestamp>目录后产生tcl，不运行icc
-  + 自动创建$PROJ_ROOT/flow/icc/icc_<timestamp>目录，在该目录下运行指定的icc的某些阶段
-  + -s为可选参数，用来指定一个包含cfg、template和plug的src目录，默认为$PROJ_ROOT/flow/icc/src目录
-  + -s指定目录下的plug文件内容根据实际运行模块进行修改
-  + icc运行的结果保存在自动创建的目录$PROJ_ROOT/flow/icc/icc_<timestamp>下
+  + ``$ pj icc -stage init_design flat_dp -s SRC``
+  + 自动创建$PROJ_ROOT/flow/icc/ICC_TIMESTAMP目录，在该目录下运行stage参数指定的icc的某些阶段
+  + -s为可选参数，用来指定一个src目录，默认为$PROJ_ROOT/flow/icc/src目录
+  + icc运行的结果保存在自动创建的目录$PROJ_ROOT/flow/icc/ICC_TIMESTAMP下
 
-- 在指定目录或新创建目录下运行icc所有阶段：
+- 在指定目录或新创建目录下运行完自指定阶段开始的所有icc的后续阶段：
 
-  + ``$ pj icc -d ICC_<timestamp> -all`` 或 ``$ pj icc -gen_tcl -all``
+  + ``$ pj icc -d ICC_TIMESTAMP -s_stage flat_dp`` 或 ``$ pj icc -s_stage flat_dp``
 
 子命令cdc
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -689,11 +766,22 @@ cdc是方便用户完成跨时钟域检查的基础自动化流程：
   
   + ``$ pj cdc -h``
 
+src目录：
+
+- src目录里面存放了一整套完整的配置可以用来跑某个模块的cdc flow
+- -s参数可以用来指定特定的src目录，例如跑zszx的cdc flow可以建一个zszx_src的目录，然后通过-s PATH/zszx_src指定；跑fdzx的cdc flow可以建一个fdzx_src的目录，然后通过-s PATH/fdzx_src指定，PATH可以是相对路径或绝对路径
+- -s参数存在的目的是方便用户同时跑不同模块的cdc flow，默认情况下src目录就是$PROJ_ROOT/flow/cdc/src
+- src目录下面有cdc.cfg文件、waiver.cfg文件、directives.tcl文件、template目录
+- directives.tcl文件是默认qs_file，可以指定，不是固定的
+- pj会根据cfg与template目录生成运行cdc的tcl
+
 配置cdc.cfg：
 
 - 打开$PROJ_ROOT/flow/cdc/src/cdc.cfg文件完成配置
 
-  + 其中的err_str是提供进行compile结果检查的标志字符
+  + design_top与design_flist是必填项
+  + qs_file可以指定，用来配置不同时钟域的clk
+  + err_str是提供进行compile结果检查的标志字符
 
 - 配置格式与case.cfg格式相同，详见 :ref:`config`
 
@@ -711,8 +799,8 @@ cdc是方便用户完成跨时钟域检查的基础自动化流程：
 
   + ``$ pj cdc -s SRC``
   + -s可以指定一个包含运行cdc需要的cfg和tcl的目录，默认为$PROJ_ROOT/flow/cdc/src
-  + cdc运行的结果保存在目录$PROJ_ROOT/flow/cdc/cdc_<timestamp>下
-  + cdc运行完后对cdc_detail.rpt进行检查，将沒有waive掉的Violation写入$PROJ_ROOT/flow/cdc/cdc_<timestamp>/post_waiver.rpt文件
+  + cdc运行的结果保存在目录$PROJ_ROOT/flow/cdc/CDC_TIMESTAMP下
+  + cdc运行完后对cdc_detail.rpt进行检查，将沒有waive掉的Violation写入$PROJ_ROOT/flow/cdc/CDC_TIMESTAMP/post_waiver.rpt文件
 
 平台目录结构
 ----------------------------------------
@@ -754,8 +842,8 @@ PROJ_ROOT/verification/MODULE
    │       ├── 91185
    │       └── 979315
    ├── reg                       # reg相关文件
-   ├── upf                       # low power upf相关文件
    ├── tb                        # tb所有文件
+   ├── upf                       # low power upf相关文件
    └── vplan                     # vplan相关文件
 
 每个新模块在已经有c与tb目录的情况下，只需要完成 **config目录下的module.cfg和case.cfg** 还有 **flist目录下的rtl.flist与tb.flist** 就可以调用pj了

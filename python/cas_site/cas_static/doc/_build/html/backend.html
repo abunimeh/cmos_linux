@@ -5,12 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>backend构架介绍 &#8212; Verification Platform 1.0 documentation</title>
-    
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -52,6 +49,7 @@
 <li><a class="reference internal" href="#database">Database</a></li>
 <li><a class="reference internal" href="#web-framework">Web Framework</a></li>
 <li><a class="reference internal" href="#id2">如何访问平台</a></li>
+<li><a class="reference internal" href="#kopete">中区即时通讯工具Kopete</a></li>
 <li><a class="reference internal" href="#regr-app">regr app</a></li>
 <li><a class="reference internal" href="#dc-app">dc app</a></li>
 <li><a class="reference internal" href="#id3">开发阶段说明</a></li>
@@ -112,26 +110,99 @@
 </div>
 </div></blockquote>
 </div>
+<div class="section" id="kopete">
+<h2>中区即时通讯工具Kopete<a class="headerlink" href="#kopete" title="Permalink to this headline">¶</a></h2>
+<p>中区分布在中心的4楼与5楼，有的时候找人不方便，有一套中区的即时通讯工具用来讨论问题是很必要的</p>
+<p>platform backend搭建了一套XMPP协议服务，配合中区linux前端工具Kopete可以实现即时通讯与提醒</p>
+<p>具体配置方法如下：</p>
+<blockquote>
+<div><div class="figure" id="id6">
+<img alt="_images/menu_kopete.png" src="_images/menu_kopete.png" />
+<p class="caption"><span class="caption-text">从Gnome/Kde的Application menu进入kopete，或者terminal里面输入kopete</span></p>
+</div>
+<div class="figure" id="id7">
+<img alt="_images/menu_config.png" src="_images/menu_config.png" />
+<p class="caption"><span class="caption-text">之后kopete就会停留在系统托盘中，灰色表示offline状态，右键点击该图标进入configure配置帐号</span></p>
+</div>
+<div class="figure" id="id8">
+<img alt="_images/add_account1.png" src="_images/add_account1.png" />
+<p class="caption"><span class="caption-text">先点选add account，然后选择Jabber选项</span></p>
+</div>
+<div class="figure" id="id9">
+<img alt="_images/add_account2.png" src="_images/add_account2.png" />
+<p class="caption"><span class="caption-text">新用户注册帐号点击register new account，按照图示注册帐号信息，将用户名替换成自己的用户名，不要选择SSL加密</span></p>
+</div>
+<div class="figure" id="id10">
+<img alt="_images/add_account3.png" src="_images/add_account3.png" />
+<p class="caption"><span class="caption-text">注册完成点击next登录</span></p>
+</div>
+<div class="figure" id="id11">
+<img alt="_images/add_account4.png" src="_images/add_account4.png" />
+<p class="caption"><span class="caption-text">点击finish自动连接</span></p>
+</div>
+<div class="figure" id="id12">
+<img alt="_images/menu_online.png" src="_images/menu_online.png" />
+<p class="caption"><span class="caption-text">上线是个重要的状态，从离线状态变成上线状态需要右键点击系统托盘图标，然后依照图示选择自己的帐号，选择状态</span></p>
+</div>
+<div class="figure" id="id13">
+<img alt="_images/add_group.png" src="_images/add_group.png" />
+<p class="caption"><span class="caption-text">可以给自己的联系人先建立组目录方便管理各个部门的联系人</span></p>
+</div>
+<div class="figure" id="id14">
+<img alt="_images/add_contact1.png" src="_images/add_contact1.png" />
+<p class="caption"><span class="caption-text">上线之后发现自己的联系人列表是空的，是的，因为您还没添加任何联系人，按照图示选择为哪个帐号添加联系人</span></p>
+</div>
+<div class="figure" id="id15">
+<img alt="_images/add_contact2.png" src="_images/add_contact2.png" />
+<p class="caption"><span class="caption-text">Jabber ID中填入想添加的联系人id，注意&#64;platform.sari.com不能漏写，如果之前建立过组目录可以在group里面选择</span></p>
+</div>
+<div class="figure" id="id16">
+<img alt="_images/add_contact3.png" src="_images/add_contact3.png" />
+<p class="caption"><span class="caption-text">如果被添加的这个人已经注册了帐号，他就会收到上图所示的提示，按照图示点击add来互加联系人，同时建议将show all选中，这样可以看到离线的联系人</span></p>
+</div>
+<div class="figure" id="id17">
+<img alt="_images/add_contact4.png" src="_images/add_contact4.png" />
+<p class="caption"><span class="caption-text">完成互加的动作，并且让对方可以看到自己的状态，之前建立过组目录的可以在group里面选择</span></p>
+</div>
+<div class="figure" id="id18">
+<img alt="_images/add_contact5.png" src="_images/add_contact5.png" />
+<p class="caption"><span class="caption-text">这样就可以在联系人列表里看到对方了</span></p>
+</div>
+<div class="figure" id="id19">
+<img alt="_images/create_or_join_group1.png" src="_images/create_or_join_group1.png" />
+<p class="caption"><span class="caption-text">也可以利用Kopete来建立conference，多人同时在线对话，如上图所示</span></p>
+</div>
+<div class="figure" id="id20">
+<img alt="_images/create_or_join_group2.png" src="_images/create_or_join_group2.png" />
+<p class="caption"><span class="caption-text">conference的服务器地址是group.sari.com，点击query可以查询到已有的room，也可以在room栏填写一个名字来创建room，创建之后别人就可以通过query查询到</span></p>
+</div>
+<div class="figure" id="id21">
+<img alt="_images/create_or_join_group3.png" src="_images/create_or_join_group3.png" />
+<p class="caption"><span class="caption-text">Kopete的room无法保存到联系人列表，但是之前加入过的room可以通过上图的方式方便的查询到</span></p>
+</div>
+</div></blockquote>
+<p>欢迎使用Kopete开始我们的team work！</p>
+</div>
 <div class="section" id="regr-app">
 <h2>regr app<a class="headerlink" href="#regr-app" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><div class="figure" id="id6">
+<div><div class="figure" id="id22">
 <img alt="_images/user_list.png" src="_images/user_list.png" />
 <p class="caption"><span class="caption-text">进入regression report web app，会显示一个索引控件与一个所有kick off过pj的用户列表，利用索引控件可以自动选择与过滤想要查询的信息，日期范围默认查询从今天开始向前一天的信息，用户默认选择jenkins，因为jenkins kick off的regression算是sign off的标准</span></p>
 </div>
-<div class="figure" id="id7">
+<div class="figure" id="id23">
 <img alt="_images/proj_list.png" src="_images/proj_list.png" />
 <p class="caption"><span class="caption-text">只选中user之后查询会显示projects passing rate信息，列出这个用户所有的projects以及相应的passing rate，上下两栏分别显示以天为单位和以次为单位的projects的passing rate</span></p>
 </div>
-<div class="figure" id="id8">
+<div class="figure" id="id24">
 <img alt="_images/module_list.png" src="_images/module_list.png" />
 <p class="caption"><span class="caption-text">只选中user与project之后查询会显示modules passing rate信息，列出这个用户该project所有的modules以及相应的passing rate，同时页面支持表格的线性图与饼状图分析，还支持不同文件导出</span></p>
 </div>
-<div class="figure" id="id9">
+<div class="figure" id="id25">
 <img alt="_images/module_list_highchart.png" src="_images/module_list_highchart.png" />
 <p class="caption"><span class="caption-text">表格饼状图分析示例</span></p>
 </div>
-<div class="figure" id="id10">
+<div class="figure" id="id26">
 <img alt="_images/case_list.png" src="_images/case_list.png" />
 <p class="caption"><span class="caption-text">user、project与module都选中之后查询会显示case详细信息列表，列出该module已经被kick off的case以及case的status</span></p>
 </div>
@@ -141,27 +212,27 @@
 <div class="section" id="dc-app">
 <h2>dc app<a class="headerlink" href="#dc-app" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><div class="figure" id="id11">
+<div><div class="figure" id="id27">
 <img alt="_images/dc_user.png" src="_images/dc_user.png" />
 <p class="caption"><span class="caption-text">进入dc report web app，会显示一个与regr app相同的索引控件与一个所有kick off过pj的用户列表，利用索引控件可以自动选择与过滤想要查询的信息，日期范围默认查询从今天开始向前一天的信息</span></p>
 </div>
-<div class="figure" id="id12">
+<div class="figure" id="id28">
 <img alt="_images/dc_proj.png" src="_images/dc_proj.png" />
 <p class="caption"><span class="caption-text">只选中user之后查询会显示projects dc条目信息，列出这个用户所有的projects以及相应kick off过的dc列表，可以通过选取右侧复选框之后查看timing报告信息，同时展开相应dc条目表格栏可以点击查看错误与警告的柱状图</span></p>
 </div>
-<div class="figure" id="id13">
+<div class="figure" id="id29">
 <img alt="_images/dc_proj_highchart.png" src="_images/dc_proj_highchart.png" />
 <p class="caption"><span class="caption-text">dc条目错误与警告柱状图示例</span></p>
 </div>
-<div class="figure" id="id14">
+<div class="figure" id="id30">
 <img alt="_images/dc_module.png" src="_images/dc_module.png" />
 <p class="caption"><span class="caption-text">只选中user与project之后查询会显示modules dc条目信息，列出这个用户该project所有的modules以及相应的dc条目列表，同时可以通过选取右侧复选框之后查看timing报告信息与qor报告信息</span></p>
 </div>
-<div class="figure" id="id15">
+<div class="figure" id="id31">
 <img alt="_images/dc_timing_rpt.png" src="_images/dc_timing_rpt.png" />
 <p class="caption"><span class="caption-text">dc条目的timing报告信息展示</span></p>
 </div>
-<div class="figure" id="id16">
+<div class="figure" id="id32">
 <img alt="_images/dc_qor_rpt.png" src="_images/dc_qor_rpt.png" />
 <p class="caption"><span class="caption-text">dc条目的qor报告信息展示</span></p>
 </div>
@@ -196,7 +267,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

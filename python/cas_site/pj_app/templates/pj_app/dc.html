@@ -94,7 +94,7 @@ function gen_column(data, ew_title){
         yAxis: {
             min: 0,
             title: {
-                text: 'Numbers'
+                text: 'Values'
             }
         },
         credits: {
@@ -333,7 +333,7 @@ $(function () {
         autoOpen:false,
         width:800,
         height:580,
-    });    
+    });
     $(".tsearch").click(function(){
         var team = $("#team").val()
         var user = $("#user").val();
@@ -348,7 +348,7 @@ $(function () {
             alert("Please Choose running end time!");        
         } else {
             if (!user) {
-            alert("Please Choose User!");
+                alert("Please Choose User!");
             } else {
                 if(!proj) {
                     alert("Please Choose proj!");

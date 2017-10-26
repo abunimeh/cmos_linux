@@ -6,6 +6,7 @@ from django.contrib.postgres.fields import JSONField
 class User(models.Model):
     """ User models """
     name = models.CharField(max_length=20, unique=True)
+    asic_info = JSONField(default=dict, blank=True)
     def __str__(self):
         return self.name
 
@@ -121,90 +122,14 @@ class DcRun(models.Model):
     clock = models.CharField(max_length=20)
     cpu_time = models.CharField(max_length=20)
     run_time = models.DateTimeField(unique=True)
+    dc_log = models.CharField(max_length=200)
+    error_info = JSONField(default=dict, blank=True)
+    warning_info = JSONField(default=dict, blank=True)
+    time_rpt = JSONField(default=dict, blank=True)
+    qor_rpt = JSONField(default=dict, blank=True)
+    power_rpt = JSONField(default=dict, blank=True)
     def __str__(self):
         return str(self.user)+str(self.run_time)
-
-class DcError(models.Model):
-    """ Dc error models """
-    name = models.CharField(max_length=50)
-    des = models.CharField(max_length=2000)
-    log_path = models.CharField(max_length=500)
-    run = models.ForeignKey(DcRun, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-
-class DcWarning(models.Model):
-    """ Dc warn models """
-    name = models.CharField(max_length=50)
-    des = models.CharField(max_length=2000)
-    file_name = models.CharField(max_length=500, blank=True, null=True)
-    line_number = models.CharField(max_length=50, blank=True, null=True)
-    log_path = models.CharField(max_length=500)
-    run = models.ForeignKey(DcRun, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-
-class DcTimeRpt(models.Model):
-    """ Dc time models """
-    name = models.CharField(max_length=50)
-    start_point = models.CharField(max_length=500)
-    end_point = models.CharField(max_length=500)
-    slack = models.FloatField()
-    run = models.ForeignKey(DcRun, on_delete=models.CASCADE)
-    log_path = models.CharField(max_length=500)
-    def __str__(self):
-        return self.name
-
-class DcQorGroup(models.Model):
-    """ Dc qor type models """
-    name = models.CharField(max_length=50)
-    log_path = models.CharField(max_length=500)
-    run = models.ForeignKey(DcRun, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-
-class DcQorRpt(models.Model):
-    """ Dc qor report models """
-    name = models.CharField(max_length=50)
-    num = models.FloatField()
-    group = models.ForeignKey(DcQorGroup, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-
-class DcChkDsgGroup(models.Model):
-    """ Dc check design type models """
-    name = models.CharField(max_length=50)
-    log_path = models.CharField(max_length=500)
-    run = models.ForeignKey(DcRun, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-
-class DcChkDsgRpt(models.Model):
-    """ Dc check design report models """
-    name = models.CharField(max_length=50)
-    num = models.FloatField()
-    group = models.ForeignKey(DcChkDsgGroup, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-
-class DcClkGateRpt(models.Model):
-    """ Dc clk gate report models """
-    clk_gate = models.IntegerField()
-    gate_reg = models.IntegerField()
-    ugate_reg = models.IntegerField()
-    total_reg = models.IntegerField()
-    log_path = models.CharField(max_length=500)
-    run = models.ForeignKey(DcRun, on_delete=models.CASCADE)
-
-class DcPowerRpt(models.Model):
-    """ Dc power report models """
-    lib = models.CharField(max_length=100)
-    internal = models.CharField(max_length=50)
-    switching = models.CharField(max_length=50)
-    leakage = models.CharField(max_length=50)
-    total = models.CharField(max_length=50)
-    log_path = models.CharField(max_length=500)
-    run = models.ForeignKey(DcRun, on_delete=models.CASCADE)
 
 ##### fm model #####
 class FmRun(models.Model):
@@ -230,13 +155,14 @@ class MpRun(models.Model):
     run_time = models.DateTimeField()
     pj_props = JSONField()
     props = JSONField()
+    misc = JSONField(blank=True, null=True)
+    data = JSONField(blank=True, null=True)
     def __str__(self):
         return str(self.pj_props)
 
-class MpJson(models.Model):
-    """ Mp data models """
-    data = JSONField()
-    status = models.CharField(max_length=20)
-    run = models.ForeignKey(MpRun, on_delete=models.CASCADE)
-    def __str__(self):
-        return str(self.data)
+class Comment(models.Model):
+    """user Comments """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField(blank=True, null=True)
+    pub_time = models.CharField(max_length=25, unique=True)
+    

@@ -26,8 +26,8 @@ class FPGASignalsGen(object):
                         self.h_dic["h1"].append(re.search(r",(\w+)\s*\)\s*;", line).group(1))
     def gen_fpga_signals(self, cvsr_tup):
         """top execution function"""
-        case, _, seed, _ = cvsr_tup
-        fs_file = os.path.join(self.ced["MODULE_OUTPUT"], case, seed, "fpga_signals")
+        case, simv, seed, _ = cvsr_tup
+        fs_file = os.path.join(self.ced["MODULE_OUTPUT"], case, f"{simv}__{seed}", "fpga_signals")
         h0_str = f"{os.linesep}    ".join(self.h_dic["h0"])
         h1_str = f"{os.linesep}    ".join(self.h_dic["h1"])
         fs_str = (

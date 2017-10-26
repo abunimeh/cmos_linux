@@ -9,7 +9,6 @@
 
 dir_guard = @mkdir -p ${@D}
 cd_guard = @cd ${@D}
-clean_db = @rm -rf ${OUTPUT_SIMV}/{{simv_dic.name}}/work.lib++ ${OUTPUT_SIMV}/{{simv_dic.name}}/AN.DB
 
 MAKEFLAGS += --silent
 
@@ -62,7 +61,6 @@ ${OUTPUT_SIMV}/{{simv_dic.name}}/dut.flist \
 ${OUTPUT_CLIB}/c_cfg.json \
 ${OUTPUT_SIMV}/{{simv_dic.name}}/simv_cfg.json \
 ${SHARE_CONFIG}/proj.cfg
-	${clean_db}
 	${cd_guard} && \
 	{{simv_dic.ana_tool}} \
 	{{simv_dic.da_opts}} \
@@ -133,6 +131,22 @@ ${OUTPUT_SIMV}/{{simv_dic.name}}/.tb_ana
 	{{' '}}&& \
 	{{post_cmd}}
 {%-endfor%}
+
+${OUTPUT_SIMV}/{{simv_dic.name}}/check_rtl/dut_simv: \
+${OUTPUT_SIMV}/{{simv_dic.name}}/dut.flist \
+${OUTPUT_CLIB}/c_cfg.json \
+${OUTPUT_SIMV}/{{simv_dic.name}}/simv_cfg.json \
+${SHARE_CONFIG}/proj.cfg
+	${dir_guard}
+	${cd_guard} && \
+	{{simv_dic.elab_tool}} \
+	{{simv_dic.da_opts}} \
+{%-if simv_dic.cda_opts%}
+	{{simv_dic.cda_opts}} \
+{%-endif%}
+	-f $< \
+	-l ${OUTPUT_SIMV}/{{simv_dic.name}}/check_rtl.log \
+	-o $@
 
 .PHONY: verdi_{{simv_dic.name}}
 verdi_{{simv_dic.name}}: ${OUTPUT_SIMV}/{{simv_dic.name}}/.dut_ana

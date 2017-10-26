@@ -112,3 +112,12 @@ run_csrc: src_pre_cmd ${TARGET_SRC} src_post_cmd
 {%-else%}
 run_csrc:
 {%-endif%}
+
+.PHONY: clean
+clean:
+{%-if clib_flg%}
+	rm -rf ${TARGET_LIB} ${OBJECTS_LIB}
+{%-endif%}
+{%-if csrc_flg%}
+	rm -rf ${TARGET_SRC} ${OBJECTS_SRC}
+{%-endif%}

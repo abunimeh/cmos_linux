@@ -58,6 +58,9 @@ class DCProc(object):
         os.makedirs(self.dir_dic["reports_dir"], exist_ok=True)
         os.makedirs(self.dir_dic["results_dir"], exist_ok=True)
         os.makedirs(self.dir_dic["tcl_dir"], exist_ok=True)
+        if self.dc_dic["cp_rtl"]:
+            filelst_gen.cp_flist(
+                verilog_lst, self.ced["PROJ_RTL"], f"{self.dir_dic['dc_time_dir']}{os.sep}cp_rtl")
         self.dc_cfg_dic["set_args"]["REPORTS_DIR"] = self.dir_dic["reports_dir"]
         self.dc_cfg_dic["set_args"]["RESULTS_DIR"] = self.dir_dic["results_dir"]
         self.dc_cfg_dic["dc__tcl"]["DcTcl_DIR"] = self.dir_dic["tcl_dir"]
@@ -90,7 +93,7 @@ class DCProc(object):
             try:
                 proc = subprocess.Popen(dc_topo_str, shell=True)
                 while proc.poll() is None:
-                    time.sleep(300)
+                    time.sleep(180)
                     dc_log_parser.DcLogParser(self.ced, self.dc_cfg_dic).parse_log()
                 dc_log_parser.DcLogParser(self.ced, self.dc_cfg_dic).parse_log()
             except KeyboardInterrupt:
@@ -129,7 +132,8 @@ def run_dc(args):
              "src": args.dc_src,
              "tm_flg": args.dc_tm_flg,
              "tm_level": args.dc_tm_level,
-             "formality": args.dc_formality}).proc_dc()
+             "formality": args.dc_formality,
+             "cp_rtl": args.dc_cp_rtl}).proc_dc()
         LOG.info("running dc done")
     else:
         raise Exception("missing main arguments")

@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="{% static 'css/login.css' %}"    type="text/css" media="screen" />
   <link rel="stylesheet" href="{% static 'css/userinfo.css' %}"    type="text/css" media="screen" />
   <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}"    type="text/css" media="screen" />
+  <link rel="stylesheet" href="{% static 'css/calculator.css' %}"    type="text/css" media="screen" />
 </head>
 
 <body>
@@ -139,6 +140,7 @@
   <script type="text/javascript" src="{% static 'js/custom-menu.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.cycle.all.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/calculator.js' %}"</script>
   <script type="text/javascript" src="{% static 'js/jszip.min.js' %}" charset="utf8" ></script>
   <script type="text/javascript" src="{% static 'DataTables-1.10.12/media/js/jquery.dataTables.min.js' %}" charset="utf8" ></script>
   <script type="text/javascript" src="{% static 'DataTables-1.10.12/extensions/Buttons/js/dataTables.buttons.js' %}" charset="utf8" ></script>
@@ -147,44 +149,51 @@
   <script type="text/javascript" src="{% static 'js/showLoading.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.leanModal.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
- <script type="text/javascript" src="{% static 'js/highcharts-3d.js' %}"</script>
- <script type="text/javascript">
-  function login(id) {
-      $('#loginform').submit(function(e){
-        if (($(':text').val() == '') || ($(':password').val() == '')){
-            if($('#ipBlank').length ==1) {
-              $('#loginmodal').css({'display':'block'});          
-            } else if($('#error').length == 1) {
-              $('#error').remove();
-              $('#password').after('<p id="ipBlank" style="color:red;"> Please input username and password!<p>')
-              $('#loginmodal').css({'display':'block'});                              
-            } else {
-              $('#password').after('<p id="ipBlank" style="color:red;"> Please input username and password!<p>')
-              $('#loginmodal').css({'display':'block'});                    
-            }
-            return false;
-        } else {
-            return true;
-        } 
-      });    
-      $(id).leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
-  }
+  <script type="text/javascript" src="{% static 'js/math.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/highcharts-3d.js' %}"></script>
 
-  $(function(){
-    login('#caslogin');
-    login('#ldaplogin');
-    if($("#error").length) {
-      alert("Username or password is worry, please try it again!");
+  <script type="text/javascript">
+    String.prototype.format = function(){
+      var args = arguments;
+      return this.replace(/\{(\d+)\}/g, function(s,i) {
+          return args[i];
+      });
     }
-    $('#alogin').click(function(){
-      $('#lgn_cfm').hide();
-    }); 
-  });
+
+    function login(id) {
+        $('#loginform').submit(function(e){
+          if (($(':text').val() == '') || ($(':password').val() == '')){
+              if($('#ipBlank').length ==1) {
+                $('#loginmodal').css({'display':'block'});         
+              } else if($('#error').length == 1) {
+                $('#error').remove();
+                $('#password').after('<p id="ipBlank" style="color:red;"> Please input username and password!<p>')
+                $('#loginmodal').css({'display':'block'});                              
+              } else {
+                $('#password').after('<p id="ipBlank" style="color:red;"> Please input username and password!<p>')
+                $('#loginmodal').css({'display':'block'});                    
+              }
+              return false;
+          } else {
+              return true;
+          } 
+        });    
+        $(id).leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
+    }
+
+    $(function(){
+      login('#caslogin');
+      login('#ldaplogin');
+      if($("#error").length) {
+        alert("Username or password is worry, please try it again!");
+      }
+      $('#alogin').click(function(){
+        $('#lgn_cfm').hide();
+      }); 
+    });
   </script>
 
   {% block js %}
-
-
   {% endblock%}
 </body>
 </html>

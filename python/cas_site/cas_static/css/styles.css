@@ -315,7 +315,7 @@ tr.shown td.details-control {
 
 /*data columns analysis*/
 .colm_nav {
-    height: 300px;
+    height: 310px;
 }
 .colm_ctn {
     height: auto; 
@@ -323,25 +323,25 @@ tr.shown td.details-control {
 }
 .colm_clk {
     float: left;
-    width: 80%;
+    width: 60%;
+    padding: 12px 0px;
 }
 .parameters {
-    width: 18%; 
-    height: 270px;    
+    width: 39%; 
+    height: 288px;    
     display: inline-block;
-    margin-left: 25px;
+    margin-left: 12px;
     background: white;
 }
 .colm_border {
     border: 1px solid white;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.52);    
-    padding: 13px;
+    padding: 9px;
 }
 
 .parameters form {
-        line-height: 32px;
-        padding: 9px;
+        line-height: 1px;
         border:2px solid rgb(221, 212, 212);
         border-radius: 5px;
         background: rgba(248, 250, 252, 1);
@@ -359,5 +359,23 @@ tr.shown td.details-control {
 
 .parameters input[type="submit"] {
     margin: 3px 0px 0px 101px;
+}
+
+/*formula style*/
+.order-list thead tr {
+    font-size: 17px;
+}
+
+.order-list thead tr td:first-child {
+    width: 50px;
+    height: 20px; 
+}
+
+.order-list {
+    margin-left: 106px; line-height: 28px;
+}
+
+.ln_prt ul li {
+    list-style-type: disc;
 }
 

@@ -13,6 +13,8 @@ def run_tm(args):
     """to run tm sub cmd"""
     if args.tm_report_file:
         tm_log_parser.TmParser(
-            {"dt_file": args.tm_report_file, "level": args.tm_hier_level}).parse_tm_log()
+            {"dt_file": args.tm_report_file,
+             "level": args.tm_hier_level,
+             "group": args.tm_path_group}).parse_tm_log()
     else:
         raise Exception("missing main arguments")

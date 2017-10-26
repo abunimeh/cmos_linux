@@ -95,8 +95,6 @@ class VPlanProc(object):
         cp_rpt_file = f"{self.ced['COV_MERGE']}{os.sep}urgReport{os.sep}grpinfo.txt"
         if not os.path.isfile(cg_rpt_file):
             raise Exception(f"merged coverage groups report file {cg_rpt_file} is NA")
-        if not os.path.isfile(cp_rpt_file):
-            raise Exception(f"merged coverage points report file {cp_rpt_file} is NA")
         cg_score_dic = collections.OrderedDict()
         with open(cg_rpt_file) as rptf:
             for line in rptf:
@@ -107,8 +105,12 @@ class VPlanProc(object):
                 elif mop.match(re.compile(r"(\d+\.\d+)\s+.*\w+::\w+::(\w+)")):
                     cg_score_dic[mop.group(2)] = {
                         "per": mop.group(1), "cp_dic": collections.OrderedDict()}
-        with open(cp_rpt_file) as rptf:
-            cp_rpt_con = rptf.read()
+        if not os.path.isfile(cp_rpt_file):
+            LOG.warning("merged coverage points report file %s is NA", cp_rpt_file)
+            cp_rpt_con = ""
+        else:
+            with open(cp_rpt_file) as rptf:
+                cp_rpt_con = rptf.read()
         for cg_n, cg_dic in cg_score_dic.items():
             cg_sum_con = re.search(
                 rf"Summary for Group\s+(?:\w+::)+{cg_n}(.*?{os.linesep}-{{60}})",

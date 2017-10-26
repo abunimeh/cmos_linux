@@ -6,8 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.http import HttpResponse
 from django.conf import settings
-from .models import User, Proj, Module, RegrSimv, RegrCase, RegrSim
-from .views import gen_date_range, date_range, zone_time
+from .models import User, Proj, Module, RegrSimv, RegrCase, RegrSim, MpRun
+from .views import gen_date_range, date_range, zone_time, update_userinfo
 
 # Create your views here.
 def gen_pr_color(prt):
@@ -187,8 +187,9 @@ class RegrUserList(ListView):
     def __init__(self):
         self.user_list = []
     def get_queryset(self):
-        for user_obj in RegrSim.objects.distinct('user'):
-            self.user_list.append(user_obj.user.name)
+        for user_obj in User.objects.all():
+            if user_obj.asic_info.get("regr"):
+                self.user_list.append(user_obj.name)
     def get_context_data(self, **kwargs):
         context = super(RegrUserList, self).get_context_data(**kwargs)
         context['user_list'] = self.user_list
@@ -257,14 +258,16 @@ def regr_query_insert_case(request):
     """push data to database ----API"""
     if request.method == 'POST':
         case_dic = json.loads(request.body.decode())
-        User.objects.update_or_create(name=case_dic['user_name'])
-        Proj.objects.update_or_create(name=case_dic['proj_name'])
-        Module.objects.update_or_create(name=case_dic['module_name'])
+        user_obj, _ = User.objects.update_or_create(name=case_dic['user_name'])
+        update_userinfo('regr', user_obj, case_dic['proj_name'], case_dic['m_name'])
+        proj_obj, _ = Proj.objects.update_or_create(name=case_dic['proj_name'])
+        module_obj, _ = Module.objects.update_or_create(name=case_dic['module_name'])
         RegrSimv.objects.update_or_create(name=case_dic['simv_name'])
         RegrCase.objects.update_or_create(name=case_dic['case_name'])
+        case_date = pytz.timezone(settings.TIME_ZONE).localize(
+            dt.datetime.fromtimestamp(case_dic['pub_date']))
         RegrSim.objects.create(
-            pub_date=pytz.timezone(settings.TIME_ZONE).localize(
-                dt.datetime.fromtimestamp(case_dic['pub_date'])),
+            pub_date=case_date,
             end_date=pytz.timezone(settings.TIME_ZONE).localize(
                 dt.datetime.fromtimestamp(case_dic['end_date'])),
             proj_cl=case_dic['proj_cl'], seed=case_dic['seed'],
@@ -293,4 +296,17 @@ def regr_query_insert_case(request):
             proj=Proj.objects.get(name=case_dic['proj_name']),
             p_name=case_dic['proj_name'],
             user=User.objects.get(name=case_dic['user_name']))
+        mprun_qs = MpRun.objects.filter(
+            user=user_obj,
+            proj=proj_obj,
+            module=module_obj,
+            p_name=case_dic['proj_name'],
+            m_name=case_dic['m_name'],
+            run_time=case_date,
+            pj_props=case_dic['pj_props'])
+        if mprun_qs:
+            for mprun_obj in mprun_qs:
+                if mprun_obj.misc["status"] == "Running":
+                    mprun_obj.misc["status"] = "Fault"
+                    mprun_obj.save()
     return HttpResponse(json.dumps({}), content_type='application/json')

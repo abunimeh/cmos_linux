@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^pj_app/', include('pj_app.urls', namespace='pj_app')),
     url(r'^user_info/', include('user_info.urls', namespace='user_info')),
     url(r'^contact/', views.contact, name='contact'),
+    url(r'^comments/', views.comments, name='comments'),
     url(r'^page_error/$', views.page_error, name='page_error'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

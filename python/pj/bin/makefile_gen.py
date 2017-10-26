@@ -38,7 +38,7 @@ class MakefileGen(object):
             or list(pcom.find_iter(c_src, "*.cpp"))
             or list(pcom.find_iter(c_src, "*.cc"))
             or list(pcom.find_iter(c_src, "*.cxx"))) else False
-        self.simv_set = {"DEFAULT"}
+        self.simv_lst = ["DEFAULT"]
     def chk_c_cfg(self):
         """to check c options modification"""
         c_cfg_json = f"{self.ced['OUTPUT_CLIB']}{os.sep}c_cfg.json"
@@ -166,17 +166,22 @@ class MakefileGen(object):
         simv_dic["ce_opts"] = self.gen_ce_opts(v_n, simv_dic)
         simv_dic["upf_flg"] = True if pcom.rd_cfg(
             self.cfg_dic["simv"], v_n, "upf") == ["on"] else False
-        dut_flist_lst = [f"{self.ced['MODULE_FLIST']}{os.sep}rtl.flist"]+self.gen_smf_lst(v_n)
+        smf_lst = self.gen_smf_lst(v_n)
+        dut_flist_name = pcom.rd_cfg(self.cfg_dic["simv"], v_n, "dut_flist", True, "rtl.flist")
+        dut_flist_lst = [f"{self.ced['MODULE_FLIST']}{os.sep}{dut_flist_name}"]+smf_lst
         df_tup = filelst_gen.FilelstGen().gen_file_lst(dut_flist_lst)
         simv_dic["dut_dir_lst"], simv_dic["dut_file_lst"], simv_dic["vhdl_file_lst"] = df_tup
         self.chk_simv_flist(v_n, df_tup, False)
-        tb_flist_lst = [f"{self.ced['MODULE_FLIST']}{os.sep}tb.flist"]
+        tb_flist_name = pcom.rd_cfg(self.cfg_dic["simv"], v_n, "tb_flist", True, "tb.flist")
+        tb_flist_lst = [f"{self.ced['MODULE_FLIST']}{os.sep}{tb_flist_name}"]
         tf_tup = filelst_gen.FilelstGen().gen_file_lst(tb_flist_lst)
         simv_dic["tb_dir_lst"], simv_dic["tb_file_lst"], _ = tf_tup
         self.chk_simv_flist(v_n, tf_tup, True)
-        simv_dic["tb_dep_file_lst"] = list(
-            pcom.find_iter(f"{self.ced['PROJ_VERIF']}{os.sep}vip", "*.sv"))+list(
-                pcom.find_iter(self.ced["MODULE_TB"], "*.sv*"))
+        simv_dic["tb_dep_file_lst"] = [
+            ddf for did in simv_dic["dut_dir_lst"] for ddf in pcom.find_iter(
+                did.replace("+incdir+", ""), "*", cur_flg=True, i_str="\\")]+[
+                    tdf for tid in simv_dic["tb_dir_lst"] for tdf in pcom.find_iter(
+                        tid.replace("+incdir+", ""), "*", cur_flg=True, i_str="\\")]
         simv_dic["vhdl_tool"] = pcom.rd_cfg(self.cfg_dic["simv"], v_n, "vhdl_tool", True, "vhdlan")
         simv_dic["vhdl_da_opts"] = " ".join(pcom.rd_cfg(
             self.cfg_dic["simv"], v_n, f"vt_{simv_dic['vhdl_tool']}_dut_ana_opts"))
@@ -242,7 +247,8 @@ class MakefileGen(object):
         case_dic = {"name": c_n}
         simv_str = pcom.rd_cfg(self.cfg_dic["case"], c_n, "simv", True)
         case_dic["simv"] = simv_str if simv_str and simv_str in self.cfg_dic["simv"] else "DEFAULT"
-        self.simv_set.add(case_dic["simv"])
+        if case_dic["simv"] not in self.simv_lst:
+            self.simv_lst.append(case_dic["simv"])
         case_dic["tb_top"] = pcom.rd_cfg(
             self.cfg_dic["simv"], case_dic["simv"], "tb_top", True, "test_top")
         case_dic["wave"] = True if pcom.rd_cfg(
@@ -271,15 +277,15 @@ class MakefileGen(object):
         rt_str = pcom.rd_cfg(self.cfg_dic["case"], c_n, "random_times", True)
         loop_times = rt_str if rt_str and rt_str.isdigit() else "1"
         for _ in range(int(loop_times)):
-            if rt_str:
-                seed = check_seed(random.randrange(1, 999999), seed_set)
-                seed_set.add(seed)
-            elif seed_str:
+            if seed_str:
                 if seed_str.isdigit():
                     seed_set.add(int(seed_str))
                 else:
                     seed = check_seed(random.randrange(1, 999999), seed_set)
                     seed_set.add(seed)
+            elif rt_str:
+                seed = check_seed(random.randrange(1, 999999), seed_set)
+                seed_set.add(seed)
             else:
                 seed_set.add(1)
         case_dic["seed_set"] = seed_set
@@ -326,7 +332,9 @@ class MakefileGen(object):
         mc_dic = {"CED": self.ced, "case_dic": case_dic, "ed": {
             "case": case_dic["name"], "seed": case_dic["seed"]}}
         mc_dic["clib_flg"] = self.mkg_dic["clib_flg"]
-        mc_dir = f"{self.ced['MODULE_OUTPUT']}{os.sep}{case_dic['name']}{os.sep}{case_dic['seed']}"
+        mc_dir = (
+            f"{self.ced['MODULE_OUTPUT']}{os.sep}{case_dic['name']}{os.sep}"
+            f"{case_dic['simv']}__{case_dic['seed']}")
         mc_file = "case_makefile"
         os.makedirs(mc_dir, exist_ok=True)
         LOG.info("case dir %s is generated", mc_dir)
@@ -336,7 +344,7 @@ class MakefileGen(object):
     def gen_simv_dic_dic(self):
         """to generate nested simv dic to support regression"""
         simv_dic_dic = collections.OrderedDict()
-        for v_n in self.simv_set:
+        for v_n in self.simv_lst:
             if v_n not in self.cfg_dic["simv"]:
                 continue
             if self.mkg_dic["regr_flg"]:

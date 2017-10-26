@@ -3,17 +3,23 @@
 配置文件使用手册
 ========================================
 
-三种配置文件
+几种配置文件
 ----------------------------------------
 配置文件是平台对用户的唯一接口，并且根据项目的不同、module的不同而不同，如果将平台看成一个类的话，配置文件就相当于平台根据项目例化时的构造函数，配置文件里提供了所有的参数一同影响平台的行为
 
-平台在项目中有三种配置文件：
+平台在项目中有一下几种配置文件：
 
 - PROJ_ROOT/share/config/proj.cfg
 
   + 项目唯一
   + 配置文件覆盖优先级低
   + 设置了runtime环境变量、回归配置参数以及simv配置文件与case配置文件的默认参数
+
+- PROJ_MODULE/config/c.cfg
+
+  + 模块唯一
+  + 配置文件覆盖优先级高
+  + 里面设置了模块仿真所需要的编译进simv的c library的编译参数
 
 - PROJ_MODULE/config/simv.cfg
 
@@ -70,17 +76,24 @@ proj section用来配置与proj顶层有关参数
 
   + 用来配置tree命令的ignore目录，在pj提示所有可用module的时候过滤掉不需要显示的目录信息
 
-- rtl_top
-
-  + 用来指定chip顶层的module名字
-
-- c_opts
-
-  + 用来指定默认的c compilter使用的编译参数
-
 [regression_simv], [regression_case], [regression_opts]
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 当kick off regression的时候，regression option负责统一管控 **覆盖** 所有默认的相同option的值，regression_opts option负责统一管控 **添加** 所有默认的相同option的值, regression_simv与regression_case负责compilation与simulation阶段的在regression模式下全局开关
+
+[gen_agt], [gen_with]
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+控制pj gen子命令产生module级环境时所对应的tb环境文件自动生成行为
+
+- gen_agt
+
+  + pj运行gen命令时，用户可根据命令提示输入需要的多个agent
+  + uvm环境中需要根据输入的agent由模板生成多个agent文件，该类模板文件名需要写入到multiple中
+
+- gen_with
+
+  + uvm模板环境中会提供一些可选组件，可选组件的添加会通过终端命令由用户确定: 如create with_vseq？(yes/y or no/n):
+  + 可选组件在template中的开关设置必须与gen_with的option对应，如template中开关为{%-if with_vseq%}，那么gen_with中的option就必须为with_vseq
+  + option的值为与该option对应的模板文件名             
 
 [vplan_sheets], [vplan_column_width]
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -90,9 +103,35 @@ vplan是由验证相关人员维护的一套用于表征验证进度与验证完
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 用来配置集成到pj的x86指令集相关参数
 
-[leda]
+[env_c]
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-用来配置leda flow的相关参数
+env_c section用来提供所有c.cfg中可能用到的全部option的默认值，由于proj.cfg的优先级低于c.cfg的优先级，因此c.cfg中出现的相同option的值会覆盖这个section中的默认值
+
+- base_comp_opts
+
+  + c编译的统一基准compilation参数，其余后面的所有compilation参数都是基于这些参数
+
+- lib_comp_opts
+
+  + PROJ_MODULE/c目录下的全部c源文件会被编译成一个PROJ_MODULE/output/__c_lib__/libMODULE.so动态链接库文件，然后在case编译阶段编译进simv可执行文件
+  + 基准参数+该参数便是上述c编译参数
+
+- lib_pre_cmd/lib_post_cmd
+
+  + 编译过程预处理与后处理的linux shell命令
+
+- src_comp_opts
+
+  + PROJ_MODULE/c/src目录下的全部c源文件会被编译成一个PROJ_MODULE/output/__c_lib__/MODULE的可执行文件
+  + 该option可以指定编译成该独立可执行文件的编译参数
+
+- src_run_opts
+
+  + 该option可以指定运行已编译出来的可执行文件的运行参数
+
+- src_pre_cmd/src_post_cmd
+
+  + 独立编译/运行可执行文件的预处理与后处理的linux shell命令
 
 [env_simv]
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -100,7 +139,7 @@ env_simv section用来提供所有simv.cfg中可能用到的全部option的默�
 
 - sub_modules
 
-  + 用来指定该module下的子module，格式是MODULE:TYPE，其中MODULE为模块名，TYPE为模块类型，比如rtl、bfm等
+  + 用来指定该module下的子module，格式是MODULE:TYPE，其中MODULE为模块名，TYPE为模块类型，比如rtl, bfm等
   + 该配置会影响生成的filelist
   + 该配置为空的时候，pj自动产生用来analysis的filelist仅由rtl.flist与tb.flist构成
   + 该配置非空，除了模块自己的 会按照TYPE将所有子模块flist目录下的TYPE.flist拿来用以构成analysis用的filelist
@@ -112,6 +151,14 @@ env_simv section用来提供所有simv.cfg中可能用到的全部option的默�
   + +incdir+查询路径（相对路径或绝对路径）
   + 注释 （//或#行注释）
   + -f FILE指定任意其它filelist
+
+- dut_flist
+
+  + 指定PROJ_MODULE/flist下的dut filelist顶层文件名，用来生成dut的总体filelist
+
+- tb_flist
+
+  + 指定PROJ_MODULE/flist下的tb filelist顶层文件名，用来生成tb的总体filelist
 
 - vhdl_tool, ana_tool, elab_tool
 
@@ -134,34 +181,49 @@ env_simv section用来提供所有simv.cfg中可能用到的全部option的默�
   + 用来指定tb的top module名字
   + 默认值是test_top
 
-- uvm, cov, wave, gui, prof, fpga
+- power_top
+
+  + 用来指定upf仿真时的top module名字
+  + 默认值是chip_top
+
+- uvm, cov, upf, wave, gui, prof, fpga
 
   + analysis和elaboration阶段的主要管控开关，管控每个simv的行为
-  + 分别是uvm方法学环境参数开关、覆盖率收集参数开关、dump波形开关、设置断点单步执行开关、收集效率分析报告开关
+  + 分别是uvm方法学环境参数开关、覆盖率收集参数开关、upf功耗仿真参数开关、dump波形开关、设置断点单步执行开关、收集效率分析报告开关
 
 - wave_format
 
   + 预留的支持多种格式的波形文件的option
   + 目前只支持fsdb
 
-- custom_ana_opts, custom_elab_opts
+- custom_dut_ana_opts, custom_tb_ana_opts, custom_elab_opts
 
   + 用户自定义添加的analysis阶段与elaboration阶段tool的options
+  + analysis阶段分为针对dut与tb的分阶段tool的options
 
 - vt_TOOLNAME_dut_ana_opts, vt_TOOLNAME_tb_ana_opts, at_TOOLNAME_dut_ana_opts, at_TOOLNAME_tb_ana_opts, et_TOOLNAME_elab_opts
 
   + 用来指定相应的阶段工具的相应参数
   + 第一个_前的vt表示vhdl_tool、at表示ana_tool、et表示elab_tool
   + 第一个_后的名称表示相应的工具名称
+  + analysis阶段分为针对dut与tb的分阶段
 
 - verdi_opts
 
   + 用来指定verdi的相应参数
 
-- cov_elab_opts, wave_elab_opts, gui_elab_opts, prof_elab_opts, fpga_ana_opts
+- uvm_dut_ana_opts, uvm_tb_ana_opts, uvm_elab_opts
 
-  + 分别受cov, wave, gui, prof开关控制的tool options
+  + 用来指定当uvm开关打开时相应analysis阶段与elaboration阶段tool的options
+
+- cov_elab_opts, wave_elab_opts, gui_elab_opts, prof_elab_opts
+
+  + 分别受cov, wave, gui, prof开关控制的相应elaboration阶段tool的options
   + 当开关是on的时候会添加到相应阶段的tool otpions中
+
+- fpga_dut_ana_opts, fpga_tb_ana_opts
+
+  + 用来指定当fpga开关打开时相应analysis阶段tool的options
 
 - wf_WAVEFORMAT_elab_opts
 
@@ -199,6 +261,7 @@ env_case section用来提供所有case.cfg中可能用到的全部option的默�
   + 不设置的情况下seed为1
   + 设置具体数值的时候seed固定为该数值
   + 设置random的时候seed会随机产生
+  + 优先级比random_times高，即同时指定这两个参数的时候以seed参数指定的seed值为准
 
 - uvm, cov, wave, wave_mem, wave_glitch, gui, prof_mem, prof_time
 
@@ -209,7 +272,7 @@ env_case section用来提供所有case.cfg中可能用到的全部option的默�
 
   + 用户自定义添加simulation阶段tool的options
 
-- uvm_simu_opts, cov_simu_opts, wave_WAVEFORMAT_simu_opts, wave_WAVEFORMAT_glitch_simu_opts, gui_simu_opts, prof_mem_simu_opts, prof_time_simu_opts
+- uvm_simu_opts, cov_simu_opts, wf_WAVEFORMAT_simu_opts, wf_WAVEFORMAT_glitch_simu_opts, gui_simu_opts, prof_mem_simu_opts, prof_time_simu_opts
 
   + 分别受uvm, cov, wave, wave_glitch, gui, prof_mem, prof_time开关控制的tool options
   + 当开关是on的时候会添加到相应阶段的tool options中
@@ -255,6 +318,10 @@ log parser解析原理是：
   + 对应vplan中test_case那张sheet的相应case的描述部分
   + 分别反标case的description, owner, priority
 
+c.cfg配置文件
+----------------------------------------
+每个module只有一份的配置文件，用来配置模块级别在c仿真/独立的编译/运行阶段的参数，写入的值会覆盖proj.cfg里面的默认值，module owner负责修改
+
 simv.cfg配置文件
 ----------------------------------------
 每个module只有一份的配置文件，用来配置模块级别在analyasis与elaboration阶段的特性，里面记录了该module的全部simv，每个section就是一个simv，每个simv都有自己一套独立的analysis与elaboration结果，module owner负责修改
@@ -274,38 +341,48 @@ simv section, DEFAULT section, proj.cfg env_simv section这三个section中可�
 以下面一个simv.cfg为例来说明用法：
 ::
 
-   # this config is used for simv level, 2nd entry (analysis and elaboration stage)
+   # this config is used by pj for simv level, 2nd entry (analysis and elaboration stage)
    [DEFAULT]
    ### simv default pre/post cmd in analysis and elaboration
    pre_cmd =
    post_cmd =
    
-   ### simv default TB top
-   tb_top = module_tb
+   ### simv default TB top and POWER top
+   tb_top = tb
+   power_top = ChipTop
    
    ### simv default flow control switches
    uvm = on
    cov = off
+   upf = off
    wave = off
    gui = off
    prof = off
+   fpga = off
    
    ### simv default analysis and elaboration options
-   custom_ana_opts =
+   custom_dut_ana_opts =
+   custom_tb_ana_opts =
    custom_elab_opts =
    
-   [cov_simv]
+   [simv_no_uvm]
+   uvm = off
+   
+   [simv_cov]
    cov = on
    
-   [dump_simv]
+   [simv_wave]
    wave = on
+   
+   [simv_upf]
+   upf = on
 
 - DEFAULT section可以列出感兴趣的管控全部simvs的options，options全集在proj.cfg文件的env_simv section中
-- 该模块的tb_top叫module_tb，异于默认的test_top，同时所有的simv在elaboration阶段都用module_tb，所以需要在DEFAULT section修改
+- 该模块的tb_top叫tb，异于默认的test_top，同时所有的simv在elaboration阶段都用tb，所以需要在DEFAULT section修改
 - analysis与elaboration两个阶段的管控开关列在这里，只是给自己一个提示，方便修改，上面都是proj.cfg的默认值
-- custom_ana_opts与custom_elab_opts也是为了方便修改列在这里
-- 该模块一共有三个simv：DEFAULT, cov_simv, dump_simv，所以该模块会有三套编译结果
-- cov_simv里cov设置为on，虽然DEFAULT是off，但是因为优先级的原因cov_simv里面cov = on，没有列出来的option与DEFAULT section一致，DEFAULT section里没有列出来的option与proj.cfg env_simv section一致
+- custom_dut_ana_opts, custom_tb_ans_opts与custom_elab_opts也是为了方便修改列在这里
+- 该模块一共有五个simv：DEFAULT, simv_no_uvm, simv_cov, simv_wave, simv_upf，所以该模块会有五套编译结果
+- simv_cov里cov设置为on，虽然DEFAULT是off，但是因为优先级的原因cov_simv里面cov = on，没有列出来的option与DEFAULT section一致，DEFAULT section里没有列出来的option与proj.cfg env_simv section一致
 
 case.cfg配置文件
 ----------------------------------------
@@ -344,7 +421,7 @@ case section, DEFAULT section, proj.cfg env_case section这三个section中可�
    wave = off
    wave_mem = off
    wave_glitch = off
-   run_gui = off
+   gui = off
    prof_mem = off
    prof_time = off
 
@@ -396,4 +473,4 @@ case section, DEFAULT section, proj.cfg env_case section这三个section中可�
 
 利用平台runner(pj)工作
 ----------------------------------------
-project owner配置好proj.cfg，module owner配置好simv.cfg和case.cfg之后，来利用pj开始工作吧，具体说明请参考 :ref:`runner`
+project owner配置好proj.cfg，module owner配置好c.cfg, simv.cfg和case.cfg之后，来利用pj开始工作吧，具体说明请参考 :ref:`runner`

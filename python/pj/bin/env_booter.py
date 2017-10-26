@@ -34,11 +34,9 @@ def find_module_dir(ced, cfg_dic, module):
 
 class EnvBooter(object):
     """environment booter for pj"""
-    def __init__(self, eb_dic=None):
+    def __init__(self):
         self.ced = {}
         self.cfg_dic = {}
-        self.eb_dic = eb_dic if eb_dic else {
-            "x86_ins_flg": False, "x86_ins_num": None, "x86_ins_groups": None}
     def boot_env(self):
         """to boot top environments used only by pj"""
         os.environ["PROJ_ROOT"] = find_proj_root(os.getcwd())
@@ -56,24 +54,6 @@ class EnvBooter(object):
             os.environ[env_key] = os.path.expandvars(env_value)
             self.ced[env_key] = os.path.expandvars(env_value)
         return self.ced, self.cfg_dic
-    def x86_env(self):
-        """to generate x86 instructions case configs"""
-        self.eb_dic["x86_ins_num"] = (
-            int(pcom.rd_cfg(self.cfg_dic["proj"], "x86_ins", "default_ins_num", True))
-            if self.eb_dic["x86_ins_num"] is None else self.eb_dic["x86_ins_num"])
-        self.eb_dic["x86_ins_groups"] = (
-            pcom.rd_cfg(self.cfg_dic["proj"], "x86_ins", "case_group")
-            if self.eb_dic["x86_ins_groups"] is None else self.eb_dic["x86_ins_groups"])
-        scr_xi_dir = f"{self.ced['SHARE_SCRIPTS']}{os.sep}X86_INS"
-        case_gen_file = f"{scr_xi_dir}{os.sep}case_gen.py"
-        if not os.path.isfile(case_gen_file):
-            raise Exception(f"case_gen.py file {case_gen_file} is NA")
-        os.sys.path.append(scr_xi_dir)
-        import case_gen
-        for cg_name in self.eb_dic["x86_ins_groups"]:
-            case_gen.CaseGen(
-                self.ced["MODULE"], cg_name, self.eb_dic["x86_ins_num"],
-                self.ced["MODULE_CONFIG"]).gen_case()
     def module_env(self, sim_module):
         """to boot verification module level environments used only by pj"""
         self.boot_env()
@@ -85,8 +65,6 @@ class EnvBooter(object):
                 else {}).items():
             os.environ[env_key] = os.path.expandvars(env_value)
             self.ced[env_key] = os.path.expandvars(env_value)
-        if self.eb_dic["x86_ins_flg"]:
-            self.x86_env()
         c_cfg = f"{self.ced['MODULE_CONFIG']}{os.sep}c.cfg"
         if not os.path.isfile(c_cfg):
             c_cfg = ""

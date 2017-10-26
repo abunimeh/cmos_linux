@@ -11,9 +11,8 @@ from django.views.generic import ListView
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
-from .models import User, Proj, Module, DcQorGroup, DcQorRpt, DcRun, DcError, DcWarning, \
-DcTimeRpt, DcPowerRpt
-from .views import gen_date_range, date_range, zone_time
+from .models import User, Proj, Module, DcRun
+from .views import gen_date_range, date_range, zone_time, update_userinfo
 
 def gen_slack_interv(slk_lst):
     """slack values range list"""
@@ -125,102 +124,94 @@ def query_tm_lvl(rpt_qs, ref_tm, lvl='Level 1'):
 
 def query_time_qs(rpt_qs, run_tm):
     """dc time report queryset interface"""
-    dcrun_obj_qs = rpt_qs.filter(run_time__range=gen_date_range(run_tm))
     rpt_dic = collections.defaultdict(list)
-    dctm_obj_qs = dcrun_obj_qs.first().dctimerpt_set.all()
-    if dctm_obj_qs.exists():
+    dcrun_qs = rpt_qs.filter(run_time__range=gen_date_range(run_tm))
+    tmrpt_dic = dcrun_qs.first().time_rpt
+    if tmrpt_dic:
         gp_sum = 0
-        for tm_obj in dctm_obj_qs.order_by('slack'):
-            rpt_dic[tm_obj.name].append([tm_obj.start_point,
-                                         tm_obj.end_point, tm_obj.slack])
+        for se_dic in tmrpt_dic["timing"]:
+            rpt_dic[se_dic["Path Group"]].append([se_dic["Startpoint"],
+                                                  se_dic["Endpoint"],
+                                                  se_dic["slack"]])
             gp_sum += 1
         rpt_dic['gp_sum'] = gp_sum
-        rpt_dic['log_path'] = dctm_obj_qs.first().log_path
+        rpt_dic["log_path"] = tmrpt_dic["log_path"]
     return rpt_dic
 
 def query_rpt_qs(rpt_qs, run_tm):
     """dc qor and power reports queryset interface"""
     rpt_dic = collections.defaultdict(dict)
-    dcrun_obj_qs = rpt_qs.filter(run_time__range=gen_date_range(run_tm))
-    dcqorgp_obj_qs = dcrun_obj_qs.first().dcqorgroup_set.all()
-    if dcqorgp_obj_qs.exists():
+    dcrun_qs = rpt_qs.filter(run_time__range=gen_date_range(run_tm))
+    qorpt_dic = dcrun_qs.first().qor_rpt
+    if qorpt_dic:
         rpt_dic['qor_pw_rpt'] = od_dict({'run_time': run_tm,
-                                         'qor_log': dcqorgp_obj_qs.first().log_path})
-        for dcqorgp_obj in dcqorgp_obj_qs:
-            if dcqorgp_obj.name in ('Design Rules',
-                                    'Compile CPU Statistics'):
+                                         'qor_log': qorpt_dic["log_path"]})
+        for qor_type, qor_dic in qorpt_dic.items():
+            if qor_type in ("log_path",
+                            "Design Rules",
+                            "Compile CPU Statistics"):
                 continue
-            dcqor_obj_qs = dcqorgp_obj.dcqorrpt_set.all()
-            if dcqor_obj_qs.exists():
-                qor_dic = od_dict()
-                for dcqor_obj in dcqor_obj_qs:
-                    if dcqor_obj.name in ("Worst Hold Violation",
-                                          "Total Hold Violation",
-                                          "No. of Hold Violations"):
-                        continue
-                    qor_dic[dcqor_obj.name] = dcqor_obj.num
-                rpt_dic[dcqorgp_obj.name] = qor_dic
+            if qor_type not in ("Area", "Cell Count"):
+                qor_dic = {type_nm: qor_dic[type_nm] for type_nm in qor_dic.keys() -
+                           {"Worst Hold Violation",
+                            "Total Hold Violation",
+                            "No. of Hold Violations"}}
+                qor_dic = od_dict(qor_dic)
+            rpt_dic[qor_type] = qor_dic
         for qor, qor_dic in rpt_dic.items():
             if (qor not in ('Cell Count', 'Area', 'qor_pw_rpt') and
                     qor_dic.get("Critical Path Clk Period", None)):
                 qor_dic.move_to_end("Critical Path Clk Period")
             rpt_dic[qor] = od_dict(reversed(list(qor_dic.items())))
-    dcpw_obj_qs = dcrun_obj_qs.first().dcpowerrpt_set.all()
-    if dcpw_obj_qs.exists():
-        dcpw_obj = dcpw_obj_qs.first()
-        rpt_dic['qor_pw_rpt']['pw_log'] = dcpw_obj.log_path
-        rpt_dic['Power'] = od_dict({"Internal": dcpw_obj.internal,
-                                    "Switching": dcpw_obj.switching,
-                                    "Leakage": dcpw_obj.leakage,
-                                    "Lotal": dcpw_obj.total})
+    pwrpt_dic = dcrun_qs.first().power_rpt
+    if pwrpt_dic:
+        rpt_dic['qor_pw_rpt']['pw_log'] = pwrpt_dic["log_path"]
+        rpt_dic['Power'] = od_dict({"Internal": pwrpt_dic["internal_pw"],
+                                    "Switching": pwrpt_dic["swithing_pw"],
+                                    "Leakage": pwrpt_dic["leakage_pw"],
+                                    "Lotal": pwrpt_dic["total_pw"]})
     return rpt_dic
 
-def gen_ew_dic(ew_qs):
+def gen_ew_dic(dic):
     """gen dc.log error and warning info dic"""
-    ew_lst, ew_dic, num = [], {}, 0
-    for ew_obj in ew_qs:
-        if ew_obj.name not in ew_lst:
-            ew_lst.append(ew_obj.name)
-    for ew_type in ew_lst:
-        count = ew_qs.filter(name=ew_type).count()
-        num += count
-        ew_dic[ew_type] = count
-    ew_dic['ew_num'] = num
+    ew_dic, count = {}, 0
+    for ew_type, ew_lst in dic.items():
+        ew_num = len(ew_lst)
+        ew_dic[ew_type] = ew_num
+        count += ew_num
+    ew_dic['ew_num'] = count
     return ew_dic
 
-def query_ew_dic(run_qs, module, model):
+def query_ew_dic(dcrun_qs):
     """generate dc.log detail infomation table"""
     model_lst = []
-    if run_qs.exists():
-        for run_obj in run_qs:
+    if dcrun_qs.exists():
+        for dcrun_obj in dcrun_qs:
             model_dic = nested_dict()
-            model_dic['module'] = run_obj.m_name
-            model_dic['cpu_time'] = run_obj.cpu_time
-            model_dic['run_time'] = zone_time(run_obj.run_time)
-            error_obj_qs = run_obj.dcerror_set.all()
-            warn_obj_qs = run_obj.dcwarning_set.all()
-            if model == 'sg_md':
-                error_obj_qs = error_obj_qs.filter(run__m_name=module)
-                warn_obj_qs = warn_obj_qs.filter(run__m_name=module)
-            if error_obj_qs.exists():
-                model_dic['ew_info']['error'] = gen_ew_dic(error_obj_qs)
+            model_dic["module"] = dcrun_obj.m_name
+            model_dic["cpu_time"] = dcrun_obj.cpu_time
+            model_dic["run_time"] = zone_time(dcrun_obj.run_time)
+            model_dic["log_path"] = dcrun_obj.dc_log
+            error_dic = dcrun_obj.error_info
+            warning_dic = dcrun_obj.warning_info
+            if error_dic:
+                model_dic['ew_info']['error'] = gen_ew_dic(error_dic)
                 model_dic['status'] = 'fail'
             else:
                 model_dic['ew_info']['error'] = None
                 model_dic['status'] = ('running'
                                        if model_dic['cpu_time'] == 'NA' else 'pass')
-                model_dic['ew_info']['warn'] = (gen_ew_dic(warn_obj_qs)
-                                                if warn_obj_qs.exists() else None)
-            if warn_obj_qs.exists():
-                model_dic['log_path'] = warn_obj_qs.first().log_path
-            elif error_obj_qs.exists():
-                model_dic['log_path'] = error_obj_qs.first().log_path
-            else:
-                model_dic['log_path'] = None
+            if warning_dic:
+                model_dic['ew_info']['warn'] = gen_ew_dic(warning_dic)
             model_lst.append(model_dic)
     else:
-        model_lst = [{'module': None, 'cpu_time': None, 'status': None,
-                      'log_path': None, 'run_time': None, 'ew_info':{'warn':None, 'error': None}}]
+        model_lst = [{'module': None,
+                      'cpu_time': None,
+                      'status': None,
+                      'log_path': None,
+                      'run_time': None,
+                      'ew_info':{'warn':None,
+                                 'error': None}}]
     return model_lst
 
 class DcUserList(ListView):
@@ -229,8 +220,9 @@ class DcUserList(ListView):
     def __init__(self):
         self.user_list = []
     def get_queryset(self):
-        for user_obj in DcRun.objects.distinct('user'):
-            self.user_list.append(user_obj.user.name)
+        for user_obj in User.objects.all():
+            if user_obj.asic_info.get("dc"):
+                self.user_list.append(user_obj.name)
     def get_context_data(self, **kwargs):
         context = super(DcUserList, self).get_context_data(**kwargs)
         context['user_list'] = self.user_list
@@ -240,20 +232,19 @@ class DcUserList(ListView):
         return context
 
 def dc_get_loginfo(request):
-    """ajax---load different interval time dc.log informations"""
+    """ajax---load dc log informations"""
     model = request.GET.get('model')
     user = request.GET.get('user')
     proj = request.GET.get('proj')
     module = request.GET.get('module')
     tstart = request.GET.get('tstart')
     tend = request.GET.get('tend')
-    run_obj_qs = DcRun.objects.filter(user__name=user,
-                                      p_name=proj,
-                                      run_time__range=date_range(tstart, tend))
-    if model == "all_mds":
-        model_lst = query_ew_dic(run_obj_qs, module, model)
-    elif model == 'sg_md':
-        model_lst = query_ew_dic(run_obj_qs.filter(m_name=module), module, model)
+    dcrun_qs = DcRun.objects.filter(user__name=user,
+                                    p_name=proj,
+                                    run_time__range=date_range(tstart, tend))
+    if model == 'sg_md':
+        dcrun_qs = dcrun_qs.filter(module__name=f"{module}___{proj}")
+    model_lst = query_ew_dic(dcrun_qs)
     return HttpResponse(json.dumps(model_lst), content_type='application/json')
 
 def dc_get_tminfo(request):
@@ -263,10 +254,10 @@ def dc_get_tminfo(request):
     module = request.GET.get('module')
     time = request.GET.get('time')
     level = request.GET.get('level')
-    dcrun_obj_qs = DcRun.objects.filter(user__name=user,
-                                        p_name=proj,
-                                        m_name=module)
-    rpt_type_dic = query_tm_lvl(dcrun_obj_qs, time, lvl=level)
+    dcrun_qs = DcRun.objects.filter(user__name=user,
+                                    p_name=proj,
+                                    module__name=f"{module}___{proj}")
+    rpt_type_dic = query_tm_lvl(dcrun_qs, time, lvl=level)
     return HttpResponse(json.dumps(rpt_type_dic), content_type='application/json')
 
 def dc_detail_loginfo(request, path):
@@ -278,20 +269,19 @@ def dc_detail_loginfo(request, path):
         log_str = "Error: No file found"
     return render(request, 'pj_app/dc_detail_log.html',
                   {'log_str': log_str})
-# def dc_get_rpt(request, user, proj, module, ref_tm, tar_tm, rpt_type):
 
 def dc_get_rpt(request, **kwargs):
     """singe dc report detail inormation"""
-    dcrun_obj_qs = DcRun.objects.filter(user__name=kwargs["user"],
-                                        p_name=kwargs["proj"],
-                                        m_name=kwargs["module"])
+    dcrun_qs = DcRun.objects.filter(user__name=kwargs["user"],
+                                    p_name=kwargs["proj"],
+                                    module__name=f"{kwargs['module']}___{kwargs['proj']}")
     if kwargs["rpt_type"] == 'qor_rpt':
-        rpt_type_dic = gen_qor_dic(dcrun_obj_qs, kwargs["ref_tm"], kwargs["tar_tm"])
+        rpt_type_dic = gen_qor_dic(dcrun_qs, kwargs["ref_tm"], kwargs["tar_tm"])
         return render(request, 'pj_app/dc_qor_rpt.html', {'ref_tm': kwargs["ref_tm"],
                                                           'tar_tm': kwargs["tar_tm"],
                                                           'rpt_data': rpt_type_dic})
     elif kwargs["rpt_type"] == 'tm_rpt':
-        rpt_type_dic = query_tm_lvl(dcrun_obj_qs, kwargs["ref_tm"])
+        rpt_type_dic = query_tm_lvl(dcrun_qs, kwargs["ref_tm"])
         user_info = {"user": kwargs["user"],
                      "proj": kwargs["proj"],
                      "module": kwargs["module"],
@@ -307,77 +297,32 @@ def dc_query_insert_case(request):
     if request.method == 'POST':
         dc_dic = json.loads(request.body.decode())
         user_obj, _ = User.objects.update_or_create(name=dc_dic['user'])
+        update_userinfo('dc', user_obj, dc_dic['proj'], dc_dic['design_name'])
         proj_obj, _ = Proj.objects.update_or_create(name=dc_dic['proj'])
-        module_obj, _ = Module.objects.update_or_create(name=dc_dic['design_name'])
+        module_obj, _ = Module.objects.update_or_create(
+            name=f"{dc_dic['design_name']}___{dc_dic['proj']}")
         rtime = pytz.timezone(settings.TIME_ZONE).localize(
             dt.datetime.fromtimestamp(dc_dic['run_time']))
-        DcRun.objects.filter(run_time=rtime).delete()
-        dcrun_obj = DcRun.objects.create(
-            user=user_obj,
-            proj=proj_obj,
-            module=module_obj,
-            p_name=dc_dic['proj'],
-            m_name=dc_dic['design_name'],
-            clock=dc_dic['clk_freq'],
-            cpu_time=dc_dic['cpu_usage'],
-            run_time=rtime)
-        ##error info postk
-        if dc_dic['dc_log']['error']:
-            for terror, ferror in dc_dic['dc_log']['error'].items():
-                for error_info in ferror:
-                    DcError.objects.create(
-                        name=terror,
-                        des=error_info,
-                        log_path=dc_dic['dc_log']['log_path'],
-                        run=dcrun_obj)
-        ##warn info post
-        if dc_dic['dc_log']['warning']:
-            for twarn, fwarn in dc_dic['dc_log']['warning'].items():
-                for warn_info in fwarn:
-                    DcWarning.objects.create(
-                        name=twarn,
-                        file_name=warn_info[0],
-                        line_number=warn_info[1],
-                        des=warn_info[2],
-                        log_path=dc_dic['dc_log']['log_path'],
-                        run=dcrun_obj)
+        dcrun_qs = DcRun.objects.filter(run_time=rtime)
+        if dcrun_qs.exists():
+            dcrun_obj = dcrun_qs.first()
+            dcrun_obj.cpu_time = dc_dic['cpu_usage']
+        else:
+            dcrun_obj = DcRun.objects.create(
+                user=user_obj,
+                proj=proj_obj,
+                module=module_obj,
+                p_name=dc_dic['proj'],
+                m_name=dc_dic['design_name'],
+                clock=dc_dic['clk_freq'],
+                cpu_time=dc_dic['cpu_usage'],
+                dc_log=dc_dic['dc_log'].get('log_path', ""),
+                run_time=rtime)
+        dcrun_obj.error_info = dc_dic['dc_log'].get('error', {})
+        dcrun_obj.warning_info = dc_dic['dc_log'].get('warning', {})
         if dc_dic['status'] == 'finished':
-            dc_tmqorpw_rpt(dc_dic, dcrun_obj)
+            dcrun_obj.time_rpt = dc_dic.get('tm_rpt', {})
+            dcrun_obj.qor_rpt = dc_dic.get('qor_rpt', {})
+            dcrun_obj.power_rpt = dc_dic.get('pw_rpt', {})
+        dcrun_obj.save()
     return HttpResponse(json.dumps({}), content_type='application/json')
-
-def dc_tmqorpw_rpt(dc_dic, dcrun_obj):
-    """time report post"""
-    for tm_info in dc_dic['tm_rpt'].get('timing', {}):
-        if not tm_info:
-            continue
-        DcTimeRpt.objects.create(
-            name=tm_info['Path Group'],
-            start_point=tm_info['Startpoint'],
-            end_point=tm_info['Endpoint'],
-            slack=tm_info['slack'],
-            log_path=dc_dic['tm_rpt']['log_path'],
-            run=dcrun_obj)
-    ##dc qor report post
-    if dc_dic['qor_rpt']:
-        for qor_type, qor_info in dc_dic['qor_rpt'].items():
-            if qor_type == 'log_path':
-                continue
-            dc_qorgp_obj, _ = DcQorGroup.objects.update_or_create(
-                name=qor_type,
-                log_path=dc_dic['qor_rpt']['log_path'],
-                run=dcrun_obj)
-            for eqor, eqor_num in qor_info.items():
-                DcQorRpt.objects.create(
-                    name=eqor,
-                    num=eqor_num,
-                    group=dc_qorgp_obj)
-    ##dc power report post
-    if dc_dic['pw_rpt']:
-        DcPowerRpt.objects.create(
-            lib=dc_dic['pw_rpt']['lib'],
-            internal=dc_dic['pw_rpt']['internal_pw'],
-            switching=dc_dic['pw_rpt']['swithing_pw'],
-            leakage=dc_dic['pw_rpt']['leakage_pw'],
-            total=dc_dic['pw_rpt']['total_pw'],
-            log_path=dc_dic['pw_rpt']['log_path'],
-            run=dcrun_obj)

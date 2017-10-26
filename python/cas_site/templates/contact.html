@@ -5,9 +5,10 @@
  <html>
  <head>
    <title>contact</title>
+   <link rel="stylesheet" type="text/css" href="{% static 'css/contact.css'%}" media="screen">
  </head>
  <body>
-    <div style="width: 900px; height: 500px; margin: 0px auto; border: 2px solid rgba(233, 231, 231, 0.65); border-radius: 4px; margin-top: 80px;">
+    <div class="contact-info">
       <div style="padding: 25px 50px;">
           <img src="{% static 'images/contact.jpg' %}" />          
       </div>
@@ -19,9 +20,154 @@
         </ul>
         <p>Location</p>
         <ul style="line-height: 28px;">
-            <li>Room 419, 3rd Floor</li>
+            <li>Room 505, 5rd Floor</li>
         </ul>
       </div>
     </div>
+    <div id="comments">
+      <p> If you have any suggestions about our site, please commit your advice, we will do better!</p>
+      <div class="comment-title">Making comments</div>
+      <div class="comment-input">
+        <div class="comment-field">
+          <span class="comment-field-name">User:</span>
+          <div class="comment-field-input">
+            <input type="text" name="user" v-model="newComment.name">
+          </div>
+        </div>
+        <div class="comment-field">
+          <span class="comment-field-name">Comment:</span>
+          <div class="comment-field-input">
+            <textarea name="comment" v-model="newComment.comment" ></textarea>        
+          </div>
+        </div>
+        <div class="comment-field-button">
+          <button v-on:click="addComment">Publish</button>      
+        </div>
+        <transition name="fade">
+          <div v-if="show" class="commit-flag">Commit Ok!</div>
+        </transition>
+      </div>
+      <div class="comment-title">Comments</div>
+      <div>
+          <div v-for="comment in comLists">
+            <my-component v-bind:comment-obj="comment"></my-component>
+          </div>
+      </div>
+    </div>
+    <template id="myComponent">
+      <div class="comment">
+        <span v-text="commentObj.name" class="comment-user"></span>
+        <span v-text="commentObj.time" class="comment-time"></span>
+        <div v-text="commentObj.comment" class="comment-comment"></div>
+      </div>
+    </template>
  </body>
+ <script src="{% static 'js/Vuejs/vue.min.js' %}" ></script>
+ <script type="text/javascript" src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+ <script>
+    function formatDate(date, fmt){
+      var o = {
+        'M+': date.getMonth()+1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds()
+      };
+      if(/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4-RegExp.$1.length));
+      for(var k in o)
+        if(new RegExp("(" + k + ")").test(fmt))
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1)?(o[k]) : (("00" + o[k]).substr((""+ o[k]).length)));
+      return fmt
+    }
+
+    function AjaxHelper() {
+      this.ajax = function(url, type, dataType, data, callback) {
+        $.ajax({
+          url: url,
+          type: type,
+          dataType: dataType,
+          data: data,
+          success: callback,
+          error: function(xhr, errorType, error) {
+            alert("Ajax request error, errorType", + errorType + ', error' + error);
+          }
+        });
+      }
+    }
+    AjaxHelper.prototype.get = function(url, data, callback) {
+      this.ajax(url, "GET", "json", data, callback);
+    }
+    AjaxHelper.prototype.post = function(url, data, callback) {
+      this.ajax(url, "POST", "json", data, callback);
+    }
+
+    var ajaxHelper = new AjaxHelper();
+    $(window).scroll(function(){
+      comments.location = $(document).height()-$(window).scrollTop(); 
+    });
+    var comments = new Vue({
+      el: "#comments",
+      data: {
+        newComment: {
+          name: "",
+          comment: "",
+          time: "",
+        },
+        show: false,
+        location: 0,
+        numbers: 5,
+        comLists:[],
+        ajaxurl: "{% url 'comments' %}",
+      },
+      created: function(){
+        var name = window.localStorage.getItem("user"); 
+        this.newComment.name = name ? name: " ";
+        this.getComments(this.numbers);
+        this.numbers += 5;
+      },
+      watch: {
+        location: function(){
+          if(this.location == $(window).height()) {
+            this.getComments(this.numbers);
+            this.numbers += 5;
+          }
+        }
+      },
+      methods: {
+        addComment: function(){
+          this.newComment.time = formatDate(new Date(), "yyyy-MM-dd hh:mm:ss");
+          if(/^[a-zA-Z]{3,10}/.test(this.newComment.name)) {
+            var callback = function(data) {
+                  comments.show = true;
+                  setTimeout("comments.show = false", 1000);
+                }
+            ajaxHelper.post(this.ajaxurl, this.newComment, callback);
+            this.comLists.splice(0, 0, this.newComment);
+            window.localStorage.setItem("user", this.newComment.name);
+            this.newComment = {name:"", comment:"", time:""};
+          }else{
+            alert("please input reasonable name!");
+          }
+        },
+        getComments: function(nums){
+          var vm = this,
+              callback = function(data) {
+                vm.comLists = vm.comLists.concat(data);
+              };
+          ajaxHelper.get(this.ajaxurl, {"number": nums}, callback);
+        },
+      },
+      components: {
+        "my-component": {
+            template: "#myComponent",
+            props: {
+              commentObj: {
+                  type: Object
+              }
+            }
+        },
+      }
+    });
+ </script>
  </html>

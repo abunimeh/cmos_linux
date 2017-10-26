@@ -18,38 +18,38 @@ ${OUTPUT_SIMV}/{{case_dic.simv}}/simv:
 	${cd_guard} && make -f simv_makefile $@
 
 ### case targets
-.PHONY: run_simv_{{case_dic.name}}__{{case_dic.seed}}
-run_simv_{{case_dic.name}}__{{case_dic.seed}}: \
+.PHONY: run_simv_{{case_dic.name}}__{{case_dic.simv}}__{{case_dic.seed}}
+run_simv_{{case_dic.name}}__{{case_dic.simv}}__{{case_dic.seed}}: \
 ${OUTPUT_SIMV}/{{case_dic.simv}}/simv \
 {%-for file_name, file_cont in case_dic.file_dic|dictsort%}
-${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{file_name}} \
+${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{file_name}} \
 {%-endfor%}
-${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl
+${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{case_dic.name}}.tcl
 {%-if clib_flg%}
 	export LD_LIBRARY_PATH=${OUTPUT_CLIB}:${LD_LIBRARY_PATH} && \
 {%-endif%}
 {%-for pre_cmd in case_dic.pre_cmd_lst%}
 	{{pre_cmd}} && \
 {%-endfor%}
-	mkdir -p ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}} && \
-	cd ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}} && \
+	mkdir -p ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}} && \
+	cd ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}} && \
 	$< \
-	+TEMPDIR=${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}} \
+	+TEMPDIR=${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}} \
 	{{case_dic.su_opts}} \
-	-l ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.seed}}.log \
-	-ucli -i ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl
+	-l ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{case_dic.seed}}.log \
+	-ucli -i ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{case_dic.name}}.tcl
 {%-for post_cmd in case_dic.post_cmd_lst-%}
 	{{' '}}&& \
 	{{post_cmd}}
 {%-endfor%}
 
-.PHONY: ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl
-${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl:
+.PHONY: ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{case_dic.name}}.tcl
+${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{case_dic.name}}.tcl:
 	${dir_guard}
 	@echo > $@
 {%-if case_dic.wave%}
 {%-if case_dic.wave_format == 'fsdb'%}
-	@echo fsdbDumpfile {{case_dic.name}}__{{case_dic.seed}}.fsdb >> $@
+	@echo fsdbDumpfile {{case_dic.name}}__{{case_dic.simv}}__{{case_dic.seed}}.fsdb >> $@
 	@echo fsdbDumpvars 0 {{case_dic.tb_top}} >> $@
 {%-if case_dic.wave_mem%}
 	@echo fsdbDumpMDA >> $@
@@ -62,8 +62,8 @@ ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}.tcl:
 	@echo run >> $@
 
 {%for file_name, file_line_lst in case_dic.file_dic|dictsort%}
-.PHONY: ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{file_name}}
-${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{file_name}}:
+.PHONY: ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{file_name}}
+${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{file_name}}:
 	${dir_guard}
 {%-for file_line in file_line_lst%}
 {%-if loop.first%}
@@ -74,10 +74,10 @@ ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{file_name}}:
 {%-endfor%}
 {%endfor%}
 
-.PHONY: verdi_{{case_dic.name}}__{{case_dic.seed}}
-verdi_{{case_dic.name}}__{{case_dic.seed}}: ${OUTPUT_SIMV}/{{case_dic.simv}}/simv
-	mkdir -p ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}} && \
-	cd ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}} && \
+.PHONY: verdi_{{case_dic.name}}__{{case_dic.simv}}__{{case_dic.seed}}
+verdi_{{case_dic.name}}__{{case_dic.simv}}__{{case_dic.seed}}: ${OUTPUT_SIMV}/{{case_dic.simv}}/simv
+	mkdir -p ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}} && \
+	cd ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}} && \
 	verdi {{case_dic.w_opts}} -simflow -simBin $< \
-	-ssf ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.seed}}/{{case_dic.name}}__{{case_dic.seed}}.fsdb \
+	-ssf ${MODULE_OUTPUT}/{{case_dic.name}}/{{case_dic.simv}}__{{case_dic.seed}}/{{case_dic.name}}__{{case_dic.simv}}__{{case_dic.seed}}.fsdb \
 	-nologo &

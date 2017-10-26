@@ -10,27 +10,92 @@
 {% block content %}
 <div id="container_st" class="clearfix" style="width: 1300px; padding-bottom: 370px;">
   <div class="content" style="height:auto; width: 1290px; margin: 0px auto;">
-    {% if plot_data.nodata %}
-        <p style="font-size: 30px; text-align: center;">{{plot_data.case_nm}} has no data!</p>
-    {% else%}
+        {% if plot_data.nodata %}
+            <p style="font-size: 30px; text-align: center;">{{plot_data.case_nm}} has no data!</p>
+        {% else%}
         <div class="colm_nav colm_border">
             <div class="colm_clk">
                 <div id="ln_loading" style="text-align: center; font-size: 21px"> Loading Line chart, please wait...</div>
-                <div id="container_line" style="min-width: 310px; height: 270px; margin: 0 auto"></div>
+                <div id="container_line" style="min-width: 310px; height: 265px; margin: 0 auto"></div>
             </div>
             <div class="colm_border parameters" style="background: white;">
-                <form action="{% url 'pj_app:mp_form_ajax_colms' %}" method="GET" id="clk_form">
-                    <label for="st_pt">Start Clk:</label>
+                <form action="/" method="GET" id="clk_form" style="display: none;">
                     <input type="text" name="st_pt">
-                    <label for="ed_pt">End Clk:</label>
                     <input type="text" name="ed_pt">
-                    <input type="text" name="id_nums" value={{plot_data.pk_lst|join:"*"}} style="display: none;">
-                    <!-- <input type="submit" name="clk_bt" value="Submit"> -->
+                    <input type="text" name="id_nums" value={{plot_data.pk_lst|join:"*"}} >
                 </form>
+                <div id="container_cal">
+                    <div id="the-calculator">
+                        <div id="the-buttons">
+                          <div class="button-row clearfix">
+                            <button id="calc_clear" value="C/E" >C/E</button>
+                            <button id="left_brkt" value="(">(</button>
+                            <button id="right_brkt" value=")">)</button>                                                        
+                            <button class="calc_op" value="/" >&divide;</button>
+                          </div>
+                          <div class="button-row clearfix">
+                            <button class="calc_int" value="7" >7</button>
+                            <button class="calc_int" value="8" >8</button>
+                            <button class="calc_int" value="9" >9</button>
+                            <button class="calc_op" value="*" >&times;</button>
+                          </div>
+                          <div class="button-row clearfix">
+                            <button class="calc_int" value="4" >4</button>
+                            <button class="calc_int" value="5" >5</button>
+                            <button class="calc_int" value="6" >6</button>
+                            <button class="calc_op" value="-" >-</button>
+                          </div>
+                          <div class="button-row clearfix">
+                            <button class="calc_int" value="1" >1</button>
+                            <button class="calc_int" value="2" >2</button>
+                            <button class="calc_int" value="3" >3</button>
+                            <button class="calc_op" value="+" >+</button>
+                          </div>
+                          <div class="button-row clearfix">
+                            <button id="calc_zero" class="calc_int" value="0" >0</button>
+                            <button id="calc_decimal" value="." >.</button>
+                          </div>
+                        </div>
+                    </div>
+                </div>         
             </div>
+        </div>
+        <div class="colm_border formula_label" style="margin-top: 10px;">
+            <p style="font-size: 20px;">Formula: </p>
+            <table id="fml_tab" class="order-list">
+                <thead>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" name="fml" readonly="readonly" style="width: 500px;" autocomplete="off" />
+                        </td>
+                        <td>
+                            <input type="button" id="ibtnAdd" value="Add"/>
+                        </td>                        
+                        <td>
+                            <input type="button" id="ibtnClear" value="Clear"/>
+                        </td>                        
+                        <td>
+                            <a class="deleteRow"></a>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" style="text-align: left;">
+                            <input type="button" id="addrow" value="New">
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
         <div class=" colm_border colm_ctn">
             {% if plot_data.y_tag %}
+                <p style="font-size: 20px;">Each Clock point items:</p>
                 <div id="colm_st">
                     <div style="margin: 6px 0px;display: inline-block; background: cornsilk;">
                         <label>Clk Point: <span>{{plot_data.x_max}}</span></label>
@@ -54,12 +119,11 @@
                             <option>case_names</option>
                         </select>
                     </div>
-<!--                     <div id="colm_loading_ed" style="text-align: center; font-size: 21px;clear: both;"> Loading column content, please wait...</div>
- -->                    <div id="container_colm_ed" style="min-width: 310px; height: 370px; margin: 0 auto;clear: both;"></div>
+                    <div id="container_colm_ed" style="min-width: 310px; height: 370px; margin: 0 auto;clear: both;"></div>
                 </div>
                 <div id="show_tab" style="margin-top: 20px;"></div>         
             {% else %}
-                <p style="line-height: 30px;">These cases have no same items below: </p>
+                <p>These cases have no same items below: </p>
                 <div>
                     <table id="tab" class="display" cellspacing="0" width="100%">
                         <thead>
@@ -102,6 +166,9 @@
 
 {% block js %}
 <script type="text/javascript">
+    var formula_lst = new Array(),
+        formula_all = new Array();
+
     Array.prototype.unique = function () {
         var r= new Array();
         label: for(var i=0, n=this.length; i<n; i++ ) {
@@ -125,6 +192,22 @@
         });        
     }
 
+    function ajax_operate_reload(){
+        var ipt_st = $("#colm_st label span").text();
+        var ipt_ed = $("#colm_ed label span").text();  
+        var ipt_pks = $("input[name='id_nums']").val().split("*");  
+        ajax_get_data(parseInt(ipt_st), ipt_pks,
+                      'container_colm_st',
+                      '#colm_selt_st',
+                      '#colm_st');
+        if(ipt_ed) {
+            ajax_get_data(parseInt(ipt_ed), ipt_pks,
+                          'container_colm_ed',
+                          '#colm_selt_ed',
+                          '#colm_ed');
+        }        
+    }
+
     function gen_table(xdata, data_lst){
         $('#show_tab').empty();
         var tab_tag = false;
@@ -143,15 +226,39 @@
         $('#show_tab').append(tab_str);
     }
 
+    function formula_filter_data(plot_data, formula_all) {
+        $.each(formula_all, function(findex, fval){
+            var data_lst = new Array();
+            if(!fval.length) return true;
+            $.each(plot_data.x_axis, function(index, val){
+                var temp_lst = Object.assign([], fval);
+                $.each(plot_data.y_cnm.y_axis, function(index1, obj){
+                    temp_lst = $.map(temp_lst, function(n){
+                        return obj.name == n ? obj.data[index] : n
+                    })
+                });
+                data_lst.push(math.eval(temp_lst.join("")));
+            });
+            plot_data.y_cnm.y_axis.push({'name':fval.join(""), 'data': data_lst});            
+        });
+    }
+
+    function del_formula_input(){
+        $('table.order-list input[name^="fml"]').each(function(i, item){
+            if($(item).attr("class") == "formula-input"){
+                $(item).removeClass("formula-input");
+            }
+        });        
+    }
+
     function plot_line(xdata, ydata, pks, intv) {
         var last_val;
-        Highcharts.chart('container_line', {
+        var chart = Highcharts.chart('container_line', {
             chart: {
                 zoomType: 'x',
-                // type: 'spline'
             },
             title: {
-                text: 'Clock Sample Qoint',
+                text: 'Clock Sample Point',
                 x: -20, //center
                 style: {
                     'font-size': '20px',
@@ -208,7 +315,6 @@
                                 if(last_val==undefined) {
                                     $("input[name='st_pt']")[0].value = x_val;
                                     $("#colm_st label span").text(x_val);
-                                    ajax_get_rate(x_val, pks);
                                 } else {
                                     if(x_val > parseInt(last_val)) {
                                         $("input[name='st_pt']")[0].value = last_val;
@@ -218,11 +324,17 @@
                                         $("input[name='ed_pt']")[0].value = last_val;
                                     }
                                     $("#colm_ed").show();
-                                    $("#colm_st label span").text(last_val);
-                                    $("#colm_ed label span").text(x_val);
-                                    ajax_get_rate(last_val, pks);
-                                    ajax_get_rate(x_val, pks, 'container_colm_ed', '#colm_selt_ed', '#colm_ed');
+                                    $("#colm_st label span").text(x_val);
+                                    $("#colm_ed label span").text(last_val);
+                                    ajax_get_data(last_val, pks,
+                                                  'container_colm_ed',
+                                                  '#colm_selt_ed',
+                                                  '#colm_ed');
                                 }
+                                ajax_get_data(x_val, pks, 
+                                              'container_colm_st',
+                                              '#colm_selt_st',
+                                              '#colm_st');
                                 last_val = x_val;
                             }
                         }
@@ -242,7 +354,6 @@
     }
 
     function plot_column(xaxis, data, clom_selt) {
-        var clom_selt = arguments[2] ? arguments[2] : 'container_colm_st'
         Highcharts.chart(clom_selt, {
                 chart: {
                     type: 'column',
@@ -251,7 +362,7 @@
                         alpha: 0,
                         beta: 0,
                         depth: 20,
-                    }
+                    },
                 },
                 title: {
                     text: 'Comparing performace parameters in different cases',
@@ -296,16 +407,32 @@
                     enabled:false
                 },                    
                 tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.f}</b></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true,
+                    pointFormatter: function(){
+                        var y;
+                        if(this.y%1) {
+                            y = parseFloat(this.y.toFixed(2));
+                        } else {
+                            y = this.y;
+                        }
+                        return "<div><strong style='color:{0}'>{1}</strong>: {2}</div>".format(this.series.color, this.series.name, y);
+                    }
                 },
                 plotOptions: {
                     series: {
                         animation: false,
+                        point: {
+                            events: {
+                                click: function(e){
+                                    var val = this.series.name;
+                                    $('table.order-list input[name^="fml"]').each(function(i, item){
+                                        if($(item).attr("class") == "formula-input"){
+                                            formula_lst.push(val);
+                                            $(item).val(formula_lst.join(""));
+                                        }
+                                    });
+                                },
+                            },
+                        },
                     },
                     column: {
                         pointPadding: 0.2,
@@ -313,7 +440,15 @@
                         depth: 25,
                         dataLabels: {
                             enabled: true,
-                            format: '{point.y:.f}',
+                            formatter: function() {
+                                var y;
+                                if(this.y%1) {
+                                    y = parseFloat(this.y.toFixed(2));
+                                } else {
+                                    y = this.y;
+                                }
+                                return y;
+                            },
                         },
                     },
                 },
@@ -321,9 +456,24 @@
         });
     }
 
+    function labels_disp_hid(data, clom_selt) {
+        chart_obj = $("#"+clom_selt).highcharts();
+        if(chart_obj) {
+            $.each(chart_obj.series, function(index, obj){
+                $.each(data, function(index1, dobj){
+                    if(obj.name == dobj.name){
+                        if(!obj.visible) {
+                            dobj['visible'] = obj.visible;
+                        }
+                    }
+                });
+            });            
+        }        
+    }
+
     function select_column_plot(plot_data, clom_selt, item_selt) {
-        var item_selt = arguments[2] ? arguments[2]: "#colm_selt_st" 
         $(item_selt).change(function(){
+            chart = $("#"+clom_selt).highcharts();
             var colm_val = $(this).val();
             var xaxis = new Array();
             var data = new Array();
@@ -334,13 +484,15 @@
                 $.each(plot_data.x_axis, function(xindex, xval) {
                     var data_lst = new Array();
                     $.each(plot_data.y_cnm.y_axis, function(yindex, obj){
-                        $.each(obj, function(key, yval){
-                            if(key == "data"){
-                                data_lst.push(yval[xindex]);
-                            }else if(key == "name") {
-                                xaxis.push(yval);
-                            }
-                        });
+                        if(obj.visible==undefined || obj.visible==true) {
+                            $.each(obj, function(key, yval){
+                                if(key == "data"){
+                                    data_lst.push(yval[xindex]);
+                                }else if(key == "name") {
+                                    xaxis.push(yval);
+                                }
+                            });                            
+                        }
                     });
                     data.push({"name": xval, "data": data_lst});
                 });
@@ -349,19 +501,21 @@
         });
     }
 
-    function ajax_get_rate(xaxis, pks, clom_selt, item_selt, loading) {
-        var loading = arguments[4] ? arguments[4] : "#colm_st"
-        $(loading).showLoading();        
+    function ajax_get_data(xaxis, pks, clom_selt, item_selt, loading) {
+        $(loading).showLoading();
         $.ajax({
             url: "{% url 'pj_app:mp_rows_data' 'ajax' %}",
             data: {"x_axis": xaxis, "pks": pks},
             success: function(data){
+                $(item_selt).val("case_items");
+                labels_disp_hid(data.y_cnm.y_axis, clom_selt);
                 if(data.y_tag) {
+                    if(formula_all.length) {
+                        formula_filter_data(data, formula_all);
+                    }
                     plot_column(data.x_axis, data.y_cnm.y_axis, clom_selt);
-                    gen_table(data.x_axis, data.y_cnm.ny_axis);                    
                     $(loading).hideLoading();
                     select_column_plot(data, clom_selt, item_selt);
-                    datatables();           
                 }
             },
             error: function() {
@@ -370,12 +524,34 @@
         });
     }
     
+    function formula_lst_filter(ipn_val, opera_tag){
+        var del_index;
+        var addtxt_flag= arguments[1] ? arguments[1]:false;
+        $.each(formula_all, function(index, val){
+            var val_str = val.join("");
+            if(ipn_val == val_str) {
+                del_index = index;
+            }
+        });
+        if(addtxt_flag && del_index != undefined ) {
+            formula_lst = formula_all[del_index];
+        } else {
+            formula_lst = [];
+        }
+        if(del_index != undefined) {
+            formula_all.splice(del_index, 1);
+        }
+    } 
+
     $(function () {
         var plot_data = {{plot_data|to_js}};
         // initial colmun
         if(plot_data.y_tag) {
-            plot_column(plot_data.x_axis, plot_data.y_cnm.y_axis);
-            gen_table(plot_data.x_axis, plot_data.y_cnm.ny_axis);
+            plot_column(plot_data.x_axis,
+                        plot_data.y_cnm.y_axis,
+                        "container_colm_st");
+            gen_table(plot_data.x_axis,
+                      plot_data.y_cnm.ny_axis);
         }
         $("#colm_loading_st").hide();
         //initial line figure
@@ -390,42 +566,63 @@
 
         //select different options to show columns
         if(plot_data.y_tag) {
-            select_column_plot(plot_data);
-        }       
+            select_column_plot(plot_data,
+                               "container_colm_st",
+                               "#colm_selt_st");
+        }
+        datatables();
 
-        // ajax--form load data
-        $('#clk_form').on('submit', function(event) {
-            event.preventDefault();
-            var st_pt = $("input[name='st_pt']")[0].value;
-            var ed_pt = $("input[name='ed_pt']")[0].value;
-            if (parseInt(st_pt) || parseInt(st_pt)==0) {
-                if ((!isNaN(ed_pt) && ed_pt.replace(/\s+/,"") != "") || ed_pt == "") {
-                    $(".colm_ctn").showLoading();
-                    $.ajax({
-                        data: $(this).serialize(),
-                        type: $(this).attr('method'),
-                        url: $(this).attr('action'),
-                        success: function(data) {
-                            if(data.y_tag) {
-                                plot_column(data.x_axis, data.y_cnm.y_axis);
-                                gen_table(data.x_axis, data.y_cnm.ny_axis);                    
-                                select_column_plot(data);
-                                datatables();               
-                            }
-                            $(".colm_ctn").hideLoading();
-                        },
-                        error: function(data) {
-                            alert("loading data error, please refresh again!")
-                        }
-                    });                    
-                } else {
-                    alert("please end clk point is positive integer!");
-                }
+        //add formula list
+        var counter = 0;
+        counter = $('#fml_tab tr').length -1;
+        $("#addrow").click(function(){
+            var newRow = $("<tr>");
+            var cols = "";
+            // cols +='<td>{0}</td>'.format(counter);
+            cols += '<td><input type="text" name="fml{0}" readonly="readonly" style="width: 500px;" /></td>'.format(counter);
+            cols += '<td><input type="button" id="ibtnAdd" value="Add"/></td>';
+            cols += '<td><input type="button" id="ibtnDel" value="Delete"/></td>';
+            newRow.append(cols);
+            $("table.order-list").append(newRow);
+            formula_lst = [];
+            counter++;
+            del_formula_input();
+        });
+        $("table.order-list").on("click", "#ibtnDel", function(event){
+            var ipn_val = $(this).parent().prev().prev().children().val();
+            formula_lst_filter(ipn_val);
+            ajax_operate_reload();
+            $(this).closest("tr").remove();
+            counter--;
+        });
+
+        $("table.order-list").on("click", "#ibtnClear", function(event){
+            var ipn_obj = $(this).parent().prev().prev().children();
+            formula_lst_filter(ipn_obj.val());
+            ipn_obj.val("");
+            del_formula_input();
+            ajax_operate_reload();
+        });
+
+        $("table.order-list").on("click", "#ibtnAdd", function(event){
+            if (formula_lst.length > 0 && formula_all.indexOf(formula_lst) == -1) {
+                formula_all.push(formula_lst);
+            }
+            del_formula_input();
+            ajax_operate_reload();
+        });
+
+        $("table.order-list").on("focus", 'input[name^="fml"]', function(event){
+            var ipn_val = $(this).val();
+            del_formula_input();
+            $(this).addClass("formula-input");
+            if(ipn_val) {
+                formula_lst_filter(ipn_val, true);
             } else {
-                alert("please input at least start clk point(positive integer)!");
+                formula_lst = [];
             }
         });
-        datatables();               
+
     });
 </script>
 {% endblock %}
