@@ -1,0 +1,3 @@
+top.v
+-f sub_a/sub_a.v
+-f sub_b/sub_b.v

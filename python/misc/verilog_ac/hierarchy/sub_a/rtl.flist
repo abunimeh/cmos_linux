@@ -1,0 +1,3 @@
+sub_a.v
+-f ssub_a/rtl.flist
+-f ssub_b/rtl.flist
