@@ -68,7 +68,7 @@ def gen_run_parser(subparsers):
         help="input run module")
     run_parser.add_argument(
         "-check_rtl", dest="run_check_rtl", default=False, action="store_true",
-        help="toggle to check all rtl analysis processing")
+        help="toggle to check all rtl compilation processing")
     run_parser.add_argument(
         "-comp", dest="run_comp", default=False, action="store_true",
         help="toggle to elaborate all case simvs")

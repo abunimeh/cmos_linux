@@ -253,6 +253,8 @@ class RegProc(object):
             f"{proc_dic['reg_cfg_dir']}{os.sep}{cc}.json" for cc
             in reg_module_lst] if reg_module_lst else pcom.find_iter(
                 proc_dic["reg_cfg_dir"], "*.json")
+        proc_dic["reg_ralf_dir"] = os.path.abspath(
+            os.path.expandvars(pcom.rd_cfg(self.cfg_dic["proj"], "reg_dir", "ralf", True)))
         proc_dic["ralf_dic"] = {"blk_bytes": 0}
         proc_dic["public_reg_dic"] = {}
         for reg_cfg_json in proc_dic["reg_cfg_iter"]:
@@ -282,11 +284,10 @@ class RegProc(object):
             proc_dic["ralf_dic"]["blk_bytes"] += ralf_data_dic["blk_bytes"]
             self.check_public_register(
                 proc_dic["public_reg_dic"], proc_dic["ralf_dic"], ralf_data_dic)
-        cru_ralf_dir = f"{self.ced['PROJ_VERIF']}{os.sep}vip{os.sep}cru_agent_ral"
-        os.makedirs(cru_ralf_dir, exist_ok=True)
+        os.makedirs(proc_dic["reg_ralf_dir"], exist_ok=True)
         pcom.ren_tempfile(
             f"{proc_dic['reg_temp_dir']}{os.sep}reg_base.ralf",
-            f"{cru_ralf_dir}{os.sep}reg.ralf",
+            f"{proc_dic['reg_ralf_dir']}{os.sep}reg.ralf",
             {"public_data": proc_dic["public_reg_dic"], "data": proc_dic["ralf_dic"]})
         sw_data_dic = OrderedDict(self.sw_rtl_dic["NA"])
         self.sw_rtl_dic["MSR"] = OrderedDict(

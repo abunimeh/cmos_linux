@@ -242,6 +242,10 @@ pj子命令参数详细说明
 
   + ``$ pj run -m MODULE -comp``
 
+- 只针对DUT进行compilation(analysis+elaboration)，不simulation：
+
+  + ``$ pj run -m MODULE -check_rtl``
+
 - 指定simv（*）：
 
   + ``$ pj run -c CASE -simv SIMV``
@@ -312,6 +316,13 @@ pj子命令参数详细说明
   + ``$ pj run -c CASE -CSRCC CSRCC_OPTS``
   + ``$ pj run -c CASE -CSRCR CSRCR_OPTS``
   + 分别在dut analysis, tb analysis, elaboration, simulation, 仿真c compilation, 独立c compilation, 独立c runtime这几个阶段添加用户自己需要的tools的options
+
+- 触发回归模式（*）：
+
+  + ``$ pj run -t REGR_TYPES -m MODULE``
+  + ``-c`` 参数与 ``-t`` 参数分别会触发仿真模式与回归模式
+  + 回归模式下，终端不会显示详细具体case的信息，同时会根据case.cfg里的regression_type选项来运行相应的全部case
+  + 所接参数与仿真模式相同
 
 - 从头执行compilation与simulation的动作：
 
@@ -404,7 +415,19 @@ pj子命令参数详细说明
 
   + ``$ pj reg -h``
 
-- reg子命令功能开发中……
+- 自动根据json的reg配置文件生成全部模块的reg rtl文件、验证用的ralf文件以及excel文档
+
+  + ``$pj reg -gen``
+  + reg json配置文件位于PROJ_SHARE/config/pj_reg下，以<MODULE>_YJD.json样式命名
+  + 生成的reg rtl文件位于PROJ_RTL/GX/YJD目录下
+  + 生成的验证用的ralf文件集成全部的reg，PROJ_VERIF/vip/cru_agent_ral/reg.ralf
+  + 生成的excel reg文档位于PROJ_DOC/asic/GX/YJD目录下
+
+- 指定模块生成相应模块的reg rtl文件、验证用的ralf文件以及excel文档
+
+  + ``$pj reg -gen -m MODULE``
+  + 生成文件的路径与不带 ``-m`` 参数的相同
+  + 生成的验证用的ralf文件命不变，但是只有相应模块的reg信息
 
 子命令doc
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -591,6 +614,36 @@ ac是方便用户完成相应顶层例化自动连线的工具，主要利用ema
 
 - 当需要特殊连接的时候，将输入端口做特殊连接，输出端口做自动连接，因为自动生成wire是检测输出端口时才生效的
 
+当自动连线需要一个模块多例化的时候可以参考以下例子：
+
+::
+
+   module top (/*AUTOARG*/);
+   
+      /*AUTOREG*/
+      /*AUTOWIRE*/
+   
+      /* sj AUTO_TEMPLATE (
+       .sj__zzdl__\(.*\) (sj@__zzdl__\1),
+       );*/
+      
+      sj #(/*AUTOINSTPARAM*/) sj0 (/*AUTOINST*/);
+      sj #(/*AUTOINSTPARAM*/)sj2 (/*AUTOINST*/);
+      zxdl #(/*AUTOINSTPARAM*/) u_zxdl(/*AUTOINST*/);
+   
+   endmodule // top
+   // Local Variables:
+   // verilog-library-directories:(".")
+   // End:
+
+- 模块sj例化两份，均连接到zxdl模块
+
+- 由于zxdl模块需要连接相同的模块的多份例化，相应多例化连接的端口信号命名需要将sj这个模块名变成sj0这类例化名
+
+- 利用AUTO_TEMPLATE强大的正则匹配特性完成sj端的连接
+
+- 在AUTO_TEMPLATE中，@代表例化名字中的后缀数字，\(与\)之间括起来的部分是正则表达式匹配，\1表示匹配到的第1个group
+  
 子命令dc
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -829,17 +882,17 @@ PROJ_ROOT/verification/MODULE
    │   │   ├── simv1             # simv1 simv compilation相关文件，包括生成的simv
    │   │   └── simv2
    │   └── module_sanity_test    # module_sanity_test case相关文件
-   │       ├── 1                 # 以seed命令的目录，在该seed下simulation相关文件
-   │       ├── 119974
-   │       ├── 205236
-   │       ├── 316245
-   │       ├── 370561
-   │       ├── 415104
-   │       ├── 563042
-   │       ├── 716947
-   │       ├── 753549
-   │       ├── 91185
-   │       └── 979315
+   │       ├── DEFAULT__1        # 以simv__seed命名的目录，存放simulation相关文件
+   │       ├── DEFAULT__119974
+   │       ├── DEFAULT__205236
+   │       ├── DEFAULT__316245
+   │       ├── DEFAULT__370561
+   │       ├── DEFAULT__415104
+   │       ├── DEFAULT__563042
+   │       ├── DEFAULT__716947
+   │       ├── DEFAULT__753549
+   │       ├── simv1__91185
+   │       └── simv2__979315
    ├── reg                       # reg相关文件
    ├── tb                        # tb所有文件
    ├── upf                       # low power upf相关文件
@@ -849,4 +902,4 @@ PROJ_ROOT/verification/MODULE
 
 开发阶段说明
 ----------------------------------------
-pj目前还在开发阶段，以上列出的所有子命令包括参数以及目录结构只是开发计划中的一小部分，有些子命令已经基本完备，例如run, regr, cov，有些子命令还没有开始全面开发，例如reg，因此该手册也会根据pj的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 **yigy@cpu.com.cn**
+pj目前发布的是一个稳定的版本，日后不会有太大的功能改动，欢迎大家试用，如有任何问题及建议，请联系平台组 **yigy@cpu.com.cn**
