@@ -103,3 +103,6 @@ latex/**/auto
 
 # Dia
 dia/*.dia~
+
+# pg db
+python/cas_site/pg_data/
