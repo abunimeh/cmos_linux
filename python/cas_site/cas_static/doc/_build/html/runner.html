@@ -348,6 +348,10 @@ Global options:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-comp</span></code></li>
 </ul>
 </li>
+<li>只针对DUT进行compilation(analysis+elaboration)，不simulation：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-m</span> <span class="pre">MODULE</span> <span class="pre">-check_rtl</span></code></li>
+</ul>
+</li>
 <li>指定simv（*）：<ul>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-simv</span> <span class="pre">SIMV</span></code></li>
 </ul>
@@ -417,6 +421,13 @@ Global options:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-CSRCC</span> <span class="pre">CSRCC_OPTS</span></code></li>
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-c</span> <span class="pre">CASE</span> <span class="pre">-CSRCR</span> <span class="pre">CSRCR_OPTS</span></code></li>
 <li>分别在dut analysis, tb analysis, elaboration, simulation, 仿真c compilation, 独立c compilation, 独立c runtime这几个阶段添加用户自己需要的tools的options</li>
+</ul>
+</li>
+<li>触发回归模式（*）：<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">run</span> <span class="pre">-t</span> <span class="pre">REGR_TYPES</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+<li><code class="docutils literal"><span class="pre">-c</span></code> 参数与 <code class="docutils literal"><span class="pre">-t</span></code> 参数分别会触发仿真模式与回归模式</li>
+<li>回归模式下，终端不会显示详细具体case的信息，同时会根据case.cfg里的regression_type选项来运行相应的全部case</li>
+<li>所接参数与仿真模式相同</li>
 </ul>
 </li>
 <li>从头执行compilation与simulation的动作：<ul>
@@ -517,7 +528,20 @@ Global options:
 <li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">reg</span> <span class="pre">-h</span></code></li>
 </ul>
 </li>
-<li>reg子命令功能开发中……</li>
+<li>自动根据json的reg配置文件生成全部模块的reg rtl文件、验证用的ralf文件以及excel文档<ul>
+<li><code class="docutils literal"><span class="pre">$pj</span> <span class="pre">reg</span> <span class="pre">-gen</span></code></li>
+<li>reg json配置文件位于PROJ_SHARE/config/pj_reg下，以&lt;MODULE&gt;_YJD.json样式命名</li>
+<li>生成的reg rtl文件位于PROJ_RTL/GX/YJD目录下</li>
+<li>生成的验证用的ralf文件集成全部的reg，PROJ_VERIF/vip/cru_agent_ral/reg.ralf</li>
+<li>生成的excel reg文档位于PROJ_DOC/asic/GX/YJD目录下</li>
+</ul>
+</li>
+<li>指定模块生成相应模块的reg rtl文件、验证用的ralf文件以及excel文档<ul>
+<li><code class="docutils literal"><span class="pre">$pj</span> <span class="pre">reg</span> <span class="pre">-gen</span> <span class="pre">-m</span> <span class="pre">MODULE</span></code></li>
+<li>生成文件的路径与不带 <code class="docutils literal"><span class="pre">-m</span></code> 参数的相同</li>
+<li>生成的验证用的ralf文件命不变，但是只有相应模块的reg信息</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="doc">
@@ -655,9 +679,8 @@ Global options:
 </li>
 <li><p class="first">leda check过程中提供black box过滤功能：</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">leda</span> <span class="pre">-gen_log</span> <span class="pre">-f</span> <span class="pre">FLIELIST</span> <span class="pre">-t</span> <span class="pre">LEDA_TOP</span> <span class="pre">-bbf</span> <span class="pre">BB_FILELIST</span></code></li>
-<li>屏蔽掉相应bb_flielist中指定文件的leda check</li>
-<li>bb_filelist的书写规则与filelist书写规则相同，除了不支持-f递归查询</li>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">pj</span> <span class="pre">leda</span> <span class="pre">-gen_log</span> <span class="pre">-f</span> <span class="pre">FLIELIST</span> <span class="pre">-t</span> <span class="pre">LEDA_TOP</span></code></li>
+<li>参考上面讲述src目录的bbox_file部分</li>
 </ul>
 </li>
 <li><p class="first">打开leda GUI查看、审查与修订leda log中相应的问题：</p>
@@ -713,6 +736,32 @@ Global options:
 <li>ac工具会跟据/*AUTO*/类注释标志进行自动替换</li>
 <li>文件结尾的注释不可少，在verilog-library-directories中要填该top需要例化连线的子模块目录，支持相对路径，否则ac工具无法获悉子模块的端口名</li>
 <li>当需要特殊连接的时候，将输入端口做特殊连接，输出端口做自动连接，因为自动生成wire是检测输出端口时才生效的</li>
+</ul>
+<p>当自动连线需要一个模块多例化的时候可以参考以下例子：</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">module</span> <span class="n">top</span> <span class="p">(</span><span class="o">/*</span><span class="n">AUTOARG</span><span class="o">*/</span><span class="p">);</span>
+
+   <span class="o">/*</span><span class="n">AUTOREG</span><span class="o">*/</span>
+   <span class="o">/*</span><span class="n">AUTOWIRE</span><span class="o">*/</span>
+
+   <span class="o">/*</span> <span class="n">sj</span> <span class="n">AUTO_TEMPLATE</span> <span class="p">(</span>
+    <span class="o">.</span><span class="n">sj__zzdl__</span>\<span class="p">(</span><span class="o">.*</span>\<span class="p">)</span> <span class="p">(</span><span class="n">sj</span><span class="nd">@__zzdl__</span>\<span class="mi">1</span><span class="p">),</span>
+    <span class="p">);</span><span class="o">*/</span>
+
+   <span class="n">sj</span> <span class="c1">#(/*AUTOINSTPARAM*/) sj0 (/*AUTOINST*/);</span>
+   <span class="n">sj</span> <span class="c1">#(/*AUTOINSTPARAM*/)sj2 (/*AUTOINST*/);</span>
+   <span class="n">zxdl</span> <span class="c1">#(/*AUTOINSTPARAM*/) u_zxdl(/*AUTOINST*/);</span>
+
+<span class="n">endmodule</span> <span class="o">//</span> <span class="n">top</span>
+<span class="o">//</span> <span class="n">Local</span> <span class="n">Variables</span><span class="p">:</span>
+<span class="o">//</span> <span class="n">verilog</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="n">directories</span><span class="p">:(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="o">//</span> <span class="n">End</span><span class="p">:</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>模块sj例化两份，均连接到zxdl模块</li>
+<li>由于zxdl模块需要连接相同的模块的多份例化，相应多例化连接的端口信号命名需要将sj这个模块名变成sj0这类例化名</li>
+<li>利用AUTO_TEMPLATE强大的正则匹配特性完成sj端的连接</li>
+<li>在AUTO_TEMPLATE中，&#64;代表例化名字中的后缀数字，(与)之间括起来的部分是正则表达式匹配，1表示匹配到的第1个group</li>
 </ul>
 </div>
 <div class="section" id="dc">
@@ -958,17 +1007,17 @@ Global options:
 │   │   ├── simv1             # simv1 simv compilation相关文件，包括生成的simv
 │   │   └── simv2
 │   └── module_sanity_test    # module_sanity_test case相关文件
-│       ├── 1                 # 以seed命令的目录，在该seed下simulation相关文件
-│       ├── 119974
-│       ├── 205236
-│       ├── 316245
-│       ├── 370561
-│       ├── 415104
-│       ├── 563042
-│       ├── 716947
-│       ├── 753549
-│       ├── 91185
-│       └── 979315
+│       ├── DEFAULT__1        # 以simv__seed命名的目录，存放simulation相关文件
+│       ├── DEFAULT__119974
+│       ├── DEFAULT__205236
+│       ├── DEFAULT__316245
+│       ├── DEFAULT__370561
+│       ├── DEFAULT__415104
+│       ├── DEFAULT__563042
+│       ├── DEFAULT__716947
+│       ├── DEFAULT__753549
+│       ├── simv1__91185
+│       └── simv2__979315
 ├── reg                       # reg相关文件
 ├── tb                        # tb所有文件
 ├── upf                       # low power upf相关文件
@@ -980,7 +1029,7 @@ Global options:
 </div>
 <div class="section" id="id5">
 <h2>开发阶段说明<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
-<p>pj目前还在开发阶段，以上列出的所有子命令包括参数以及目录结构只是开发计划中的一小部分，有些子命令已经基本完备，例如run, regr, cov，有些子命令还没有开始全面开发，例如reg，因此该手册也会根据pj的release定期更新，欢迎大家试用，如有任何问题及建议，请联系平台组 <strong>yigy&#64;cpu.com.cn</strong></p>
+<p>pj目前发布的是一个稳定的版本，日后不会有太大的功能改动，欢迎大家试用，如有任何问题及建议，请联系平台组 <strong>yigy&#64;cpu.com.cn</strong></p>
 </div>
 </div>
 
@@ -1010,7 +1059,7 @@ Global options:
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Guanyu Yi.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>
 </html>
